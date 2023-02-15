@@ -5,13 +5,15 @@ VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{BB49C0BE-B43E-4BAA-9C92-C25D726F7E80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plitkarka.Application", "Plitkarka.Application\Plitkarka.Application.csproj", "{343F5A53-425D-4493-A907-97CEA1155E40}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plitkarka.Application", "Plitkarka.Application\Plitkarka.Application.csproj", "{343F5A53-425D-4493-A907-97CEA1155E40}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plitkarka.Domain", "Plitkarka.Domain\Plitkarka.Domain.csproj", "{37B7E3EB-85D4-4CCF-9E9C-9DC47DCCF983}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plitkarka.Domain", "Plitkarka.Domain\Plitkarka.Domain.csproj", "{37B7E3EB-85D4-4CCF-9E9C-9DC47DCCF983}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plitkarka.Infrastructure", "Plitkarka.Infrastructure\Plitkarka.Infrastructure.csproj", "{064F0380-5FD7-451A-9FB7-1BF44ED95F7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Plitkarka.Infrastructure", "Plitkarka.Infrastructure\Plitkarka.Infrastructure.csproj", "{064F0380-5FD7-451A-9FB7-1BF44ED95F7B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A0988E56-1568-4E16-A1DA-F552030FD284}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Plitkarka.Commons", "Plitkarka.Commons\Plitkarka.Commons.csproj", "{F69658CB-9641-4E7B-8B4B-826E8C3D082B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +33,10 @@ Global
 		{064F0380-5FD7-451A-9FB7-1BF44ED95F7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{064F0380-5FD7-451A-9FB7-1BF44ED95F7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{064F0380-5FD7-451A-9FB7-1BF44ED95F7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F69658CB-9641-4E7B-8B4B-826E8C3D082B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F69658CB-9641-4E7B-8B4B-826E8C3D082B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F69658CB-9641-4E7B-8B4B-826E8C3D082B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F69658CB-9641-4E7B-8B4B-826E8C3D082B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,6 +45,7 @@ Global
 		{343F5A53-425D-4493-A907-97CEA1155E40} = {BB49C0BE-B43E-4BAA-9C92-C25D726F7E80}
 		{37B7E3EB-85D4-4CCF-9E9C-9DC47DCCF983} = {BB49C0BE-B43E-4BAA-9C92-C25D726F7E80}
 		{064F0380-5FD7-451A-9FB7-1BF44ED95F7B} = {BB49C0BE-B43E-4BAA-9C92-C25D726F7E80}
+		{F69658CB-9641-4E7B-8B4B-826E8C3D082B} = {BB49C0BE-B43E-4BAA-9C92-C25D726F7E80}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F4D03BAC-5F2D-474C-8432-CDEB3B72D008}
