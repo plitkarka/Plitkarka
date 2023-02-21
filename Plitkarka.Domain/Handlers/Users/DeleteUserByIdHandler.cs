@@ -2,24 +2,24 @@
 using AutoMapper;
 using Plitkarka.Domain.Requests.Users;
 using Plitkarka.Infrastructure.Models;
-using Plitkarka.Infrastructure.Repositories;
 using Plitkarka.Commons.Exceptions;
 using Plitkarka.Commons.Logger;
 using Microsoft.Extensions.Logging;
+using Plitkarka.Infrastructure.Services;
 
 namespace Plitkarka.Domain.Handlers.Users;
 
 public class DeleteUserByIdHandler : IRequestHandler<DeleteUserByIdRequest>
 {
     private IRepository<UserEntity> _repository { get; init; }
-    private ILogger _logger { get; init; }
+    private ILogger<DeleteUserByIdHandler> _logger { get; init; }
 
     public DeleteUserByIdHandler(
         IRepository<UserEntity> repository,
-        ILoggerFactory loggerFactory)
+        ILogger<DeleteUserByIdHandler> logger)
     {
         _repository = repository;
-        _logger = loggerFactory.CreateLogger<DeleteUserByIdHandler>();
+        _logger = logger;
     }
 
     public async Task<Unit> Handle(DeleteUserByIdRequest request, CancellationToken cancellationToken)
@@ -37,7 +37,7 @@ public class DeleteUserByIdHandler : IRequestHandler<DeleteUserByIdRequest>
 
             return Unit.Value;
         }
-        catch(Exception ex)
+        catch(Exception ex) when (ex is not ValidationException)
         {
             _logger.LogDatabaseError($"{nameof(DeleteUserByIdHandler)}.{nameof(Handle)}", ex.Message);
             throw new MySqlException(ex.Message);

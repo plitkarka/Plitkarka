@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace Plitkarka.Infrastructure.Repositories;
+namespace Plitkarka.Infrastructure.Services;
 
 public interface IRepository<T>
 {

@@ -4,6 +4,7 @@ using Plitkarka.Application.Configuration;
 using Plitkarka.Infrastructure;
 using Plitkarka.Infrastructure.Models;
 using Plitkarka.Infrastructure.Repositories;
+using Plitkarka.Infrastructure.Services;
 
 namespace Plitkarka.Application;
 

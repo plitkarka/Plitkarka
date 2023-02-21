@@ -3,20 +3,21 @@ using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
 using Plitkarka.Infrastructure.Models;
 using Plitkarka.Commons.Logger;
+using Plitkarka.Infrastructure.Services;
 
 namespace Plitkarka.Infrastructure.Repositories;
 
 public class UserRepository : IRepository<UserEntity>
 {
     private MySqlDbContext _db { get; init; }
-    private ILogger _logger;
+    private ILogger<UserRepository> _logger;
 
     public UserRepository(
         MySqlDbContext db,
-        ILoggerFactory loggerFactory)
+        ILogger<UserRepository> logger)
     {
         _db = db;
-        _logger = loggerFactory.CreateLogger<UserRepository>();
+        _logger = logger;
     }
 
     public async Task<Guid> AddUserAsync(UserEntity user)
@@ -61,10 +62,10 @@ public class UserRepository : IRepository<UserEntity>
             throw new ArgumentNullException(nameof(user));
         }
 
-        var res = _db.Users.Update(user);
+        _db.Entry(user).State = EntityState.Modified;
         await _db.SaveChangesAsync();
 
-        return res.Entity;
+        return user;
     }
 
     public async Task DeleteUserAsync(UserEntity user)

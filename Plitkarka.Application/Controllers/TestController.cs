@@ -2,9 +2,9 @@
 using AutoMapper;
 using MediatR;
 using Plitkarka.Infrastructure.Models;
-using Plitkarka.Infrastructure.Repositories;
 using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.Users;
+using Plitkarka.Infrastructure.Services;
 
 namespace Plitkarka.Application.Controllers;
 
@@ -27,44 +27,51 @@ public class TestController : Controller
     }
 
     [HttpPost]
-    public async Task<ActionResult> TestPost()
+    public async Task<ActionResult> TestPost(string login)
     {
         var template = new User()
         {
             FirstName = "SomeName",
             SecondName = "SameSecondName",
-            EmailCode = "123456",
             Password = "qwerty",
-            PasswordAttempts = 3,
-            Salt = "12345678",
-            BirthDate = DateTime.Now,
-            CreatedDate = DateTime.Now,
-            LastLoginDate = DateTime.Now,
-            IsActive = true
+            BirthDate = DateTime.Now
         };
 
-        // await _userRepository.AddUserAsync(_mapper.Map<UserEntity>(
-        //     template with { Email = "dima@gmail.com", Login = "Dima" }));
-
-        // await _userRepository.AddUserAsync(_mapper.Map<UserEntity>(
-        //     template with { Email = "nastia@gmail.com", Login = "Nastia" }));
-
-        // await _userRepository.AddUserAsync(_mapper.Map<UserEntity>(
-        //     template with { Email = "dania@gmail.com", Login = "Dania" }));
-
-        // var id = await _userRepository.AddUserAsync(_mapper.Map<UserEntity>(
-        //     template with { Email = "kate@gmail.com", Login = "Kate" }));
-
-        var id = await _userRepository.AddUserAsync(_mapper.Map<UserEntity>(
-            template with { Email = "sasha@gmail.com", Login = "Sasha" }));
+        var id = await _mediator.Send(new AddUserRequest(
+            template with { Login = login, Email = $"{login}@gmail.com" }));
 
         return Ok(id);
     }
 
-    [HttpGet]
+    [HttpGet("id")]
     public async Task<IActionResult> TestGet(Guid id)
     {
         var res = await _mediator.Send(new GetUserByIdQuery(id));
+
+        return Ok(res);
+    }
+
+
+    [HttpGet("login")]
+    public async Task<IActionResult> TestGet(string login)
+    {
+        var res = await _mediator.Send(new GetUserQuery(user => user.Login == login));
+
+        return Ok(res);
+    }
+
+    [HttpDelete]
+    public async Task<IActionResult> TestDelete(Guid id)
+    {
+        await _mediator.Send(new DeleteUserByIdRequest(id));
+
+        return Ok();
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> TestUpdate(Guid id, string login)
+    {
+        var res = await _mediator.Send(new UpdateUserRequest(new UserUpdate() { Id = id, Login = login}));
 
         return Ok(res);
     }
