@@ -8,14 +8,14 @@ namespace Plitkarka.Domain.Middlewares;
 public class ExceptionMiddleware 
 {
     private readonly RequestDelegate _next;
-    private readonly ILogger _logger;
+    private readonly ILogger<ExceptionMiddleware> _logger;
 
     public ExceptionMiddleware(
         RequestDelegate next,
-        ILoggerFactory loggerFactory)
+        ILogger<ExceptionMiddleware> logger)
     {
         _next = next;
-        _logger = loggerFactory.CreateLogger<ExceptionMiddleware>();
+        _logger = logger;
     }
 
     public async Task InvokeAsync(HttpContext httpContext)
@@ -30,7 +30,7 @@ public class ExceptionMiddleware
         }
         catch (ValidationException ex)
         {
-            HandleValidationException(httpContext, ex);
+            await HandleValidationException(httpContext, ex);
         }
         catch (Exception ex)
         {
@@ -44,7 +44,7 @@ public class ExceptionMiddleware
         httpContext.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
     }
 
-    private void HandleValidationException(HttpContext httpContext, ValidationException ex)
+    private async Task HandleValidationException(HttpContext httpContext, ValidationException ex)
     {
         if (ex.ParamName != null)
         {
@@ -53,6 +53,8 @@ public class ExceptionMiddleware
         }
 
         httpContext.Response.StatusCode = (int) HttpStatusCode.BadRequest;
+        httpContext.Response.ContentType = "text/plain; charset=utf-8";
+        await httpContext.Response.WriteAsync(ex.Message);
     }
 
     private void HandleException(HttpContext httpContext)

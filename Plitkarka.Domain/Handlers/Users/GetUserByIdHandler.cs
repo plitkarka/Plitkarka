@@ -3,10 +3,10 @@ using AutoMapper;
 using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.Users;
 using Plitkarka.Infrastructure.Models;
-using Plitkarka.Infrastructure.Repositories;
 using Microsoft.Extensions.Logging;
 using Plitkarka.Commons.Logger;
 using Plitkarka.Commons.Exceptions;
+using Plitkarka.Infrastructure.Services;
 
 namespace Plitkarka.Domain.Handlers.Users;
 
@@ -14,16 +14,16 @@ public class GetUserByIdHandler : IRequestHandler<GetUserByIdQuery, User?>
 {
     private IRepository<UserEntity> _repository { get; init; }
     private IMapper _mapper { get; init; }
-    private ILogger _logger { get; init; }
+    private ILogger<GetUserByIdHandler> _logger { get; init; }
     
     public GetUserByIdHandler(
         IRepository<UserEntity> repository,
         IMapper mapper,
-        ILoggerFactory loggerFactory)
+        ILogger<GetUserByIdHandler> logger)
     {
         _repository = repository;
         _mapper = mapper;
-        _logger = loggerFactory.CreateLogger<GetUserByIdHandler>();
+        _logger = logger;
     }
 
     public async Task<User?> Handle(GetUserByIdQuery request, CancellationToken cancellationToken)
@@ -32,7 +32,7 @@ public class GetUserByIdHandler : IRequestHandler<GetUserByIdQuery, User?>
 
         try
         {
-            resultEntity = await _repository.GetUserByIdAsync(request.Id);
+            resultEntity = await _repository.GetByIdAsync(request.Id);
         }
         catch (Exception ex)
         {
