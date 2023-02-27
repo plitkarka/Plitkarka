@@ -26,14 +26,14 @@ public class DeleteUserByIdHandler : IRequestHandler<DeleteUserByIdRequest>
     {
         try
         {
-            var toDelete = await _repository.GetUserByIdAsync(request.Id);
+            var toDelete = await _repository.GetByIdAsync(request.Id);
 
             if (toDelete == null)
             {
                 throw new ValidationException("User do not exist");
             }
 
-            await _repository.DeleteUserAsync(toDelete);
+            await _repository.DeleteAsync(toDelete);
 
             return Unit.Value;
         }

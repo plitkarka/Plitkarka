@@ -37,7 +37,7 @@ public class AddUserHandler : IRequestHandler<AddUserRequest, Guid>
 
         try
         {
-            userExist = await _repository.GetUserAsync(
+            userExist = await _repository.GetAsync(
                 user => user.Email == newUser.Email || user.Login == newUser.Login);
 
             if (userExist != null)
@@ -60,7 +60,7 @@ public class AddUserHandler : IRequestHandler<AddUserRequest, Guid>
             newUser.EmailCode = "123456";
             newUser.PasswordAttempts = User.PasswordAttemptsCount;
 
-            var id = await _repository.AddUserAsync(
+            var id = await _repository.AddAsync(
                 _mapper.Map<UserEntity>(newUser));
 
             return id;

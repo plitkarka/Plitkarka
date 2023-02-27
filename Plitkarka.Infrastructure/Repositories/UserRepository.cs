@@ -20,11 +20,11 @@ public class UserRepository : IRepository<UserEntity>
         _logger = logger;
     }
 
-    public async Task<Guid> AddUserAsync(UserEntity user)
+    public async Task<Guid> AddAsync(UserEntity user)
     {
         if (user == null)
         {
-            _logger.LogArgumentNullError(nameof(AddUserAsync), nameof(user));
+            _logger.LogArgumentNullError(nameof(AddAsync), nameof(user));
             throw new ArgumentNullException(nameof(user));
         }
 
@@ -34,18 +34,18 @@ public class UserRepository : IRepository<UserEntity>
         return res.Entity.Id;
     }
 
-    public async Task<UserEntity?> GetUserByIdAsync(Guid id)
+    public async Task<UserEntity?> GetByIdAsync(Guid id)
     {
         UserEntity? result = await _db.Users.FindAsync(id);
 
         return result;
     }
 
-    public async Task<UserEntity?> GetUserAsync(Expression<Func<UserEntity, bool>> predicate)
+    public async Task<UserEntity?> GetAsync(Expression<Func<UserEntity, bool>> predicate)
     {
         if (predicate == null)
         {
-            _logger.LogArgumentNullError(nameof(GetUserAsync), nameof(predicate));
+            _logger.LogArgumentNullError(nameof(GetAsync), nameof(predicate));
             throw new ArgumentNullException(nameof(predicate));
         }
 
@@ -54,11 +54,11 @@ public class UserRepository : IRepository<UserEntity>
         return result;
     }
 
-    public async Task<UserEntity> UpdateUserAsync(UserEntity user)
+    public async Task<UserEntity> UpdateAsync(UserEntity user)
     {
         if (user == null)
         {
-            _logger.LogArgumentNullError(nameof(UpdateUserAsync), nameof(user));
+            _logger.LogArgumentNullError(nameof(UpdateAsync), nameof(user));
             throw new ArgumentNullException(nameof(user));
         }
 
@@ -68,11 +68,11 @@ public class UserRepository : IRepository<UserEntity>
         return user;
     }
 
-    public async Task DeleteUserAsync(UserEntity user)
+    public async Task DeleteAsync(UserEntity user)
     {
         if (user == null)
         {
-            _logger.LogArgumentNullError(nameof(DeleteUserAsync), nameof(user));
+            _logger.LogArgumentNullError(nameof(DeleteAsync), nameof(user));
             throw new ArgumentNullException(nameof(user));
         }
 

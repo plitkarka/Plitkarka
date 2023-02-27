@@ -32,7 +32,7 @@ public class GetUserByIdHandler : IRequestHandler<GetUserByIdQuery, User?>
 
         try
         {
-            resultEntity = await _repository.GetUserByIdAsync(request.Id);
+            resultEntity = await _repository.GetByIdAsync(request.Id);
         }
         catch (Exception ex)
         {
