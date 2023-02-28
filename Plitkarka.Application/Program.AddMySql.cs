@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Plitkarka.Application.Configuration;
+using Plitkarka.Commons.Configuration;
 using Plitkarka.Infrastructure;
 using Plitkarka.Infrastructure.Models;
 using Plitkarka.Infrastructure.Repositories;
