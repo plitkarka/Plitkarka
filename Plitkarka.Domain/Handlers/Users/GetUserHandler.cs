@@ -10,7 +10,7 @@ using Plitkarka.Infrastructure.Services;
 
 namespace Plitkarka.Domain.Handlers.Users;
 
-public class GetUserHandler : IRequestHandler<GetUserQuery, User?>
+public class GetUserHandler : IRequestHandler<GetUserRequest, User?>
 {
     private IRepository<UserEntity> _repository { get; init; }
     private IMapper _mapper { get; init; }
@@ -26,7 +26,7 @@ public class GetUserHandler : IRequestHandler<GetUserQuery, User?>
         _logger = logger;
     }
 
-    public async Task<User?> Handle(GetUserQuery request, CancellationToken cancellationToken)
+    public async Task<User?> Handle(GetUserRequest request, CancellationToken cancellationToken)
     {
         UserEntity? resultEntity;
 

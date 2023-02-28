@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Plitkarka.Domain.Handlers.Users;
+using Plitkarka.Domain.Services.Authentication;
 using Plitkarka.Domain.Services.Encryption;
 
 namespace Plitkarka.Application;
@@ -12,6 +13,7 @@ public static partial class Program
         services.AddSwaggerGen();
         services.AddMediatR(typeof(AddUserHandler).Assembly);
         services.AddTransient<IEncryptionService, Sha256EncryptionService>();
+        services.AddTransient<IAuthenticationService, JwtAuthenticationService>();
         
         return services;
     }

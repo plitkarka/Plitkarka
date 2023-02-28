@@ -14,12 +14,16 @@ builder.Host
 
 var app = builder.Build();
 
-app.UseMiddleware(typeof(ExceptionMiddleware));
+app.UseCors(builder => builder.AllowAnyOrigin());
 
-app.UseSwagger();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseMiddleware(typeof(ExceptionMiddleware));
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseSwagger();
     app.UseSwaggerUI();
 }
 
