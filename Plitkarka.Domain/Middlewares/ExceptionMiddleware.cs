@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Amazon.Runtime;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Plitkarka.Commons.Exceptions;
@@ -25,6 +26,10 @@ public class ExceptionMiddleware
             await _next(httpContext);
         }
         catch(Exception ex) when (ex is MySqlException)
+        {
+            HandleMySqlException(httpContext);
+        }
+        catch (Exception ex) when (ex is ProcessAWSCredentialException)
         {
             HandleMySqlException(httpContext);
         }
