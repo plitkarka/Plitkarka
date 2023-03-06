@@ -10,7 +10,7 @@ using Plitkarka.Infrastructure.Services;
 namespace Plitkarka.Application.Controllers;
 
 [ApiController]
-[Route("plitkarka/api/test")]
+[Route("api/test")]
 public class TestController : Controller
 {
     private IRepository<UserEntity> _userRepository { get; init; }
@@ -77,5 +77,16 @@ public class TestController : Controller
         var res = await _mediator.Send(new UpdateUserRequest(new UserUpdate() { Id = id, Login = login}));
 
         return Ok(res);
+    }
+
+    [HttpGet]
+    public IActionResult CheckAuthorization()
+    {
+        var user = HttpContext.Items["User"];
+
+        if (user == null)
+            return Unauthorized();
+
+        return Ok(user);
     }
 }
