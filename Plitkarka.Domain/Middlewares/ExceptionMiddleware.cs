@@ -32,11 +32,20 @@ public class ExceptionMiddleware
         {
             await HandleValidationException(httpContext, ex);
         }
+        catch (InvalidTokenException ex)
+        {
+            HandleInvalidTokenException(httpContext, ex);
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex.Message);
             HandleException(httpContext);
         }
+    }
+
+    private void HandleInvalidTokenException(HttpContext httpContext, InvalidTokenException ex)
+    {
+        httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
     }
 
     private void HandleMySqlException(HttpContext httpContext)

@@ -19,7 +19,8 @@ app.UseCors(builder => builder.AllowAnyOrigin());
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseMiddleware(typeof(ExceptionMiddleware));
+app.UseMiddleware<ExceptionMiddleware>();
+app.UseMiddleware<AuthenticationMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {

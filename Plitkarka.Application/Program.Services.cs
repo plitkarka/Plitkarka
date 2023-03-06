@@ -1,4 +1,6 @@
 ﻿using MediatR;
+using Microsoft.OpenApi.Models;
+using Plitkarka.Application.Swagger;
 using Plitkarka.Domain.Handlers.Users;
 using Plitkarka.Domain.Services.Authentication;
 using Plitkarka.Domain.Services.Encryption;
@@ -9,11 +11,16 @@ public static partial class Program
 {
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
+        services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "Plitkarka API", Version = "v1" });
+            c.OperationFilter<AuthorizationHeaderSwaggerAttribute>();
+        });
+
         services.AddControllers();
-        services.AddSwaggerGen();
         services.AddMediatR(typeof(AddUserHandler).Assembly);
-        services.AddTransient<IEncryptionService, Sha256EncryptionService>();
-        services.AddTransient<IAuthenticationService, JwtAuthenticationService>();
+        services.AddSingleton<IEncryptionService, Sha256EncryptionService>();
+        services.AddSingleton<IAuthenticationService, JwtAuthenticationService>();
         
         return services;
     }
