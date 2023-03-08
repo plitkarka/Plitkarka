@@ -20,6 +20,7 @@ public static partial class Program
                     configuration.ConnectionString,
                     new MySqlServerVersion(new Version(8, 0, 28)));
             })
-            .AddTransient<IRepository<UserEntity>, UserRepository>(); 
+            .AddTransient<IRepository<UserEntity>, UserRepository>() 
+            .AddTransient<IRepository<ImageEntity>, ImageRepository>(); 
     }
 }

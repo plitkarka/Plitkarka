@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
-using Amazon;
 using MediatR;
 using Plitkarka.Infrastructure.Models;
 using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.Users;
-using Amazon.S3;
-using Plitkarka.Infrastructure.Services.ImageService.Service;
-using System.Net.Mime;
+using Plitkarka.Infrastructure.Services;
+using Plitkarka.Infrastructure.Services.ImageService;
+using System.IO;
 
 namespace Plitkarka.Application.Controllers;
 
@@ -31,16 +30,11 @@ public class TestController : Controller
         _mediator = mediator;
         _imageService = imageService;  
     }
-    private string accessKey = "AKIARFW4WD5WWZ64CAER";
-    private string secretKey = "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";
-    [HttpPost]
-    public async Task<ActionResult> TestPost(string login)
+    [HttpPost("file")]
+    public async Task<IActionResult> TestPost(IFormFile file)
     {
-        var awsCredentials = new Amazon.Runtime.BasicAWSCredentials(accessKey, secretKey);
-        var client = new AmazonS3Client(awsCredentials,RegionEndpoint.EUCentral1);
-        //var res = await _imageService.UploadAnImageAsync("C:\\Users\\Daniel\\Desktop\\15.02.22.jpg", "image/jpeg", client);
-        //var res = await _imageService.DeleteAnObjectAsync("Hello.txt", client);
-        var res =  _imageService.DownloadAnImageAsync("15.02.22.jpg", client);
+
+        var res = await _imageService.UploadImageAsync(file, file.ContentType);
 
         /*var template = new User()
         {
@@ -59,6 +53,8 @@ public class TestController : Controller
             template with { Login = login, Email = $"{login}@gmail.com" }));
 
         return Ok(id);
+        */
+        return Ok(res);
     }
 
     [HttpGet("id")]

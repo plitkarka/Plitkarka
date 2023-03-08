@@ -29,9 +29,9 @@ public class ExceptionMiddleware
         {
             HandleMySqlException(httpContext);
         }
-        catch (Exception ex) when (ex is ProcessAWSCredentialException)
+        catch (Exception ex) when (ex is S3ServiceException)
         {
-            HandleMySqlException(httpContext);
+            HandleS3ServiceException(httpContext);
         }
         catch (ValidationException ex)
         {
@@ -45,6 +45,10 @@ public class ExceptionMiddleware
     }
 
     private void HandleMySqlException(HttpContext httpContext)
+    {
+        httpContext.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+    }
+    private void HandleS3ServiceException(HttpContext httpContext)
     {
         httpContext.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
     }
