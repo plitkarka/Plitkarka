@@ -5,6 +5,8 @@ using Plitkarka.Infrastructure.Models;
 using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.Users;
 using Plitkarka.Infrastructure.Services;
+using Plitkarka.Infrastructure.Services.ImageService;
+using System.IO;
 
 namespace Plitkarka.Application.Controllers;
 
@@ -15,32 +17,44 @@ public class TestController : Controller
     private IRepository<UserEntity> _userRepository { get; init; }
     private IMapper _mapper { get; init; }
     private IMediator _mediator { get; init; }
+    private IImageService _imageService { get; init; }
 
     public TestController(
         IRepository<UserEntity> userRepository,
         IMapper mapper,
-        IMediator mediator)
+        IMediator mediator,
+        IImageService imageService)
     {
         _userRepository = userRepository;  
         _mapper = mapper;
         _mediator = mediator;
+        _imageService = imageService;  
     }
-
-    [HttpPost]
-    public async Task<ActionResult> TestPost(string login)
+    [HttpPost("file")]
+    public async Task<IActionResult> TestPost(IFormFile file)
     {
-        var template = new User()
+
+        var res = await _imageService.UploadImageAsync(file, file.ContentType);
+
+        /*var template = new User()
         {
             FirstName = "SomeName",
             SecondName = "SameSecondName",
             Password = "qwerty",
-            BirthDate = DateTime.Now
+            PasswordAttempts = 3,
+            Salt = "12345678",
+            BirthDate = DateTime.Now,
+            CreatedDate = DateTime.Now,
+            LastLoginDate = DateTime.Now,
+            IsActive = true
         };
 
         var id = await _mediator.Send(new AddUserRequest(
             template with { Login = login, Email = $"{login}@gmail.com" }));
 
         return Ok(id);
+        */
+        return Ok(res);
     }
 
     [HttpGet("id")]

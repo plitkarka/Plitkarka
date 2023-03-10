@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using Plitkarka.Application;
 using Plitkarka.Domain.Middlewares;
 
@@ -6,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host
     .ConfigureServices((hostContext, services) =>
     {
+        services.AddDefaultAWSOptions(hostContext.Configuration.GetAWSOptions());
         services.AddServices();
         services.AddConfiguration();
         services.AddMySql();
@@ -23,6 +25,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapControllers();
+app.MapControllers();     
 
 app.Run();

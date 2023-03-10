@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Amazon.Runtime;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Plitkarka.Commons.Exceptions;
@@ -28,6 +29,10 @@ public class ExceptionMiddleware
         {
             HandleMySqlException(httpContext);
         }
+        catch (Exception ex) when (ex is S3ServiceException)
+        {
+            HandleS3ServiceException(httpContext);
+        }
         catch (ValidationException ex)
         {
             await HandleValidationException(httpContext, ex);
@@ -40,6 +45,10 @@ public class ExceptionMiddleware
     }
 
     private void HandleMySqlException(HttpContext httpContext)
+    {
+        httpContext.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+    }
+    private void HandleS3ServiceException(HttpContext httpContext)
     {
         httpContext.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
     }
