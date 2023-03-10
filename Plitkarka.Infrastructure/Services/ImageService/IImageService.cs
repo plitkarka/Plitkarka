@@ -3,9 +3,9 @@ namespace Plitkarka.Infrastructure.Services.ImageService;
 
 public interface IImageService
 {
-    public Task<Guid> UploadImageAsync(IFormFile fileStream, string contentType);
-    public string DownloadImage(string keyName);
-    public Task DeleteImageAsync(string keyName);
+    Task<Guid> UploadImageAsync(IFormFile fileStream, string contentType);
+    string DownloadImage(string keyName);
+    Task DeleteImageAsync(string keyName);
 
 }
 
