@@ -19,4 +19,8 @@
     <ProjectReference Include="..\Plitkarka.Infrastructure\Plitkarka.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Filters\" />
+  </ItemGroup>
+
 </Project>
