@@ -9,7 +9,7 @@ using Plitkarka.Infrastructure.Services;
 
 namespace Plitkarka.Domain.Handlers.Authentication;
 
-public class LoginByIdHandler : IRequestHandler<LoginByIdRequest, string>
+public class LoginByIdHandler : IRequestHandler<LoginByIdRequest, TokenPair>
 {
     private IRepository<UserEntity> _userRepository { get; init; }
     private IMapper _mapper { get; init; }
@@ -28,12 +28,12 @@ public class LoginByIdHandler : IRequestHandler<LoginByIdRequest, string>
         _authenticationService = authenticationService;
     }
 
-    public async Task<string> Handle(LoginByIdRequest request, CancellationToken cancellationToken)
+    public async Task<TokenPair> Handle(LoginByIdRequest request, CancellationToken cancellationToken)
     {
         var userEnity = await _userRepository.GetByIdAsync(request.Id);
 
         var user = _mapper.Map<User>(userEnity);
 
-        return _authenticationService.Authenticate(user);
+        return await _authenticationService.Authenticate(user);
     }
 }

@@ -24,9 +24,9 @@ public class ExceptionMiddleware
         {
             await _next(httpContext);
         }
-        catch(Exception ex) when (ex is MySqlException)
+        catch(MySqlException ex) 
         {
-            HandleMySqlException(httpContext);
+            await HandleMySqlException(httpContext, ex);
         }
         catch (ValidationException ex)
         {
@@ -34,23 +34,25 @@ public class ExceptionMiddleware
         }
         catch (InvalidTokenException ex)
         {
-            HandleInvalidTokenException(httpContext, ex);
+            await HandleInvalidTokenException(httpContext, ex);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message);
-            HandleException(httpContext);
+            await HandleException(httpContext, ex);
         }
     }
 
-    private void HandleInvalidTokenException(HttpContext httpContext, InvalidTokenException ex)
+    private async Task HandleInvalidTokenException(HttpContext httpContext, InvalidTokenException ex)
     {
-        httpContext.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+        httpContext.Response.StatusCode = (int) HttpStatusCode.BadRequest;
+        await httpContext.Response.WriteAsync("Token is invalid");
     }
 
-    private void HandleMySqlException(HttpContext httpContext)
+    private async Task HandleMySqlException(HttpContext httpContext, MySqlException ex)
     {
+        _logger.LogError(ex.Message);
         httpContext.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+        await httpContext.Response.WriteAsync("Error happened while working with database");
     }
 
     private async Task HandleValidationException(HttpContext httpContext, ValidationException ex)
@@ -66,8 +68,10 @@ public class ExceptionMiddleware
         await httpContext.Response.WriteAsync(ex.Message);
     }
 
-    private void HandleException(HttpContext httpContext)
+    private async Task HandleException(HttpContext httpContext, Exception ex)
     {
+        _logger.LogError(ex.Message);
         httpContext.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+        await httpContext.Response.WriteAsync("Internal server error");
     }
 }

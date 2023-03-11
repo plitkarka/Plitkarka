@@ -5,23 +5,24 @@ using Plitkarka.Infrastructure.Models;
 using Plitkarka.Commons.Exceptions;
 using AutoMapper;
 using Plitkarka.Domain.Models;
+using Plitkarka.Domain.Services.Authorization;
 
 namespace Plitkarka.Domain.Middlewares;
 
-public class AuthenticationMiddleware
+public class AuthorizationMiddleware
 {
     public static readonly string AuthorizationHeaderName = "AuthToken";
     private RequestDelegate _next { get; init; }
-    private IAuthenticationService _authenticationService { get; init; }
+    private IAuthorizationService _authorizationService { get; init; }
     private IMapper _mapper { get; init; }
 
-    public AuthenticationMiddleware(
+    public AuthorizationMiddleware(
         RequestDelegate next,
-        IAuthenticationService authenticationService,
+        IAuthorizationService authorizationService,
         IMapper mapper)
     {
         _next = next;
-        _authenticationService = authenticationService;
+        _authorizationService = authorizationService;
         _mapper = mapper;
     }
 
@@ -39,13 +40,12 @@ public class AuthenticationMiddleware
             Guid userId;
             UserEntity? user;
 
-            try
+            userId = _authorizationService.Authorize(token);
+
+            if (userId == Guid.Empty)
             {
-                userId = _authenticationService.Authorize(token);
-            }
-            catch
-            {
-                throw new InvalidTokenException();
+                await _next(context);
+                return;
             }
 
             try

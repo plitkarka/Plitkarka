@@ -18,7 +18,8 @@ public static partial class Program
             .BindConfiguration("Authorization")
             .Validate(option =>
                 !string.IsNullOrEmpty(option.SecretKey) &&
-                option.TokenMinutesLifetime > 0)
+                option.AccessTokenMinutesLifetime > 0 &&
+                option.RefreshTokenDaysLifetime > 0)
             .ValidateOnStart();
 
         return services;

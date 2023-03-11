@@ -56,7 +56,6 @@ public class AddUserHandler : IRequestHandler<AddUserRequest, Guid>
             newUser.Salt = _encryptionService.GenerateSalt();
             newUser.Password = _encryptionService.Hash(newUser.Password + newUser.Salt);
             newUser.CreatedDate = DateTime.UtcNow.Date;
-            newUser.IsActive = true;
             newUser.EmailCode = "123456";
             newUser.PasswordAttempts = User.PasswordAttemptsCount;
 

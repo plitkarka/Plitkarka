@@ -3,6 +3,7 @@ using Microsoft.OpenApi.Models;
 using Plitkarka.Application.Swagger;
 using Plitkarka.Domain.Handlers.Users;
 using Plitkarka.Domain.Services.Authentication;
+using Plitkarka.Domain.Services.Authorization;
 using Plitkarka.Domain.Services.Encryption;
 
 namespace Plitkarka.Application;
@@ -20,7 +21,8 @@ public static partial class Program
         services.AddControllers();
         services.AddMediatR(typeof(AddUserHandler).Assembly);
         services.AddSingleton<IEncryptionService, Sha256EncryptionService>();
-        services.AddSingleton<IAuthenticationService, JwtAuthenticationService>();
+        services.AddTransient<IAuthenticationService, JwtAuthenticationService>();
+        services.AddSingleton<IAuthorizationService, JwtAuthorizationService>();
         
         return services;
     }

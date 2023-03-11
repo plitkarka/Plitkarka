@@ -1,10 +1,14 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Plitkarka.Commons.Configuration;
 using Plitkarka.Domain.Models;
+using Plitkarka.Infrastructure.Models;
+using Plitkarka.Infrastructure.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 
 namespace Plitkarka.Domain.Services.Authentication;
 
@@ -12,15 +16,29 @@ public class JwtAuthenticationService : IAuthenticationService
 {
     public static readonly string IdClaimName = "Id";
 
-    private AuthorizationConfiguration _authorizationConfiguration;
+    private AuthorizationConfiguration _authorizationConfiguration { get; init; }
+    private IRepository<UserEntity> _userRepository { get; init; }
+    private IRepository<RefreshTokenEntity> _refreshTokenRepository { get; init; }
+    private IMapper _mapper { get; init; }
 
     public JwtAuthenticationService(
-        IOptions<AuthorizationConfiguration> authorizationOptions)
+        IOptions<AuthorizationConfiguration> authorizationOptions,
+        IRepository<UserEntity> userRepository,
+        IRepository<RefreshTokenEntity> refreshTokenRepository,
+        IMapper mapper)
     {
         _authorizationConfiguration = authorizationOptions.Value;
+        _userRepository = userRepository;
+        _refreshTokenRepository = refreshTokenRepository;
+        _mapper = mapper;
     }
 
-    public string Authenticate(User toAuthenticate)
+    /// <summary>
+    /// Create a pair of Access and Refresh tokens for specific user. Update database with new token for user
+    /// </summary>
+    /// <param name="toAuthenticate">User that needs to be authenticated</param>
+    /// <returns>Pair of tokens</returns>
+    public async Task<TokenPair> Authenticate(User toAuthenticate)
     {
         var claims = new List<Claim>
         {
@@ -33,37 +51,47 @@ public class JwtAuthenticationService : IAuthenticationService
         // Form token using payload and signing credentials
         var token = new JwtSecurityToken(
             claims: claims,
-            expires: DateTime.Now.AddMinutes(_authorizationConfiguration.TokenMinutesLifetime),
+            expires: DateTime.Now.AddMinutes(_authorizationConfiguration.AccessTokenMinutesLifetime),
             signingCredentials: creds);
 
-        var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+        var accessToken = new JwtSecurityTokenHandler().WriteToken(token);
 
-        return tokenString;
+        var refreshToken = await GenerateRefreshTokenForUser(toAuthenticate);
+
+        var tokenPair =  new TokenPair
+        {
+            AccessToken = accessToken,
+            RefreshToken = refreshToken,
+        };
+
+        return tokenPair;
     }
 
-    public Guid Authorize(string token)
+    private async Task<string> GenerateRefreshTokenForUser(User user)
     {
-        var tokenHandler = new JwtSecurityTokenHandler();
+        var token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
 
-        tokenHandler.ValidateToken(
-            token,
-            new TokenValidationParameters
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = GetKey(),
-                ValidateIssuer = false,
-                ValidateAudience = false,
-                ClockSkew = TimeSpan.Zero
-            },
-            out var validatedToken);
+        if (user.RefreshToken != null)
+        {
+            var oldRefreshTokenEntity = _mapper.Map<RefreshTokenEntity>(user.RefreshToken);
+            await _refreshTokenRepository.DeleteAsync(oldRefreshTokenEntity);
+        }
 
-        var jwtToken = (JwtSecurityToken) validatedToken;
+        var refreshToken = new RefreshToken()
+        {
+            Token = token,
+            Expires = DateTime.Now.AddMinutes(_authorizationConfiguration.RefreshTokenDaysLifetime),
+            Created = DateTime.UtcNow,
+        };
 
-        var userId = Guid.Parse(
-            jwtToken.Claims.First(
-                claim => claim.Type == IdClaimName).Value);
+        var refreshTokenEntity = _mapper.Map<RefreshTokenEntity>(refreshToken);
+        var newTokenId = await _refreshTokenRepository.AddAsync(refreshTokenEntity);
 
-        return userId;
+        var userEntity = await _userRepository.GetByIdAsync(user.Id);
+        userEntity.RefreshTokenId = newTokenId;
+        await _userRepository.UpdateAsync(userEntity);
+
+        return token;
     }
 
     private SymmetricSecurityKey GetKey() => new SymmetricSecurityKey(

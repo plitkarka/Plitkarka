@@ -13,7 +13,7 @@ public class AuthorizationHeaderSwaggerAttribute : IOperationFilter
 
         operation.Parameters.Add(new OpenApiParameter
         {
-            Name = AuthenticationMiddleware.AuthorizationHeaderName,
+            Name = AuthorizationMiddleware.AuthorizationHeaderName,
             In = ParameterLocation.Header,
             Schema = new OpenApiSchema
             {

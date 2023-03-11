@@ -8,6 +8,7 @@ public class UserMappingProfile : Profile
 {
     public UserMappingProfile()
     {
-        this.CreateMap<User, UserEntity>().ReverseMap();
+        CreateMap<User, UserEntity>();
+        CreateMap<UserEntity, User>();
     }
 }
