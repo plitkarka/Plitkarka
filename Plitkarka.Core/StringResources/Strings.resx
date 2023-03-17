@@ -24,7 +24,17 @@
     <data name="InvalidPassword">
         <value>Password is invalid</value>
     </data>
-    <data name="PasswordsDoNotMatch">
+    <data name="InvalidConfirmPassword">
         <value>Passwords do not match</value>
+    </data>
+    <data name="InvalidName">
+        <value>Name is invalid</value>
+    </data>
+    <data name="InvalidSurname">
+        <value>Surname is invalid</value>
+    </data>
+
+    <data name="InvalidBirthDate">
+        <value>Birth date is invalid</value>
     </data>
 </root>

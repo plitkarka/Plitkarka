@@ -1,7 +1,9 @@
 using System.Reactive;
+using System.Resources;
 using ReactiveUI;
 using Plitkarka.Core.StringResources;
 using Plitkarka.Views;
+using Plitkarka.Core.Helpers;
 
 namespace Plitkarka.ViewModels;
 
@@ -67,26 +69,26 @@ public class RegistrationViewModel : ReactiveObject
 
         RegisterCommand = ReactiveCommand.Create(async () =>
         {
-            if (string.IsNullOrWhiteSpace(Email) || !Email.Contains("@"))
+            var validationRules = new Dictionary<string, Func<bool>>
             {
-                ErrorText = Strings.InvalidEmail;
-                return;
-            }
+                { "Name", () => ValidationHelper.IsNameValid(Name) },
+                { "Surname", () => ValidationHelper.IsSurnameValid(Surname) },
+                { "Email", () => ValidationHelper.IsEmailValid(Email) },
+                { "Password", () => ValidationHelper.IsPasswordValid(Password) },
+                { "ConfirmPassword", () => ValidationHelper.IsPasswordConfirmed(Password, ConfirmPassword) },
+                { "BirthDate", () => ValidationHelper.IsBirthDateValid(BirthDate)}
+            };
 
-            if (string.IsNullOrWhiteSpace(Password) || Password.Length < 6)
+            foreach (var rule in validationRules)
             {
-                ErrorText = Strings.InvalidPassword;
-                return;
+                if (!rule.Value())
+                {
+                    ErrorText = Strings.ResourceManager.GetString("Invalid" + rule.Key);
+                    return;
+                }
             }
             
-            if (!Password.Equals(ConfirmPassword))
-            {
-                ErrorText = Strings.PasswordsDoNotMatch;
-                return;
-            }
-
             await _navigation.PushAsync(new HomePage());
         });
     }
-
 }

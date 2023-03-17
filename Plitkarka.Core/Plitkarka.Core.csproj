@@ -37,4 +37,8 @@
             <_Parameter1>Plitkarka</_Parameter1>
         </AssemblyAttribute>
     </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Polly" Version="7.2.3" />
+    </ItemGroup>
 </Project>
