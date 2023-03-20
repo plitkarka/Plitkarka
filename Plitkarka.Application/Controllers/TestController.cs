@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using MediatR;
-using Plitkarka.Infrastructure.Models;
+using Plitkarka.Commons.Features;
 using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.Users;
+using Plitkarka.Infrastructure.Models;
 using Plitkarka.Infrastructure.Services;
 using Plitkarka.Infrastructure.Services.ImageService;
-using System.IO;
+using Plitkarka.Infrastructure.Services.EmailService;
 
 namespace Plitkarka.Application.Controllers;
 
@@ -18,24 +19,27 @@ public class TestController : Controller
     private IMapper _mapper { get; init; }
     private IMediator _mediator { get; init; }
     private IImageService _imageService { get; init; }
+    private IEmailService _emailService { get; init; }
 
     public TestController(
         IRepository<UserEntity> userRepository,
         IMapper mapper,
         IMediator mediator,
-        IImageService imageService)
+        IImageService imageService,
+        IEmailService emailService)
     {
         _userRepository = userRepository;  
         _mapper = mapper;
         _mediator = mediator;
         _imageService = imageService;  
+        _emailService = emailService;
     }
-    [HttpPost("file")]
-    public async Task<IActionResult> TestPost(IFormFile file)
+    [HttpPost("sendmail")]
+    public async Task<IActionResult> TestPost(string name)
     {
 
-        var res = await _imageService.UploadImageAsync(file, file.ContentType);
-
+        //var res = await _imageService.UploadImageAsync(file, file.ContentType);
+        await _emailService.SendEmailAsync("javaseniorweb@gmail.com", EmailTextTemplates.VerificationCodeText(name, "334546"), EmailTextTemplates.VerificationCode);
         /*var template = new User()
         {
             FirstName = "SomeName",
@@ -54,7 +58,7 @@ public class TestController : Controller
 
         return Ok(id);
         */
-        return Ok(res);
+        return Ok();
     }
 
     [HttpGet("id")]

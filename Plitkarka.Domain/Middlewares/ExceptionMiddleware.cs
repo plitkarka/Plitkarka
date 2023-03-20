@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using Amazon.Runtime;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Plitkarka.Commons.Exceptions;
@@ -33,6 +32,10 @@ public class ExceptionMiddleware
         {
             HandleS3ServiceException(httpContext);
         }
+        catch (Exception ex) when (ex is EmailServiceException)
+        {
+            HandleEmailServiceException(httpContext);
+        }
         catch (ValidationException ex)
         {
             await HandleValidationException(httpContext, ex);
@@ -52,7 +55,10 @@ public class ExceptionMiddleware
     {
         httpContext.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
     }
-
+    private void HandleEmailServiceException(HttpContext httpContext)
+    {
+        httpContext.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+    }
     private async Task HandleValidationException(HttpContext httpContext, ValidationException ex)
     {
         if (ex.ParamName != null)

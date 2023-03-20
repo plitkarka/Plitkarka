@@ -23,6 +23,17 @@ public static partial class Program
                 !string.IsNullOrEmpty(option.BucketName))
             .ValidateOnStart();
 
+        services
+          .AddOptions<EmailConfiguration>()
+           .BindConfiguration("EmailService")
+           .Validate(option =>
+               !string.IsNullOrEmpty(option.DisplayName) &&
+               !string.IsNullOrEmpty(option.From) &&
+               !string.IsNullOrEmpty(option.Host) &&
+               !string.IsNullOrEmpty(option.Password) &&
+               !string.IsNullOrEmpty(option.UserName))
+           .ValidateOnStart();
+
         return services;
     }
 }
