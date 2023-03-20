@@ -1,6 +1,6 @@
 ﻿namespace Plitkarka.Commons.Exceptions;
 
-public class S3ServiceException: Exception
+public class S3ServiceException : Exception
 {
     public S3ServiceException(string message)
        : base(message) { }
