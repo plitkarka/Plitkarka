@@ -2,5 +2,5 @@
 
 public interface IAuthorizationService
 {
-    Guid Authorize(string token);
+    Guid Authorize(string token, bool validateTime = true);
 }

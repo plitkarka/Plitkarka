@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Plitkarka.Commons.Configuration;
@@ -73,8 +72,12 @@ public class JwtAuthenticationService : IAuthenticationService
 
         if (user.RefreshToken != null)
         {
-            var oldRefreshTokenEntity = _mapper.Map<RefreshTokenEntity>(user.RefreshToken);
-            await _refreshTokenRepository.DeleteAsync(oldRefreshTokenEntity);
+            var oldRefreshTokenEntity = await _refreshTokenRepository.GetByIdAsync(user.RefreshToken.Id);
+
+            if (oldRefreshTokenEntity != null)
+            {
+                await _refreshTokenRepository.DeleteAsync(oldRefreshTokenEntity);
+            }
         }
 
         var refreshToken = new RefreshToken()

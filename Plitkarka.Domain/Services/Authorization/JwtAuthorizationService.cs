@@ -23,7 +23,7 @@ public class JwtAuthorizationService : IAuthorizationService
     /// <param name="token">User access token</param>
     /// <returns>Id of authorized user. Returns Guid.Empty if token is expired </returns>
     /// <exception cref="InvalidTokenException">If token is invalid</exception>
-    public Guid Authorize(string token)
+    public Guid Authorize(string token, bool validateTime = true)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
         SecurityToken? validatedToken;
@@ -38,18 +38,19 @@ public class JwtAuthorizationService : IAuthorizationService
                     IssuerSigningKey = GetKey(),
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                    ClockSkew = TimeSpan.Zero
+                    ClockSkew = TimeSpan.Zero,
+                    ValidateLifetime = false,
                 },
                 out validatedToken);
         }
         catch
         {
-            throw new InvalidTokenException();
+            throw new InvalidTokenException("Token is invalid");
         }
         
         var jwtToken = (JwtSecurityToken) validatedToken;
         
-        if (jwtToken.ValidTo < DateTime.UtcNow)
+        if (validateTime && jwtToken.ValidTo < DateTime.UtcNow)
         {
             return Guid.Empty;
         }

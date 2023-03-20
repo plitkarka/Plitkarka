@@ -1,5 +1,5 @@
 ﻿using Microsoft.OpenApi.Models;
-using Plitkarka.Domain.Middlewares;
+using Plitkarka.Domain.Services.ContextAccessToken;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Plitkarka.Application.Swagger;
@@ -13,7 +13,7 @@ public class AuthorizationHeaderSwaggerAttribute : IOperationFilter
 
         operation.Parameters.Add(new OpenApiParameter
         {
-            Name = AuthorizationMiddleware.AuthorizationHeaderName,
+            Name = ContextAccessTokenService.AuthorizationHeaderName,
             In = ParameterLocation.Header,
             Schema = new OpenApiSchema
             {

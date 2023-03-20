@@ -6,6 +6,7 @@ using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.Users;
 using Plitkarka.Domain.Requests.Authentication;
 using Plitkarka.Infrastructure.Services;
+using Plitkarka.Domain.Filters;
 
 namespace Plitkarka.Application.Controllers;
 
@@ -79,13 +80,11 @@ public class TestController : Controller
         return Ok(res);
     }
 
+    [Authorize]
     [HttpGet]
     public IActionResult CheckAuthorization()
     {
         var user = HttpContext.Items["User"];
-
-        if (user == null)
-            return Unauthorized();
 
         return Ok(user);
     }

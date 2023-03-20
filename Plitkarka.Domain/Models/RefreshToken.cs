@@ -11,9 +11,4 @@ public record RefreshToken
     public DateTime Expires { get; set; }
 
     public bool? IsActive { get; set; }
-
-
-    // ----- Relation properties -----
-
-    public User User { get; set; }
 }

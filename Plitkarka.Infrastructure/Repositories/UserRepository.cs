@@ -36,7 +36,7 @@ public class UserRepository : IRepository<UserEntity>
 
     public async Task<UserEntity?> GetByIdAsync(Guid id)
     {
-        var result = await _db.Users.FindAsync(id);
+        var result = await _db.Users.Include(u => u.RefreshToken).FirstOrDefaultAsync(u => u.Id == id);
 
         return result;
     }
