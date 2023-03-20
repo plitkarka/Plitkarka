@@ -4,6 +4,8 @@ using MediatR;
 using Plitkarka.Commons.Features;
 using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.Users;
+using Plitkarka.Domain.Requests.Authentication;
+using Plitkarka.Domain.Filters;
 using Plitkarka.Infrastructure.Models;
 using Plitkarka.Infrastructure.Services;
 using Plitkarka.Infrastructure.Services.ImageService;
@@ -12,7 +14,7 @@ using Plitkarka.Infrastructure.Services.EmailService;
 namespace Plitkarka.Application.Controllers;
 
 [ApiController]
-[Route("plitkarka/api/test")]
+[Route("api/test")]
 public class TestController : Controller
 {
     private IRepository<UserEntity> _userRepository { get; init; }
@@ -56,15 +58,15 @@ public class TestController : Controller
         var id = await _mediator.Send(new AddUserRequest(
             template with { Login = login, Email = $"{login}@gmail.com" }));
 
-        return Ok(id);
-        */
-        return Ok();
+        var token = await _mediator.Send(new LoginByIdRequest(id));
+
+        return Json(new { Id = id, Token = token});
     }
 
     [HttpGet("id")]
     public async Task<IActionResult> TestGet(Guid id)
     {
-        var res = await _mediator.Send(new GetUserByIdQuery(id));
+        var res = await _mediator.Send(new GetUserByIdRequest(id));
 
         return Ok(res);
     }
@@ -73,7 +75,7 @@ public class TestController : Controller
     [HttpGet("login")]
     public async Task<IActionResult> TestGet(string login)
     {
-        var res = await _mediator.Send(new GetUserQuery(user => user.Login == login));
+        var res = await _mediator.Send(new GetUserRequest(user => user.Login == login));
 
         return Ok(res);
     }
@@ -92,5 +94,14 @@ public class TestController : Controller
         var res = await _mediator.Send(new UpdateUserRequest(new UserUpdate() { Id = id, Login = login}));
 
         return Ok(res);
+    }
+
+    [Authorize]
+    [HttpGet]
+    public IActionResult CheckAuthorization()
+    {
+        var user = HttpContext.Items["User"];
+
+        return Ok(user);
     }
 }

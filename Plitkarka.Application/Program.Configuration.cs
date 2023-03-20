@@ -15,6 +15,15 @@ public static partial class Program
             .ValidateOnStart();
 
         services
+            .AddOptions<AuthorizationConfiguration>()
+            .BindConfiguration("Authorization")
+            .Validate(option =>
+                !string.IsNullOrEmpty(option.SecretKey) &&
+                option.AccessTokenMinutesLifetime > 0 &&
+                option.RefreshTokenDaysLifetime > 0)
+            .ValidateOnStart();
+            
+        services
            .AddOptions<S3Configuration>()
             .BindConfiguration("S3Service")
             .Validate(option =>

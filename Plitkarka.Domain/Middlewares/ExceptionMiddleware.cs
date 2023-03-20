@@ -10,6 +10,8 @@ public class ExceptionMiddleware
     private readonly RequestDelegate _next;
     private readonly ILogger<ExceptionMiddleware> _logger;
 
+    private readonly string textPlain = "text/plain; charset=utf-8";
+
     public ExceptionMiddleware(
         RequestDelegate next,
         ILogger<ExceptionMiddleware> logger)
@@ -24,9 +26,9 @@ public class ExceptionMiddleware
         {
             await _next(httpContext);
         }
-        catch(Exception ex) when (ex is MySqlException)
+        catch(MySqlException ex) 
         {
-            HandleMySqlException(httpContext);
+            await HandleMySqlException(httpContext, ex);
         }
         catch (Exception ex) when (ex is S3ServiceException)
         {
@@ -40,16 +42,44 @@ public class ExceptionMiddleware
         {
             await HandleValidationException(httpContext, ex);
         }
+        catch (InvalidTokenException ex)
+        {
+            await HandleInvalidTokenException(httpContext, ex);
+        }
+        catch (UnauthorizedUserException ex)
+        {
+            await HandleUnathorizedUserException(httpContext, ex);
+        }
+        catch (AuthorizationErrorException ex)
+        {
+            await HandleAuthorizationErrorException(httpContext, ex);
+        }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message);
-            HandleException(httpContext);
+            await HandleException(httpContext, ex);
         }
     }
 
-    private void HandleMySqlException(HttpContext httpContext)
+    private async Task HandleAuthorizationErrorException(HttpContext httpContext, AuthorizationErrorException ex)
     {
+        httpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+        httpContext.Response.ContentType = textPlain;
+        await httpContext.Response.WriteAsync(ex.Message);
+    }
+
+    private async Task HandleInvalidTokenException(HttpContext httpContext, InvalidTokenException ex)
+    {
+        httpContext.Response.StatusCode = (int) HttpStatusCode.BadRequest;
+        httpContext.Response.ContentType = textPlain;
+        await httpContext.Response.WriteAsync(ex.Message);
+    }
+
+    private async Task HandleMySqlException(HttpContext httpContext, MySqlException ex)
+    {
+        _logger.LogError(ex.Message);
         httpContext.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+        httpContext.Response.ContentType = textPlain;
+        await httpContext.Response.WriteAsync("Error happened while working with database");
     }
     private void HandleS3ServiceException(HttpContext httpContext)
     {
@@ -68,12 +98,22 @@ public class ExceptionMiddleware
         }
 
         httpContext.Response.StatusCode = (int) HttpStatusCode.BadRequest;
-        httpContext.Response.ContentType = "text/plain; charset=utf-8";
+        httpContext.Response.ContentType = textPlain;
         await httpContext.Response.WriteAsync(ex.Message);
     }
 
-    private void HandleException(HttpContext httpContext)
+    private async Task HandleUnathorizedUserException(HttpContext httpContext, UnauthorizedUserException ex)
     {
+        httpContext.Response.StatusCode = (int) HttpStatusCode.Unauthorized;
+        httpContext.Response.ContentType = textPlain;
+        await httpContext.Response.WriteAsync(ex.Message);
+    }
+
+    private async Task HandleException(HttpContext httpContext, Exception ex)
+    {
+        _logger.LogError(ex.Message);
         httpContext.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+        httpContext.Response.ContentType = textPlain;
+        await httpContext.Response.WriteAsync("Internal server error");
     }
 }

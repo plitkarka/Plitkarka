@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Plitkarka.Application.Configuration;
+using Plitkarka.Commons.Configuration;
 using Plitkarka.Infrastructure;
 using Plitkarka.Infrastructure.Models;
 using Plitkarka.Infrastructure.Repositories;
@@ -20,7 +20,8 @@ public static partial class Program
                     configuration.ConnectionString,
                     new MySqlServerVersion(new Version(8, 0, 28)));
             })
-            .AddTransient<IRepository<UserEntity>, UserRepository>() 
+            .AddTransient<IRepository<UserEntity>, UserRepository>()
+            .AddTransient<IRepository<RefreshTokenEntity>, RefreshTokenRepository>(); 
             .AddTransient<IRepository<ImageEntity>, ImageRepository>(); 
     }
 }

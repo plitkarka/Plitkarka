@@ -1,4 +1,4 @@
-﻿namespace Plitkarka.Application.Configuration;
+﻿namespace Plitkarka.Commons.Configuration;
 
 public record MySqlConfiguration
 {

@@ -5,6 +5,6 @@ using System.Linq.Expressions;
 
 namespace Plitkarka.Domain.Requests.Users;
 
-public record GetUserQuery(
+public record GetUserRequest(
     Expression<Func<UserEntity, bool>> Predicate)
     : IRequest<User?>;

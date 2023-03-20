@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Plitkarka.Infrastructure.Models;
@@ -44,5 +45,12 @@ public record UserEntity
 
     public DateTime LastLoginDate { get; set; }
 
-    public bool IsActive { get; set; }
+    public bool? IsActive { get; set; }
+
+
+    // ----- Relation properties -----
+
+    public Guid? RefreshTokenId { get; set; }
+
+    public RefreshTokenEntity? RefreshToken { get; set; }
 }

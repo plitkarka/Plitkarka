@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Configuration;
 using Plitkarka.Application;
 using Plitkarka.Domain.Middlewares;
@@ -16,12 +17,17 @@ builder.Host
 
 var app = builder.Build();
 
-app.UseMiddleware(typeof(ExceptionMiddleware));
+app.UseCors(builder => builder.AllowAnyOrigin());
 
-app.UseSwagger();
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseMiddleware<ExceptionMiddleware>();
+app.UseMiddleware<AuthorizationMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseSwagger();
     app.UseSwaggerUI();
 }
 
