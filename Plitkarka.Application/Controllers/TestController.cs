@@ -1,12 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using MediatR;
-using Plitkarka.Infrastructure.Models;
+using Plitkarka.Commons.Features;
 using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.Users;
 using Plitkarka.Domain.Requests.Authentication;
-using Plitkarka.Infrastructure.Services;
 using Plitkarka.Domain.Filters;
+using Plitkarka.Infrastructure.Models;
+using Plitkarka.Infrastructure.Services;
+using Plitkarka.Infrastructure.Services.ImageService;
+using Plitkarka.Infrastructure.Services.EmailService;
 
 namespace Plitkarka.Application.Controllers;
 
@@ -17,26 +20,39 @@ public class TestController : Controller
     private IRepository<UserEntity> _userRepository { get; init; }
     private IMapper _mapper { get; init; }
     private IMediator _mediator { get; init; }
+    private IImageService _imageService { get; init; }
+    private IEmailService _emailService { get; init; }
 
     public TestController(
         IRepository<UserEntity> userRepository,
         IMapper mapper,
-        IMediator mediator)
+        IMediator mediator,
+        IImageService imageService,
+        IEmailService emailService)
     {
         _userRepository = userRepository;  
         _mapper = mapper;
         _mediator = mediator;
+        _imageService = imageService;  
+        _emailService = emailService;
     }
-
-    [HttpPost]
-    public async Task<ActionResult> TestPost(string login)
+    [HttpPost("sendmail")]
+    public async Task<IActionResult> TestPost(string name)
     {
-        var template = new User()
+
+        //var res = await _imageService.UploadImageAsync(file, file.ContentType);
+        await _emailService.SendEmailAsync("javaseniorweb@gmail.com", EmailTextTemplates.VerificationCodeText(name, "334546"), EmailTextTemplates.VerificationCode);
+        /*var template = new User()
         {
             FirstName = "SomeName",
             SecondName = "SameSecondName",
             Password = "qwerty",
-            BirthDate = DateTime.Now
+            PasswordAttempts = 3,
+            Salt = "12345678",
+            BirthDate = DateTime.Now,
+            CreatedDate = DateTime.Now,
+            LastLoginDate = DateTime.Now,
+            IsActive = true
         };
 
         var id = await _mediator.Send(new AddUserRequest(

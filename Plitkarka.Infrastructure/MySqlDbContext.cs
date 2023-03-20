@@ -7,13 +7,14 @@ public class MySqlDbContext : DbContext
 {
     public DbSet<UserEntity> Users { get; set; }
     public DbSet<RefreshTokenEntity> RefreshTokens { get; set; }
-
+    public DbSet<ImageEntity> Images { get; set; }
     
     private const string COLLATION = "latin1_bin";
 
     public MySqlDbContext(DbContextOptions<MySqlDbContext> options)
             : base(options)
     {
+        Database.EnsureDeleted();
         Database.EnsureCreated();
     }
 
@@ -31,5 +32,8 @@ public class MySqlDbContext : DbContext
 
         // RefreshTokenEntity
         modelBuilder.Entity<RefreshTokenEntity>().Property(rt => rt.IsActive).HasDefaultValue(true);
+
+        // Image Entity
+        modelBuilder.Entity<ImageEntity>().HasIndex(u => u.ImageId).IsUnique();
     }
 }

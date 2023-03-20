@@ -30,6 +30,14 @@ public class ExceptionMiddleware
         {
             await HandleMySqlException(httpContext, ex);
         }
+        catch (Exception ex) when (ex is S3ServiceException)
+        {
+            HandleS3ServiceException(httpContext);
+        }
+        catch (Exception ex) when (ex is EmailServiceException)
+        {
+            HandleEmailServiceException(httpContext);
+        }
         catch (ValidationException ex)
         {
             await HandleValidationException(httpContext, ex);
@@ -73,7 +81,14 @@ public class ExceptionMiddleware
         httpContext.Response.ContentType = textPlain;
         await httpContext.Response.WriteAsync("Error happened while working with database");
     }
-
+    private void HandleS3ServiceException(HttpContext httpContext)
+    {
+        httpContext.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+    }
+    private void HandleEmailServiceException(HttpContext httpContext)
+    {
+        httpContext.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+    }
     private async Task HandleValidationException(HttpContext httpContext, ValidationException ex)
     {
         if (ex.ParamName != null)

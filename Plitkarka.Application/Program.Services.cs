@@ -7,6 +7,8 @@ using Plitkarka.Domain.Services.Authorization;
 using Plitkarka.Domain.Services.ContextAccessToken;
 using Plitkarka.Domain.Services.ContextUser;
 using Plitkarka.Domain.Services.Encryption;
+using Plitkarka.Infrastructure.Services.ImageService;
+using Plitkarka.Infrastructure.Services.EmailService;
 
 namespace Plitkarka.Application;
 
@@ -21,6 +23,9 @@ public static partial class Program
         });
 
         services.AddControllers();
+        services.AddSwaggerGen();
+        services.AddTransient<IImageService, S3Image>();
+        services.AddSingleton<IEmailService, EmailService>();
         services.AddMediatR(typeof(AddUserHandler).Assembly);
 
         // HttpContext

@@ -22,5 +22,6 @@ public static partial class Program
             })
             .AddTransient<IRepository<UserEntity>, UserRepository>()
             .AddTransient<IRepository<RefreshTokenEntity>, RefreshTokenRepository>(); 
+            .AddTransient<IRepository<ImageEntity>, ImageRepository>(); 
     }
 }

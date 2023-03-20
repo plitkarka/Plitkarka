@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Plitkarka.Views.RegistrationPage">
+    <StackLayout Margin="20">
+        <Entry Margin="10" Placeholder="Name" Text="{Binding Name}" />
+        <Entry Margin="10" Placeholder="Surname" Text="{Binding Surname}"/>
+        <DatePicker Margin="10" Date="{Binding BirthDate}"/>
+        <Entry Margin="10" Placeholder="Email" Text="{Binding Email, Mode=TwoWay}" />
+        <Entry Margin="10" Placeholder="Password" Text="{Binding Password, Mode=TwoWay}" IsPassword="True" />
+        <Entry Margin="10" Placeholder="Confirm password" Text="{Binding ConfirmPassword, Mode=TwoWay}" IsPassword="True" />
+        <Label TextColor="Red" Text="{Binding ErrorText}"/>
+        <Button Margin="10" Text="Register" Command="{Binding RegisterCommand}" />
+    </StackLayout>
+</ContentPage>
