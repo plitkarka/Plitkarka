@@ -1,5 +1,4 @@
-﻿using Plitkarka.Application.Configuration;
-using Plitkarka.Commons.Configuration;
+﻿using Plitkarka.Commons.Configuration;
 
 namespace Plitkarka.Application;
 

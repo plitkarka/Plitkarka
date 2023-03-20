@@ -60,7 +60,9 @@ public class TestController : Controller
 
         var token = await _mediator.Send(new LoginByIdRequest(id));
 
-        return Json(new { Id = id, Token = token});
+        return Json(new { Id = id, Token = token});*/
+
+        return Ok();
     }
 
     [HttpGet("id")]

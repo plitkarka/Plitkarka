@@ -21,7 +21,7 @@ public static partial class Program
                     new MySqlServerVersion(new Version(8, 0, 28)));
             })
             .AddTransient<IRepository<UserEntity>, UserRepository>()
-            .AddTransient<IRepository<RefreshTokenEntity>, RefreshTokenRepository>(); 
+            .AddTransient<IRepository<RefreshTokenEntity>, RefreshTokenRepository>() 
             .AddTransient<IRepository<ImageEntity>, ImageRepository>(); 
     }
 }
