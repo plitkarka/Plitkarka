@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Plitkarka.Infrastructure.Services;
 using Plitkarka.Domain.Services.Encryption;
 using Plitkarka.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Plitkarka.Domain.Handlers.Users;
 
@@ -37,7 +38,7 @@ public class AddUserHandler : IRequestHandler<AddUserRequest, Guid>
 
         try
         {
-            userExist = await _repository.GetAsync(
+            userExist = await _repository.GetAll().FirstOrDefaultAsync(
                 user => user.Email == newUser.Email || user.Login == newUser.Login);
 
             if (userExist != null)

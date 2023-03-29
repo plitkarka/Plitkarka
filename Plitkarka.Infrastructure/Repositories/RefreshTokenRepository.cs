@@ -10,55 +10,47 @@ namespace Plitkarka.Infrastructure.Repositories;
 public class RefreshTokenRepository : IRepository<RefreshTokenEntity>
 {
     private MySqlDbContext _db { get; init; }
-    private ILogger<UserRepository> _logger;
+    private ILogger<RefreshTokenRepository> _logger;
 
     public RefreshTokenRepository(
         MySqlDbContext db,
-        ILogger<UserRepository> logger)
+        ILogger<RefreshTokenRepository> logger)
     {
         _db = db;
         _logger = logger;
     }
 
-    public async Task<Guid> AddAsync(RefreshTokenEntity user)
+    public async Task<Guid> AddAsync(RefreshTokenEntity item)
     {
-        if (user == null)
+        if (item == null)
         {
-            _logger.LogArgumentNullError(nameof(AddAsync), nameof(user));
-            throw new ArgumentNullException(nameof(user));
+            _logger.LogArgumentNullError(nameof(AddAsync), nameof(item));
+            throw new ArgumentNullException(nameof(item));
         }
 
-        var res = await _db.RefreshTokens.AddAsync(user);
+        var res = await _db.RefreshTokens.AddAsync(item);
         await _db.SaveChangesAsync();
 
         return res.Entity.Id;
     }
 
-    public async Task DeleteAsync(RefreshTokenEntity user)
+    public async Task DeleteAsync(RefreshTokenEntity item)
     {
-        if (user == null)
+        if (item == null)
         {
-            _logger.LogArgumentNullError(nameof(DeleteAsync), nameof(user));
-            throw new ArgumentNullException(nameof(user));
+            _logger.LogArgumentNullError(nameof(DeleteAsync), nameof(item));
+            throw new ArgumentNullException(nameof(item));
         }
 
-        user.IsActive = false;
+        item.IsActive = false;
 
-        _db.Update(user);
+        _db.Update(item);
         await _db.SaveChangesAsync();
     }
 
-    public async Task<RefreshTokenEntity?> GetAsync(Expression<Func<RefreshTokenEntity, bool>> predicate)
+    public IQueryable<RefreshTokenEntity> GetAll()
     {
-        if (predicate == null)
-        {
-            _logger.LogArgumentNullError(nameof(GetAsync), nameof(predicate));
-            throw new ArgumentNullException(nameof(predicate));
-        }
-
-        var result = await _db.RefreshTokens.FirstOrDefaultAsync(predicate);
-
-        return result;
+        return _db.RefreshTokens;
     }
 
     public async Task<RefreshTokenEntity?> GetByIdAsync(Guid id)
@@ -68,17 +60,17 @@ public class RefreshTokenRepository : IRepository<RefreshTokenEntity>
         return result;
     }
 
-    public async Task<RefreshTokenEntity> UpdateAsync(RefreshTokenEntity user)
+    public async Task<RefreshTokenEntity> UpdateAsync(RefreshTokenEntity item)
     {
-        if (user == null)
+        if (item == null)
         {
-            _logger.LogArgumentNullError(nameof(UpdateAsync), nameof(user));
-            throw new ArgumentNullException(nameof(user));
+            _logger.LogArgumentNullError(nameof(UpdateAsync), nameof(item));
+            throw new ArgumentNullException(nameof(item));
         }
 
-        _db.Entry(user).State = EntityState.Modified;
+        _db.Entry(item).State = EntityState.Modified;
         await _db.SaveChangesAsync();
 
-        return user;
+        return item;
     }
 }

@@ -36,22 +36,16 @@ public class UserRepository : IRepository<UserEntity>
 
     public async Task<UserEntity?> GetByIdAsync(Guid id)
     {
-        var result = await _db.Users.Include(u => u.RefreshToken).FirstOrDefaultAsync(u => u.Id == id);
+        var result = await _db.Users
+            .Include(u => u.RefreshToken)
+            .FirstOrDefaultAsync(u => u.Id == id);
 
         return result;
     }
 
-    public async Task<UserEntity?> GetAsync(Expression<Func<UserEntity, bool>> predicate)
+    public IQueryable<UserEntity> GetAll()
     {
-        if (predicate == null)
-        {
-            _logger.LogArgumentNullError(nameof(GetAsync), nameof(predicate));
-            throw new ArgumentNullException(nameof(predicate));
-        }
-
-        var result = await _db.Users.FirstOrDefaultAsync(predicate);
-
-        return result;
+        return _db.Users;
     }
 
     public async Task<UserEntity> UpdateAsync(UserEntity user)

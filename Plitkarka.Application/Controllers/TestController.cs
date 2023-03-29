@@ -8,8 +8,8 @@ using Plitkarka.Domain.Requests.Authentication;
 using Plitkarka.Domain.Filters;
 using Plitkarka.Infrastructure.Models;
 using Plitkarka.Infrastructure.Services;
-using Plitkarka.Infrastructure.Services.ImageService;
-using Plitkarka.Infrastructure.Services.EmailService;
+using Plitkarka.Domain.Services.ImageService;
+using Plitkarka.Domain.Services.EmailService;
 
 namespace Plitkarka.Application.Controllers;
 
@@ -36,13 +36,13 @@ public class TestController : Controller
         _imageService = imageService;  
         _emailService = emailService;
     }
-    [HttpPost("sendmail")]
-    public async Task<IActionResult> TestPost(string name)
+    [HttpPost()]
+    public async Task<IActionResult> TestPost(string login)
     {
 
         //var res = await _imageService.UploadImageAsync(file, file.ContentType);
-        await _emailService.SendEmailAsync("javaseniorweb@gmail.com", EmailTextTemplates.VerificationCodeText(name, "334546"), EmailTextTemplates.VerificationCode);
-        /*var template = new User()
+        // await _emailService.SendEmailAsync("javaseniorweb@gmail.com", EmailTextTemplates.VerificationCodeText(name, "334546"), EmailTextTemplates.VerificationCode);
+        var template = new User()
         {
             FirstName = "SomeName",
             SecondName = "SameSecondName",
@@ -60,9 +60,7 @@ public class TestController : Controller
 
         var token = await _mediator.Send(new LoginByIdRequest(id));
 
-        return Json(new { Id = id, Token = token});*/
-
-        return Ok();
+        return Json(new { Id = id, Token = token});
     }
 
     [HttpGet("id")]

@@ -7,8 +7,8 @@ using Plitkarka.Domain.Services.Authorization;
 using Plitkarka.Domain.Services.ContextAccessToken;
 using Plitkarka.Domain.Services.ContextUser;
 using Plitkarka.Domain.Services.Encryption;
-using Plitkarka.Infrastructure.Services.ImageService;
-using Plitkarka.Infrastructure.Services.EmailService;
+using Plitkarka.Domain.Services.ImageService;
+using Plitkarka.Domain.Services.EmailService;
 
 namespace Plitkarka.Application;
 

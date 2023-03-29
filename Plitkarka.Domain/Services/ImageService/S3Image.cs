@@ -1,11 +1,13 @@
 ﻿using Amazon.S3.Model;
 using Microsoft.Extensions.Options;
 using Plitkarka.Commons.Configuration;
-using Plitkarka.Infrastructure.Models;
 using Plitkarka.Commons.Exceptions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Plitkarka.Infrastructure.Services;
+using Plitkarka.Infrastructure.Models;
 
-namespace Plitkarka.Infrastructure.Services.ImageService;
+namespace Plitkarka.Domain.Services.ImageService;
 
 public record S3Image : IImageService
 {
@@ -93,7 +95,8 @@ public record S3Image : IImageService
             throw new Exception(nameof(keyName));
         }
 
-        var toDelete = await _repository.GetAsync(i => i.ImageId == keyName);
+        var toDelete = await _repository.GetAll()
+            .FirstOrDefaultAsync(i => i.ImageId == keyName);
 
         if (toDelete == null)
         {

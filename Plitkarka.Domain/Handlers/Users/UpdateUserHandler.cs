@@ -7,6 +7,7 @@ using Plitkarka.Commons.Exceptions;
 using Plitkarka.Commons.Logger;
 using Microsoft.Extensions.Logging;
 using Plitkarka.Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Plitkarka.Domain.Handlers.Users;
 
@@ -64,7 +65,7 @@ public class UpdateUserHandler : IRequestHandler<UpdateUserRequest, User?>
             // check if Email is not null and changed
             if (toUpdate.Email != null && existingUser.Email != toUpdate.Email)
             {
-                var userExist = await _repository.GetAsync(
+                var userExist = await _repository.GetAll().FirstOrDefaultAsync(
                     user => user.Email == toUpdate.Email && user.Id != toUpdate.Id);
 
                 existingUser.Email = userExist != null && toUpdate.Email == userExist.Email
@@ -77,7 +78,7 @@ public class UpdateUserHandler : IRequestHandler<UpdateUserRequest, User?>
             // check if Login is not null and changed
             if (toUpdate.Login != null && existingUser.Login != toUpdate.Login)
             {
-                var userExist = await _repository.GetAsync(
+                var userExist = await _repository.GetAll().FirstOrDefaultAsync(
                     user => user.Login == toUpdate.Login && user.Id != toUpdate.Id);
 
                 existingUser.Login = userExist != null && toUpdate.Login == userExist.Login 

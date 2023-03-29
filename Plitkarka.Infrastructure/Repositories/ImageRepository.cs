@@ -34,17 +34,9 @@ public class ImageRepository : IRepository<ImageEntity>
         return res.Entity.Id;
     }
 
-    public async Task<ImageEntity?> GetAsync(Expression<Func<ImageEntity, bool>> predicate)
+    public IQueryable<ImageEntity> GetAll() 
     {
-        if (predicate == null)
-        {
-            _logger.LogArgumentNullError(nameof(GetAsync), nameof(predicate));
-            throw new ArgumentNullException(nameof(predicate));
-        }
-
-        var res = await _db.Images.FirstOrDefaultAsync(predicate);
-
-        return res;
+        return _db.Images;
     }
 
     public async Task<ImageEntity?> GetByIdAsync(Guid id)

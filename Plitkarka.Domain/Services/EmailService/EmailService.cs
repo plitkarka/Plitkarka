@@ -5,7 +5,7 @@ using MimeKit;
 using Plitkarka.Commons.Configuration;
 using Plitkarka.Commons.Exceptions;
 
-namespace Plitkarka.Infrastructure.Services.EmailService;
+namespace Plitkarka.Domain.Services.EmailService;
 
 public class EmailService : IEmailService
 {

@@ -4,9 +4,9 @@ namespace Plitkarka.Infrastructure.Services;
 
 public interface IRepository<T>
 {
-    Task<Guid> AddAsync(T user);
-    Task DeleteAsync(T user);
-    Task<T?> GetAsync(Expression<Func<T, bool>> predicate);
+    Task<Guid> AddAsync(T item);
+    Task DeleteAsync(T item);
+    IQueryable<T> GetAll();
     Task<T?> GetByIdAsync(Guid id);
-    Task<T> UpdateAsync(T user);
+    Task<T> UpdateAsync(T item);
 }

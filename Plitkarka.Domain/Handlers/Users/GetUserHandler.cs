@@ -7,6 +7,7 @@ using Plitkarka.Commons.Exceptions;
 using Plitkarka.Commons.Logger;
 using Microsoft.Extensions.Logging;
 using Plitkarka.Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Plitkarka.Domain.Handlers.Users;
 
@@ -32,7 +33,7 @@ public class GetUserHandler : IRequestHandler<GetUserRequest, User?>
 
         try
         {
-            resultEntity = await _repository.GetAsync(request.Predicate);
+            resultEntity = await _repository.GetAll().FirstOrDefaultAsync(request.Predicate);
         }
         catch (Exception ex)
         {
