@@ -1,4 +1,4 @@
-﻿namespace Plitkarka.Infrastructure.Services.EmailService;
+﻿namespace Plitkarka.Domain.Services.EmailService;
 
 public interface IEmailService
 {
