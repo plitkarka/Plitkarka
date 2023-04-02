@@ -24,24 +24,15 @@ public class DeleteUserByIdHandler : IRequestHandler<DeleteUserByIdRequest>
 
     public async Task<Unit> Handle(DeleteUserByIdRequest request, CancellationToken cancellationToken)
     {
-        try
+        var toDelete = await _repository.GetByIdAsync(request.Id);
+
+        if (toDelete == null)
         {
-            var toDelete = await _repository.GetByIdAsync(request.Id);
-
-            if (toDelete == null)
-            {
-                throw new ValidationException("User do not exist");
-            }
-
-            await _repository.DeleteAsync(toDelete);
-
-            return Unit.Value;
+            throw new ValidationException("User does not exist");
         }
-        catch(Exception ex) when (ex is not ValidationException)
-        {
-            _logger.LogDatabaseError($"{nameof(DeleteUserByIdHandler)}.{nameof(Handle)}", ex.Message);
-            throw new MySqlException(ex.Message);
-        }
-        
+
+        await _repository.DeleteAsync(toDelete);
+
+        return Unit.Value;
     }
 }

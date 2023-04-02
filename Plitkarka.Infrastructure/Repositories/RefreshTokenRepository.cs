@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Plitkarka.Commons.Exceptions;
 using Plitkarka.Commons.Logger;
 using Plitkarka.Infrastructure.Models;
 using Plitkarka.Infrastructure.Services;
@@ -28,10 +29,18 @@ public class RefreshTokenRepository : IRepository<RefreshTokenEntity>
             throw new ArgumentNullException(nameof(item));
         }
 
-        var res = await _db.RefreshTokens.AddAsync(item);
-        await _db.SaveChangesAsync();
+        try
+        {
+            var res = await _db.RefreshTokens.AddAsync(item);
+            await _db.SaveChangesAsync();
 
-        return res.Entity.Id;
+            return res.Entity.Id;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDatabaseError($"{nameof(RefreshTokenRepository)}.{nameof(AddAsync)}", ex.Message);
+            throw new MySqlException(ex.Message);
+        }
     }
 
     public async Task DeleteAsync(RefreshTokenEntity item)
@@ -42,10 +51,18 @@ public class RefreshTokenRepository : IRepository<RefreshTokenEntity>
             throw new ArgumentNullException(nameof(item));
         }
 
-        item.IsActive = false;
+        try 
+        { 
+            item.IsActive = false;
 
-        _db.Update(item);
-        await _db.SaveChangesAsync();
+            _db.Update(item);
+            await _db.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDatabaseError($"{nameof(RefreshTokenRepository)}.{nameof(DeleteAsync)}", ex.Message);
+            throw new MySqlException(ex.Message);
+        }
     }
 
     public IQueryable<RefreshTokenEntity> GetAll()
@@ -55,9 +72,17 @@ public class RefreshTokenRepository : IRepository<RefreshTokenEntity>
 
     public async Task<RefreshTokenEntity?> GetByIdAsync(Guid id)
     {
-        var result = await _db.RefreshTokens.FindAsync(id);
+        try 
+        { 
+            var result = await _db.RefreshTokens.FindAsync(id);
 
-        return result;
+            return result;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDatabaseError($"{nameof(RefreshTokenRepository)}.{nameof(GetByIdAsync)}", ex.Message);
+            throw new MySqlException(ex.Message);
+        }
     }
 
     public async Task<RefreshTokenEntity> UpdateAsync(RefreshTokenEntity item)
@@ -68,9 +93,17 @@ public class RefreshTokenRepository : IRepository<RefreshTokenEntity>
             throw new ArgumentNullException(nameof(item));
         }
 
-        _db.Entry(item).State = EntityState.Modified;
-        await _db.SaveChangesAsync();
+        try 
+        {
+            _db.Entry(item).State = EntityState.Modified;
+            await _db.SaveChangesAsync();
 
-        return item;
+            return item;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDatabaseError($"{nameof(RefreshTokenRepository)}.{nameof(UpdateAsync)}", ex.Message);
+            throw new MySqlException(ex.Message);
+        }
     }
 }

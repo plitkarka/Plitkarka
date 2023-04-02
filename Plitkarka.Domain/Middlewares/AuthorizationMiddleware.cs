@@ -8,6 +8,7 @@ using Plitkarka.Domain.Services.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Plitkarka.Domain.Services.ContextUser;
 using Plitkarka.Domain.Services.ContextAccessToken;
+using Plitkarka.Domain.Services.EmailService;
 
 namespace Plitkarka.Domain.Middlewares;
 
@@ -51,22 +52,20 @@ public class AuthorizationMiddleware
                 return;
             }
 
-            try
+            IRepository<UserEntity> userRepository = context
+                .RequestServices
+                .GetRequiredService<IRepository<UserEntity>>();
+
+            user = await userRepository.GetByIdAsync(userId);
+
+            if (user.EmailCode != EmailService.VerifiedCode)
             {
-                IRepository<UserEntity> userRepository = context
-                    .RequestServices
-                    .GetRequiredService<IRepository<UserEntity>>();
-
-                user = await userRepository.GetByIdAsync(userId);
-
-                user.LastLoginDate = DateTime.UtcNow.Date;
-
-                await userRepository.UpdateAsync(user);
+                throw new AuthorizationErrorException("Email is not verified");
             }
-            catch
-            {
-                throw new MySqlException();
-            }
+
+            user.LastLoginDate = DateTime.UtcNow.Date;
+
+            await userRepository.UpdateAsync(user);
 
             _contextUserService.User = _mapper.Map<User>(user);
         }

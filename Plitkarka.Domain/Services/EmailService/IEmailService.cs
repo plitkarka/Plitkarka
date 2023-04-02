@@ -3,4 +3,6 @@
 public interface IEmailService
 {
     Task SendEmailAsync(string email, string body, string subject);
+
+    string GenerateEmailCode();
 }

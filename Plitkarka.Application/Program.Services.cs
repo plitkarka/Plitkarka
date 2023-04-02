@@ -9,6 +9,7 @@ using Plitkarka.Domain.Services.ContextUser;
 using Plitkarka.Domain.Services.Encryption;
 using Plitkarka.Domain.Services.ImageService;
 using Plitkarka.Domain.Services.EmailService;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Plitkarka.Application;
 
@@ -20,6 +21,11 @@ public static partial class Program
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "Plitkarka API", Version = "v1" });
             c.OperationFilter<AuthorizationHeaderSwaggerAttribute>();
+        });
+
+        services.Configure<ApiBehaviorOptions>(options =>
+        {
+            options.SuppressModelStateInvalidFilter = true;
         });
 
         services.AddControllers();

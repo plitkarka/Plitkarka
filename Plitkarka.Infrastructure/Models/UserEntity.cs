@@ -16,11 +16,7 @@ public record UserEntity
 
     [Required]
     [MaxLength(20)]
-    public string FirstName { get; set; }
-
-    [Required]
-    [MaxLength(20)]
-    public string SecondName { get; set; }
+    public string Name { get; set; }
 
     [Required]
     [MaxLength(255)]

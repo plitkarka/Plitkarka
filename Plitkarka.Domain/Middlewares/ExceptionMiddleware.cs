@@ -30,13 +30,13 @@ public class ExceptionMiddleware
         {
             await HandleMySqlException(httpContext, ex);
         }
-        catch (Exception ex) when (ex is S3ServiceException)
+        catch (S3ServiceException ex)
         {
-            HandleS3ServiceException(httpContext);
+            HandleS3ServiceException(httpContext, ex);
         }
-        catch (Exception ex) when (ex is EmailServiceException)
+        catch (EmailServiceException ex)
         {
-            HandleEmailServiceException(httpContext);
+            HandleEmailServiceException(httpContext, ex);
         }
         catch (ValidationException ex)
         {
@@ -60,6 +60,29 @@ public class ExceptionMiddleware
         }
     }
 
+    #region System exceptions 
+    private async Task HandleMySqlException(HttpContext httpContext, MySqlException ex)
+    {
+        _logger.LogError(ex.Message);
+        httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+        httpContext.Response.ContentType = textPlain;
+        await httpContext.Response.WriteAsync("Error happened while working with database");
+    }
+    private void HandleS3ServiceException(HttpContext httpContext, S3ServiceException ex)
+    {
+        _logger.LogError(ex.Message);
+        httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+    }
+    private void HandleEmailServiceException(HttpContext httpContext, EmailServiceException ex)
+    {
+        _logger.LogError(ex.Message);
+        httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+    }
+
+    #endregion
+
+    #region Request exceptions 
+
     private async Task HandleAuthorizationErrorException(HttpContext httpContext, AuthorizationErrorException ex)
     {
         httpContext.Response.StatusCode = (int)HttpStatusCode.Forbidden;
@@ -74,21 +97,6 @@ public class ExceptionMiddleware
         await httpContext.Response.WriteAsync(ex.Message);
     }
 
-    private async Task HandleMySqlException(HttpContext httpContext, MySqlException ex)
-    {
-        _logger.LogError(ex.Message);
-        httpContext.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
-        httpContext.Response.ContentType = textPlain;
-        await httpContext.Response.WriteAsync("Error happened while working with database");
-    }
-    private void HandleS3ServiceException(HttpContext httpContext)
-    {
-        httpContext.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
-    }
-    private void HandleEmailServiceException(HttpContext httpContext)
-    {
-        httpContext.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
-    }
     private async Task HandleValidationException(HttpContext httpContext, ValidationException ex)
     {
         if (ex.ParamName != null)
@@ -109,10 +117,12 @@ public class ExceptionMiddleware
         await httpContext.Response.WriteAsync(ex.Message);
     }
 
+    #endregion
+
     private async Task HandleException(HttpContext httpContext, Exception ex)
     {
         _logger.LogError(ex.Message);
-        httpContext.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+        httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
         httpContext.Response.ContentType = textPlain;
         await httpContext.Response.WriteAsync("Internal server error");
     }
