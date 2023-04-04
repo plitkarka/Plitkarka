@@ -42,16 +42,9 @@ public class UpdateUserHandler : IRequestHandler<UpdateUserRequest, User?>
             }
 
             // check if FirstName is not null and changed
-            if (toUpdate.FirstName != null && existingUser.FirstName != toUpdate.FirstName)
+            if (toUpdate.FirstName != null && existingUser.Name != toUpdate.FirstName)
             {
-                existingUser.FirstName = toUpdate.FirstName;
-                changes = true;
-            }
-
-            // check if SecondName is not null and changed
-            if (toUpdate.SecondName != null && existingUser.SecondName != toUpdate.SecondName)
-            {
-                existingUser.SecondName = toUpdate.SecondName;
+                existingUser.Name = toUpdate.FirstName;
                 changes = true;
             }
 

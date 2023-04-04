@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Configuration;
 using Plitkarka.Application;
 using Plitkarka.Domain.Middlewares;
 
@@ -8,11 +6,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host
     .ConfigureServices((hostContext, services) =>
     {
-        services.AddDefaultAWSOptions(hostContext.Configuration.GetAWSOptions());
-        services.AddServices();
-        services.AddConfiguration();
-        services.AddMySql();
-        services.AddMapping();
+        services
+            .AddDefaultAWSOptions(hostContext.Configuration.GetAWSOptions())
+            .AddServices()
+            .AddConfiguration()
+            .AddMySql()
+            .AddMapping();
     });
 
 var app = builder.Build();

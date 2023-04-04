@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Plitkarka.Infrastructure.Services;
 using Plitkarka.Infrastructure.Models;
+using Microsoft.Extensions.Logging;
+using Plitkarka.Commons.Logger;
 
 namespace Plitkarka.Domain.Services.ImageService;
 
@@ -13,6 +15,7 @@ public record S3Image : IImageService
 {
     private S3Configuration _s3Configuration { get; init; }
     private IRepository<ImageEntity> _repository { get; init; }
+    private ILogger<S3Image> _logger { get; init; }
 
     private static readonly List<string> _imageExtension = new List<string>() { ".jpg", ".png", ".webp", ".jpeg" };
 
@@ -20,10 +23,12 @@ public record S3Image : IImageService
 
     public S3Image(
         IOptions<S3Configuration> s3Configuration,
-        IRepository<ImageEntity> repository) 
+        IRepository<ImageEntity> repository,
+        ILogger<S3Image> logger) 
     {
         _s3Configuration = s3Configuration.Value;
         _repository = repository;
+        _logger = logger;
     }
 
     public async Task<Guid> UploadImageAsync(IFormFile fileStream, string contentType)
@@ -95,12 +100,22 @@ public record S3Image : IImageService
             throw new Exception(nameof(keyName));
         }
 
-        var toDelete = await _repository.GetAll()
-            .FirstOrDefaultAsync(i => i.ImageId == keyName);
+        ImageEntity? toDelete;
+
+        try
+        {
+            toDelete = await _repository.GetAll()
+                .FirstOrDefaultAsync(i => i.ImageId == keyName);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDatabaseError($"{nameof(S3Image)}.{nameof(DeleteImageAsync)}", ex.Message);
+            throw new MySqlException(ex.Message);
+        }
 
         if (toDelete == null)
         {
-            throw new ValidationException("Image do not exist");
+            throw new ValidationException("Image does not exist");
         }
 
     }

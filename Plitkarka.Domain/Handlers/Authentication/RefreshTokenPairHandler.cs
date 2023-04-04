@@ -14,7 +14,7 @@ namespace Plitkarka.Domain.Handlers.Authentication;
 
 public class RefreshTokenPairHandler : IRequestHandler<RefreshTokenPairRequest, TokenPair>
 {
-    private ILogger<LoginByIdHandler> _logger { get; init; }
+    private ILogger<RefreshTokenPairHandler> _logger { get; init; }
     private IAuthenticationService _authenticationService { get; init; }
     private IContextAccessTokenService _contextAccessTokenService { get; init; }
     private IAuthorizationService _authorizationService { get; init; }
@@ -22,7 +22,7 @@ public class RefreshTokenPairHandler : IRequestHandler<RefreshTokenPairRequest, 
     private IMapper _mapper { get; init; }
 
     public RefreshTokenPairHandler(
-        ILogger<LoginByIdHandler> logger,
+        ILogger<RefreshTokenPairHandler> logger,
         IAuthenticationService authenticationService,
         IContextAccessTokenService contextAccessTokenService,
         IAuthorizationService authorizationService,

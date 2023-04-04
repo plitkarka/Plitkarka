@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using Plitkarka.Infrastructure.Models;
 using Plitkarka.Commons.Logger;
 using Plitkarka.Infrastructure.Services;
+using Plitkarka.Commons.Exceptions;
 
 namespace Plitkarka.Infrastructure.Repositories;
 
@@ -28,10 +29,18 @@ public class ImageRepository : IRepository<ImageEntity>
             throw new ArgumentNullException(nameof(image));
         }
 
-        var res = await _db.Images.AddAsync(image);
-        await _db.SaveChangesAsync();
+        try
+        {
+            var res = await _db.Images.AddAsync(image);
+            await _db.SaveChangesAsync();
 
-        return res.Entity.Id;
+            return res.Entity.Id;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDatabaseError($"{nameof(ImageRepository)}.{nameof(AddAsync)}", ex.Message);
+            throw new MySqlException(ex.Message);
+        }
     }
 
     public IQueryable<ImageEntity> GetAll() 
@@ -41,9 +50,17 @@ public class ImageRepository : IRepository<ImageEntity>
 
     public async Task<ImageEntity?> GetByIdAsync(Guid id)
     {
-        var res = await _db.Images.FindAsync(id);
+        try 
+        {
+            var res = await _db.Images.FindAsync(id);
 
-        return res;
+            return res;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDatabaseError($"{nameof(ImageRepository)}.{nameof(GetByIdAsync)}", ex.Message);
+            throw new MySqlException(ex.Message);
+        }
     }
 
     public async Task<ImageEntity> UpdateAsync(ImageEntity image)
@@ -54,10 +71,18 @@ public class ImageRepository : IRepository<ImageEntity>
             throw new ArgumentNullException(nameof(image));
         }
 
-        _db.Entry(image).State = EntityState.Modified;
-        await _db.SaveChangesAsync();
+        try 
+        {
+            _db.Entry(image).State = EntityState.Modified;
+            await _db.SaveChangesAsync();
 
-        return image;
+            return image;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDatabaseError($"{nameof(ImageRepository)}.{nameof(UpdateAsync)}", ex.Message);
+            throw new MySqlException(ex.Message);
+        }
     }
     public async Task DeleteAsync(ImageEntity image)
     {
@@ -67,9 +92,18 @@ public class ImageRepository : IRepository<ImageEntity>
             throw new ArgumentNullException(nameof(image));
         }
 
-        image.IsActive = false;
+        try 
+        { 
+            image.IsActive = false;
 
-        _db.Update(image);
-        await _db.SaveChangesAsync();
+            _db.Update(image);
+            await _db.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDatabaseError($"{nameof(ImageRepository)}.{nameof(DeleteAsync)}", ex.Message);
+            throw new MySqlException(ex.Message);
+        }
+
     }
 }

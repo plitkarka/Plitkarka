@@ -29,16 +29,8 @@ public class GetUserByIdHandler : IRequestHandler<GetUserByIdRequest, User?>
     public async Task<User?> Handle(GetUserByIdRequest request, CancellationToken cancellationToken)
     {
         UserEntity? resultEntity;
-
-        try
-        {
-            resultEntity = await _repository.GetByIdAsync(request.Id);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogDatabaseError($"{nameof(GetUserByIdHandler)}.{nameof(Handle)}", ex.Message);
-            throw new MySqlException(ex.Message);
-        }
+        
+        resultEntity = await _repository.GetByIdAsync(request.Id);
 
         return resultEntity == null 
             ? null

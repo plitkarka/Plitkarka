@@ -44,8 +44,7 @@ public class TestController : Controller
         // await _emailService.SendEmailAsync("javaseniorweb@gmail.com", EmailTextTemplates.VerificationCodeText(name, "334546"), EmailTextTemplates.VerificationCode);
         var template = new User()
         {
-            FirstName = "SomeName",
-            SecondName = "SameSecondName",
+            Name = "SomeName",
             Password = "qwerty",
             PasswordAttempts = 3,
             Salt = "12345678",
@@ -55,12 +54,12 @@ public class TestController : Controller
             IsActive = true
         };
 
-        var id = await _mediator.Send(new AddUserRequest(
-            template with { Login = login, Email = $"{login}@gmail.com" }));
+        //var id = await _mediator.Send(new AddUserRequest(
+        //    template with { Login = login, Email = $"{login}@gmail.com" }));
 
-        var token = await _mediator.Send(new LoginByIdRequest(id));
+        //var token = await _mediator.Send(new LoginByIdRequest(id));
 
-        return Json(new { Id = id, Token = token});
+        return Ok();
     }
 
     [HttpGet("id")]
