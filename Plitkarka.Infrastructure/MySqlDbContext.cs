@@ -8,12 +8,14 @@ public class MySqlDbContext : DbContext
     public DbSet<UserEntity> Users { get; set; }
     public DbSet<RefreshTokenEntity> RefreshTokens { get; set; }
     public DbSet<ImageEntity> Images { get; set; }
+    public DbSet<PostEntity> Posts { get; set; }
     
     private const string COLLATION = "latin1_bin";
 
     public MySqlDbContext(DbContextOptions<MySqlDbContext> options)
             : base(options)
     {
+        // Database.EnsureDeleted();
         Database.EnsureCreated();
     }
 
@@ -25,14 +27,18 @@ public class MySqlDbContext : DbContext
         modelBuilder.UseCollation(COLLATION);
 
         // UserEntity
-        modelBuilder.Entity<UserEntity>().HasIndex(u => u.Email).IsUnique();
-        modelBuilder.Entity<UserEntity>().HasIndex(u => u.Login).IsUnique();
-        modelBuilder.Entity<UserEntity>().Property(u => u.IsActive).HasDefaultValue(true);
+        modelBuilder.Entity<UserEntity>().HasIndex(e => e.Email).IsUnique();
+        modelBuilder.Entity<UserEntity>().HasIndex(e => e.Login).IsUnique();
+        modelBuilder.Entity<UserEntity>().Property(e => e.IsActive).HasDefaultValue(true);
 
         // RefreshTokenEntity
-        modelBuilder.Entity<RefreshTokenEntity>().Property(rt => rt.IsActive).HasDefaultValue(true);
+        modelBuilder.Entity<RefreshTokenEntity>().Property(e => e.IsActive).HasDefaultValue(true);
 
-        // Image Entity
-        modelBuilder.Entity<ImageEntity>().HasIndex(u => u.ImageId).IsUnique();
+        // ImageEntity
+        modelBuilder.Entity<ImageEntity>().HasIndex(e => e.ImageId).IsUnique();
+        modelBuilder.Entity<ImageEntity>().Property(e => e.IsActive).HasDefaultValue(true);
+
+        // PostEntity
+        modelBuilder.Entity<PostEntity>().Property(e => e.IsActive).HasDefaultValue(true);
     }
 }

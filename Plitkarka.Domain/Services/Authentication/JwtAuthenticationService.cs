@@ -84,7 +84,7 @@ public class JwtAuthenticationService : IAuthenticationService
         {
             Token = token,
             Expires = DateTime.Now.AddMinutes(_authorizationConfiguration.RefreshTokenDaysLifetime),
-            Created = DateTime.UtcNow,
+            CreationTime = DateTime.UtcNow,
         };
 
         var refreshTokenEntity = _mapper.Map<RefreshTokenEntity>(refreshToken);

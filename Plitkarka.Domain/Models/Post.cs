@@ -1,14 +1,16 @@
 ﻿namespace Plitkarka.Domain.Models;
 
-public record RefreshToken
+public record Post
 {
     public Guid Id { get; set; }
 
-    public string Token { get; set; }
+    public string TextContent { get; set; }
 
     public DateTime CreationTime { get; set; }
 
-    public DateTime Expires { get; set; }
-
     public bool? IsActive { get; set; }
+
+    // ----- Relation properties -----
+
+    public Guid UserId { get; set; }
 }

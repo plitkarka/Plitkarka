@@ -12,5 +12,5 @@ public record ImageEntity
     [Required]
     public string ImageId { get; set; }
 
-    public bool IsActive { get; set; }
+    public bool? IsActive { get; set; }
 }

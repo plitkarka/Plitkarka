@@ -8,6 +8,7 @@ public static partial class Program
     {
         services.AddAutoMapper(typeof(UserMappingProfile));
         services.AddAutoMapper(typeof(RefreshTokenMappingProfile));
+        services.AddAutoMapper(typeof(PostMappinProfile));
 
         return services;
     }

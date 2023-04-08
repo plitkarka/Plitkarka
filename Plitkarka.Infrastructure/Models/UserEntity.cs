@@ -49,4 +49,6 @@ public record UserEntity
     public Guid? RefreshTokenId { get; set; }
 
     public RefreshTokenEntity? RefreshToken { get; set; }
+
+    public ICollection<PostEntity> Posts { get; set; }
 }
