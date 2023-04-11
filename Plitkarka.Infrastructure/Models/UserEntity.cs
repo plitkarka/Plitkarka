@@ -43,6 +43,7 @@ public record UserEntity
 
     public bool? IsActive { get; set; }
 
+    public string? ChangePasswordCode { get; set; }
 
     // ----- Relation properties -----
 

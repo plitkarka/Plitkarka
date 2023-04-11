@@ -1,13 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Plitkarka.Application.Models;
+namespace Plitkarka.Application.Models.ResetPasswordController;
 
-public record SignInBodyRequestModel
+public class ResetPasswordRequestModel
 {
     [EmailAddress(ErrorMessage = "Invalid email address")]
     [MaxLength(100, ErrorMessage = "Email length should be less or equal 100 symbols")]
     [Required(ErrorMessage = "Email is required")]
     public string Email { get; set; }
+
+    [StringLength(6, MinimumLength = 6, ErrorMessage = "Reset password code should be exactly 6 digits")]
+    [Required(ErrorMessage = "Email is required")]
+    public string PasswordCode { get; set; }
 
     [DataType(DataType.Password)]
     [MaxLength(30, ErrorMessage = "Password length should be less or equal 30 symbols")]
