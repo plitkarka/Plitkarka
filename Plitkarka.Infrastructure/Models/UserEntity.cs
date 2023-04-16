@@ -43,6 +43,8 @@ public record UserEntity
 
     public bool? IsActive { get; set; }
 
+    [MaxLength(6)]
+    public string ChangePasswordCode { get; set; }
 
     // ----- Relation properties -----
 

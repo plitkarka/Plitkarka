@@ -106,16 +106,17 @@ public record S3Image : IImageService
         {
             toDelete = await _repository.GetAll()
                 .FirstOrDefaultAsync(i => i.ImageId == keyName);
+
+            if(toDelete == null)
+                throw new ValidationException("Image does not exist");
+
+            await _repository.DeleteAsync(toDelete);
+
         }
         catch (Exception ex)
         {
             _logger.LogDatabaseError($"{nameof(S3Image)}.{nameof(DeleteImageAsync)}", ex.Message);
             throw new MySqlException(ex.Message);
-        }
-
-        if (toDelete == null)
-        {
-            throw new ValidationException("Image does not exist");
         }
 
     }
