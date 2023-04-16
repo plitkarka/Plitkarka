@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Plitkarka.Commons.Exceptions;
 using Plitkarka.Commons.Logger;
-using Plitkarka.Domain.Handlers.Users;
 using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.PasswordManager;
 using Plitkarka.Domain.Services.Authentication;
@@ -50,7 +49,7 @@ public class ResetPasswordHandler : IRequestHandler<ResetPasswordRequest, TokenP
         }
         catch (Exception ex)
         {
-            _logger.LogDatabaseError($"{nameof(AddUserHandler)}.{nameof(Handle)}", ex.Message);
+            _logger.LogDatabaseError($"{nameof(ResetPasswordHandler)}.{nameof(Handle)}", ex.Message);
             throw new MySqlException(ex.Message);
         }
 
@@ -61,7 +60,7 @@ public class ResetPasswordHandler : IRequestHandler<ResetPasswordRequest, TokenP
 
         if (userEntity.ChangePasswordCode == EmailService.VerifiedCode)
         {
-            throw new ValidationException("User is already verified reset password code");
+            throw new ValidationException("Missing password reset code request");
         }
 
         if (userEntity.ChangePasswordCode != request.PasswordCode)

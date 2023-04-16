@@ -8,7 +8,7 @@ using Plitkarka.Domain.Requests.PasswordManager;
 namespace Plitkarka.Application.Controllers;
 
 [ApiController]
-[Route("api/password")]
+[Route("api/password/reset")]
 public class ResetPasswordController : Controller
 {
     private IMediator _mediator { get; init; }
@@ -19,7 +19,7 @@ public class ResetPasswordController : Controller
         _mediator = mediator;
     }
 
-    [HttpPost("email")]
+    [HttpPost]
     [ModelStateValidation]
     public async Task<ActionResult<string>> SendEmail(
         [FromBody] SendEmailRequestModel body)
@@ -30,9 +30,9 @@ public class ResetPasswordController : Controller
         return Ok(email);
     }
 
-    [HttpGet("code")]
+    [HttpGet]
     [ModelStateValidation]
-    public async Task<ActionResult<(string,string)>> VerifyCode(
+    public async Task<ActionResult<VerifyCodeResponse>> VerifyCode(
         [FromQuery] VerifyCodeRequestModel body)
     {
         var email = await _mediator.Send(new VerifyCodeRequest(
@@ -42,7 +42,7 @@ public class ResetPasswordController : Controller
         return Ok(email);
     }
 
-    [HttpPut("reset")]
+    [HttpPut]
     [ModelStateValidation]
     public async Task<ActionResult<TokenPair>> ResetPassword(
        [FromBody] ResetPasswordRequestModel body)

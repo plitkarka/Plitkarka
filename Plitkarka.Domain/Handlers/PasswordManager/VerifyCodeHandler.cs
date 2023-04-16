@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Plitkarka.Commons.Exceptions;
 using Plitkarka.Commons.Logger;
 using Plitkarka.Domain.Handlers.Users;
+using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.PasswordManager;
 using Plitkarka.Domain.Services.EmailService;
 using Plitkarka.Infrastructure.Models;
@@ -12,7 +13,7 @@ using Plitkarka.Infrastructure.Services;
 
 namespace Plitkarka.Domain.Handlers.PasswordManager;
 
-public class VerifyCodeHandler : IRequestHandler<VerifyCodeRequest, string>
+public class VerifyCodeHandler : IRequestHandler<VerifyCodeRequest, VerifyCodeResponse>
 {
     private IRepository<UserEntity> _repository { get; init; }
     private ILogger<VerifyCodeHandler> _logger { get; init; }
@@ -30,7 +31,7 @@ public class VerifyCodeHandler : IRequestHandler<VerifyCodeRequest, string>
         _logger = logger;
         _mapper = mapper;
     }
-    public async Task<string> Handle(VerifyCodeRequest request, CancellationToken cancellationToken)
+    public async Task<VerifyCodeResponse> Handle(VerifyCodeRequest request, CancellationToken cancellationToken)
     {
         UserEntity? userEntity;
 
@@ -41,7 +42,7 @@ public class VerifyCodeHandler : IRequestHandler<VerifyCodeRequest, string>
         }
         catch (Exception ex)
         {
-            _logger.LogDatabaseError($"{nameof(AddUserHandler)}.{nameof(Handle)}", ex.Message);
+            _logger.LogDatabaseError($"{nameof(VerifyCodeHandler)}.{nameof(Handle)}", ex.Message);
             throw new MySqlException(ex.Message);
         }
 
@@ -52,7 +53,7 @@ public class VerifyCodeHandler : IRequestHandler<VerifyCodeRequest, string>
 
         if (userEntity.ChangePasswordCode == EmailService.VerifiedCode)
         {
-            throw new ValidationException("User is already verified reset password code");
+            throw new ValidationException("Missing password reset code request");
         }
 
         if (userEntity.ChangePasswordCode != request.PasswordCode)
@@ -60,6 +61,6 @@ public class VerifyCodeHandler : IRequestHandler<VerifyCodeRequest, string>
             throw new ValidationException("Reset password code is wrong");
         }
 
-        return userEntity.Email;
+        return new VerifyCodeResponse() { Email = userEntity.Email, PasswordCode= userEntity.ChangePasswordCode };
     }
 }
