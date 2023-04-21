@@ -39,7 +39,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: plitkarka/back_dev
+          images: plitkarka/back_dev:111
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
