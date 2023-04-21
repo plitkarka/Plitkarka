@@ -15,9 +15,9 @@ on:
       - 'Dockerfile'
       - '.github/workflows/pull_request_dev.yml'
 
-env:
-  # github.repository as <account>/<repo>
-  IMAGE_NAME: ${{ github.repository }}
+#env:
+#  # github.repository as <account>/<repo>
+#  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   create_push_to_dockerhub:
