@@ -21,8 +21,8 @@ on:
 
 
 jobs:
-  create_docker_image:
-    name: Create Docker image
+  creat_build_test_docker_image:
+    name: Create, build and test Docker image
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repository
@@ -44,10 +44,25 @@ jobs:
             # Latest tag for master branch in DockerHub
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
             # Tag for dev branch in DockerHub
-            type=raw,value=dev-{{sha}},enable=${{ github.ref == format('refs/heads/{0}', 'docker') }}
-            
+            type=raw,value=dev-{{sha}},enable=${{ github.ref == format('refs/heads/{0}', 'docker') }}            
 
-      - name: Build and push Docker image
+      - name: Build Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: false
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Test Docker conteiner
+
+  push_docker_image:
+    name: Push Docker image
+    needs: creat_build_test_docker_image
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Push Docker image
         uses: docker/build-push-action@v4
         with:
           context: .
