@@ -41,7 +41,7 @@ jobs:
         with:
           images: plitkarka/back_dev
           tags: |
-            type=ref,event=tag
+            type=raw,foo
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
