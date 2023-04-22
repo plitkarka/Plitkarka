@@ -11,7 +11,8 @@ builder.Host
             .AddServices()
             .AddConfiguration()
             .AddMySql()
-            .AddMapping();
+            .AddMapping()
+            .AddSwagger();
     });
 
 var app = builder.Build();

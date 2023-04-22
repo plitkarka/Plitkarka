@@ -6,9 +6,13 @@ public static partial class Program
 {
     public static IServiceCollection AddMapping(this IServiceCollection services)
     {
-        services.AddAutoMapper(typeof(UserMappingProfile));
-        services.AddAutoMapper(typeof(RefreshTokenMappingProfile));
-        services.AddAutoMapper(typeof(PostMappinProfile));
+        services
+            .AddAutoMapper(typeof(UserMappingProfile))
+            .AddAutoMapper(typeof(RefreshTokenMappingProfile))
+            .AddAutoMapper(typeof(PostMappingProfile))
+            .AddAutoMapper(typeof(PostLikeMappingProfile))
+            .AddAutoMapper(typeof(CommentMappingProfile))
+            .AddAutoMapper(typeof(CommentLikeMappingProfile));
 
         return services;
     }

@@ -3,13 +3,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Plitkarka.Infrastructure.Models;
 
-public class PostEntity
+public class CommentEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; set; }
 
-    [MaxLength(500)]
+    [MaxLength(100)]
     public string TextContent { get; set; }
 
     public DateTime CreationTime { get; set; }
@@ -22,7 +22,9 @@ public class PostEntity
 
     public UserEntity? User { get; set; }
 
-    public ICollection<PostLikeEntity> PostLikes { get; set; }
+    public Guid PostId { get; set; }
 
-    public ICollection<CommentEntity> Comments { get; set; }
+    public PostEntity? Post { get; set; }
+
+    public ICollection<CommentLikeEntity> CommentLikes { get; set; }
 }

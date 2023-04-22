@@ -1,12 +1,10 @@
-﻿using System.Reflection;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Plitkarka.Commons.Exceptions;
 using Plitkarka.Commons.Features;
 using Plitkarka.Commons.Logger;
-using Plitkarka.Domain.Handlers.Users;
 using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.Authentication;
 using Plitkarka.Domain.Services.Authentication;
@@ -96,11 +94,9 @@ public class SignUpHandler : IRequestHandler<SignUpRequest, string>
             }
         }
         catch (Exception ex) when (ex is not ValidationException)
-{
-            _logger.LogDatabaseError($"{nameof(AddUserHandler)}.{nameof(ValidateEmailAndlogin)}", ex.Message);
+        {
+            _logger.LogDatabaseError($"{nameof(SignUpHandler)}.{nameof(ValidateEmailAndlogin)}", ex.Message);
             throw new MySqlException(ex.Message);
         }
     }
-
-
 }
