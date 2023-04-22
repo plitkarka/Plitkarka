@@ -40,8 +40,8 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: plitkarka/back_dev
-        tags: |
-          type=semver,pattern={{version}}
+          tags: |
+            type=semver,pattern={{version}}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
