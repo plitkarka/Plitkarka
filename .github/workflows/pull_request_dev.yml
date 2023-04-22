@@ -1,5 +1,5 @@
 name: DockerHub
-run-name: Create and Push Docker image to DockerHub
+run-name: Create, Test and Push Docker image to DockerHub
 
 on:
   push:
@@ -21,8 +21,8 @@ on:
 
 
 jobs:
-  create_push_to_dockerhub:
-    name: Create and Push Docker image to DockerHub
+  create_docker_image:
+    name: Create Docker image
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repository
@@ -40,6 +40,8 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: plitkarka/back_dev
+        tags:
+          type=semver,pattern={{version}}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
