@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using Plitkarka.Commons.Exceptions;
 using Plitkarka.Commons.Features;
 using Plitkarka.Commons.Logger;
-using Plitkarka.Domain.Handlers.Users;
 using Plitkarka.Domain.Requests.Authentication;
 using Plitkarka.Domain.Services.EmailService;
 using Plitkarka.Infrastructure.Models;
@@ -40,7 +39,7 @@ public class ResendVerificationCodeHandler
         }
         catch (Exception ex)
         {
-            _logger.LogDatabaseError($"{nameof(AddUserHandler)}.{nameof(Handle)}", ex.Message);
+            _logger.LogDatabaseError($"{nameof(ResendVerificationCodeHandler)}.{nameof(Handle)}", ex.Message);
             throw new MySqlException(ex.Message);
         }
 

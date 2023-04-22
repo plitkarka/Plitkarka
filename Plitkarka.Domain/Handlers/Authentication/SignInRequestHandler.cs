@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Plitkarka.Commons.Exceptions;
 using Plitkarka.Commons.Logger;
-using Plitkarka.Domain.Handlers.Users;
 using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.Authentication;
 using Plitkarka.Domain.Services.Authentication;
@@ -53,7 +52,7 @@ public class SignInRequestHandler
         }
         catch (Exception ex)
         {
-            _logger.LogDatabaseError($"{nameof(AddUserHandler)}.{nameof(Handle)}", ex.Message);
+            _logger.LogDatabaseError($"{nameof(SignInRequestHandler)}.{nameof(Handle)}", ex.Message);
             throw new MySqlException(ex.Message);
         }
 

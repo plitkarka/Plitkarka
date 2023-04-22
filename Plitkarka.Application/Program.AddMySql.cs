@@ -23,6 +23,10 @@ public static partial class Program
             .AddTransient<IRepository<UserEntity>, UserRepository>()
             .AddTransient<IRepository<RefreshTokenEntity>, RefreshTokenRepository>() 
             .AddTransient<IRepository<ImageEntity>, ImageRepository>()
-            .AddTransient<IRepository<PostEntity>, PostRepository>(); 
+            .AddTransient<IRepository<PostEntity>, PostRepository>()
+            .AddTransient<IRepository<SubscriptionEntity>, SubscriptionRepository>()
+            .AddTransient<IRepository<PostLikeEntity>, PostLikeRepository>()
+            .AddTransient<IRepository<CommentEntity>, CommentRepository>()
+            .AddTransient<IRepository<CommentLikeEntity>, CommentLikeRepository>(); 
     }
 }

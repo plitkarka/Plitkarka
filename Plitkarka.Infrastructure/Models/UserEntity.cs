@@ -51,4 +51,14 @@ public record UserEntity
     public RefreshTokenEntity? RefreshToken { get; set; }
 
     public ICollection<PostEntity> Posts { get; set; }
+
+    public ICollection<PostLikeEntity> PostLikes { get; set; }
+
+    public ICollection<CommentEntity> Comments { get; set; }
+
+    public ICollection<CommentLikeEntity> CommentLikes { get; set; }
+
+    public ICollection<SubscriptionEntity> Subscriptions { get; set; }
+
+    public ICollection<SubscriptionEntity> Subscribers { get; set; }
 }

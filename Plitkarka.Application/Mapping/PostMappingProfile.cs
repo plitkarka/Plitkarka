@@ -4,9 +4,9 @@ using Plitkarka.Infrastructure.Models;
 
 namespace Plitkarka.Application.Mapping;
 
-public class PostMappinProfile : Profile
+public class PostMappingProfile : Profile
 {
-    public PostMappinProfile()
+    public PostMappingProfile()
     {
         CreateMap<Post, PostEntity>();
         CreateMap<PostEntity, Post>();

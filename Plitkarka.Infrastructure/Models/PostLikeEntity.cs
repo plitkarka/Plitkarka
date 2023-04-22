@@ -3,18 +3,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Plitkarka.Infrastructure.Models;
 
-public class PostEntity
+public class PostLikeEntity
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; set; }
 
-    [MaxLength(500)]
-    public string TextContent { get; set; }
-
     public DateTime CreationTime { get; set; }
-
-    public bool? IsActive { get; set; }
 
     // ----- Relation properties -----
 
@@ -22,7 +17,7 @@ public class PostEntity
 
     public UserEntity? User { get; set; }
 
-    public ICollection<PostLikeEntity> PostLikes { get; set; }
+    public Guid PostId { get; set; }
 
-    public ICollection<CommentEntity> Comments { get; set; }
+    public PostEntity? Post { get; set; }
 }
