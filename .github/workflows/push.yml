@@ -1,4 +1,4 @@
-name: DockerHub
+name: push
 run-name: Create, Test and Push Docker image to DockerHub
 
 on:
@@ -6,30 +6,17 @@ on:
     branches: [ "docker" ]
     paths:
       - 'Dockerfile'
-      - '.github/workflows/pull_request_dev.yml'
-    tags:
-      - 'v*'
-  pull_request:
-    branches: [ "docker" ]
-    paths:
-      - 'Dockerfile'
-      - '.github/workflows/pull_request_dev.yml'
-
-#env:
-#  # github.repository as <account>/<repo>
-#  IMAGE_NAME: ${{ github.repository }}
-
+      - '.github/workflows/push.yml'
 
 jobs:
-  creat_build_test_docker_image:
-    name: Create, build and test Docker image
+  push_docker:
+    name: Create, test and push Docker image
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repository
         uses: actions/checkout@v3
 
       - name: Login to Docker Hub
-        #if: github.event_name != 'pull_request'
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -47,6 +34,7 @@ jobs:
             type=raw,value=dev-{{sha}},enable=${{ github.ref == format('refs/heads/{0}', 'docker') }}            
 
       - name: Build Docker image
+        id: build
         uses: docker/build-push-action@v4
         with:
           context: .
@@ -55,17 +43,16 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Test Docker conteiner
+        id: test
+        #command return 200 or ok or true like result
+        run:
 
-  push_docker_image:
-    name: Push Docker image
-    needs: creat_build_test_docker_image
-    if: github.event_name != 'pull_request'
-    runs-on: ubuntu-latest
-    steps:
       - name: Push Docker image
+        #make testing status true from heals_cheak
+        if: ${{ steps.test.outputs.status = true }}
         uses: docker/build-push-action@v4
         with:
           context: .
-          push: true #${{ github.event_name != 'pull_request' }}
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
