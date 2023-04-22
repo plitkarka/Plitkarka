@@ -41,7 +41,11 @@ jobs:
         with:
           images: plitkarka/back_dev
           tags: |
+            # set latest tag for master branch
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
+            # custom label
             type=raw,foo
+            
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
