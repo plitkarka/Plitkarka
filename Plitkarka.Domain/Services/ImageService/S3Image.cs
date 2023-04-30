@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Plitkarka.Infrastructure.Services;
 using Plitkarka.Infrastructure.Models;
-using Microsoft.Extensions.Logging;
-using Plitkarka.Commons.Logger;
 
 namespace Plitkarka.Domain.Services.ImageService;
 
@@ -15,7 +13,6 @@ public record S3Image : IImageService
 {
     private S3Configuration _s3Configuration { get; init; }
     private IRepository<ImageEntity> _repository { get; init; }
-    private ILogger<S3Image> _logger { get; init; }
 
     private static readonly List<string> _imageExtension = new List<string>() { ".jpg", ".png", ".webp", ".jpeg" };
 
@@ -23,12 +20,10 @@ public record S3Image : IImageService
 
     public S3Image(
         IOptions<S3Configuration> s3Configuration,
-        IRepository<ImageEntity> repository,
-        ILogger<S3Image> logger) 
+        IRepository<ImageEntity> repository) 
     {
         _s3Configuration = s3Configuration.Value;
         _repository = repository;
-        _logger = logger;
     }
 
     public async Task<Guid> UploadImageAsync(IFormFile fileStream, string contentType)
@@ -109,7 +104,6 @@ public record S3Image : IImageService
         }
         catch (Exception ex)
         {
-            _logger.LogDatabaseError($"{nameof(S3Image)}.{nameof(DeleteImageAsync)}", ex.Message);
             throw new MySqlException(ex.Message);
         }
 

@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Plitkarka.Commons.Exceptions;
-using Plitkarka.Commons.Logger;
 using Plitkarka.Infrastructure.Models;
 using Plitkarka.Infrastructure.Services;
 
@@ -10,21 +8,17 @@ namespace Plitkarka.Infrastructure.Repositories;
 public class CommentLikeRepository : IRepository<CommentLikeEntity>
 {
     private MySqlDbContext _db { get; init; }
-    private ILogger<CommentLikeRepository> _logger;
 
     public CommentLikeRepository(
-        MySqlDbContext db,
-        ILogger<CommentLikeRepository> logger)
+        MySqlDbContext db)
     {
         _db = db;
-        _logger = logger;
     }
 
     public async Task<Guid> AddAsync(CommentLikeEntity item)
     {
         if (item == null)
         {
-            _logger.LogArgumentNullError(nameof(AddAsync), nameof(item));
             throw new ArgumentNullException(nameof(item));
         }
 
@@ -37,7 +31,6 @@ public class CommentLikeRepository : IRepository<CommentLikeEntity>
         }
         catch (Exception ex)
         {
-            _logger.LogDatabaseError($"{nameof(CommentLikeRepository)}.{nameof(AddAsync)}", ex.Message);
             throw new MySqlException(ex.Message);
         }
     }
@@ -46,7 +39,6 @@ public class CommentLikeRepository : IRepository<CommentLikeEntity>
     {
         if (item == null)
         {
-            _logger.LogArgumentNullError(nameof(DeleteAsync), nameof(item));
             throw new ArgumentNullException(nameof(item));
         }
 
@@ -57,7 +49,6 @@ public class CommentLikeRepository : IRepository<CommentLikeEntity>
         }
         catch (Exception ex)
         {
-            _logger.LogDatabaseError($"{nameof(CommentLikeRepository)}.{nameof(DeleteAsync)}", ex.Message);
             throw new MySqlException(ex.Message);
         }
     }
@@ -77,7 +68,6 @@ public class CommentLikeRepository : IRepository<CommentLikeEntity>
         }
         catch (Exception ex)
         {
-            _logger.LogDatabaseError($"{nameof(CommentLikeRepository)}.{nameof(GetByIdAsync)}", ex.Message);
             throw new MySqlException(ex.Message);
         }
     }
@@ -86,7 +76,6 @@ public class CommentLikeRepository : IRepository<CommentLikeEntity>
     {
         if (item == null)
         {
-            _logger.LogArgumentNullError(nameof(UpdateAsync), nameof(item));
             throw new ArgumentNullException(nameof(item));
         }
 
@@ -99,7 +88,6 @@ public class CommentLikeRepository : IRepository<CommentLikeEntity>
         }
         catch (Exception ex)
         {
-            _logger.LogDatabaseError($"{nameof(CommentLikeRepository)}.{nameof(UpdateAsync)}", ex.Message);
             throw new MySqlException(ex.Message);
         }
     }

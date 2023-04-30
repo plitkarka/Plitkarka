@@ -1,15 +1,12 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Plitkarka.Infrastructure.ModelAbstractions;
 
 namespace Plitkarka.Infrastructure.Models;
 
-public record UserEntity
+public record UserEntity : ActivatedEntity
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid Id { get; set; }
-
     [Required]
     [MaxLength(20)]
     public string Login { get; set; }
@@ -37,11 +34,7 @@ public record UserEntity
 
     public DateTime BirthDate { get; set; }
 
-    public DateTime CreatedDate { get; set; }
-
     public DateTime LastLoginDate { get; set; }
-
-    public bool? IsActive { get; set; }
 
 
     // ----- Relation properties -----

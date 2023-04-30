@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Plitkarka.Application.Models.PostController;
 using Plitkarka.Domain.Filters;
 using Plitkarka.Domain.Requests.Posts;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Plitkarka.Application.Controllers;
 
@@ -22,6 +23,7 @@ public class PostController : Controller
     [HttpPost]
     [Authorize]
     [ModelStateValidation]
+    [SwaggerOperation(Summary = "Create new Post", Description = "Creates new post for authorized user")]
     public async Task<ActionResult<Guid>> CreatePost(
         [FromBody] CreatePostRequestModel body)
     {
@@ -33,6 +35,7 @@ public class PostController : Controller
     [HttpDelete]
     [Authorize]
     [ModelStateValidation]
+    [SwaggerOperation(Summary = "Delete Post", Description = "Delete post with specific id for authorized user")]
     public async Task<ActionResult<Guid>> DeletePost(
         [Required(ErrorMessage = "Id is required")] Guid id)
     {

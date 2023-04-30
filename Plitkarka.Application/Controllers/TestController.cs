@@ -43,7 +43,7 @@ public class TestController : Controller
             Password = _encryptionService.Hash("1234" + salt),
             Salt = salt,
             BirthDate = DateTime.UtcNow,
-            CreatedDate = DateTime.UtcNow,
+            CreationTime = DateTime.UtcNow,
             LastLoginDate = DateTime.UtcNow
         };
 

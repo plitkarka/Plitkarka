@@ -14,12 +14,13 @@ public class MySqlDbContext : DbContext
     public DbSet<CommentEntity> Comments { get; set; }
     public DbSet<CommentLikeEntity> CommentLikes { get; set; }
 
-    private const string COLLATION = "latin1_bin";
+    private const string Collation = "latin1_bin";
+    private const string DateFunction = "(CURRENT_TIMESTAMP)";
 
     public MySqlDbContext(DbContextOptions<MySqlDbContext> options)
             : base(options)
     {
-        Database.EnsureDeleted();
+        // Database.EnsureDeleted();
         Database.EnsureCreated();
     }
 
@@ -28,24 +29,27 @@ public class MySqlDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         // used to setup fields to be case-sensitive
-        modelBuilder.UseCollation(COLLATION);
+        modelBuilder.UseCollation(Collation);
 
         // UserEntity
-        modelBuilder.Entity<UserEntity>().HasIndex(e => e.Email).IsUnique();
-        modelBuilder.Entity<UserEntity>().HasIndex(e => e.Login).IsUnique();
+        modelBuilder.Entity<UserEntity>().Property(e => e.CreationTime).HasDefaultValueSql(DateFunction);
         modelBuilder.Entity<UserEntity>().Property(e => e.IsActive).HasDefaultValue(true);
 
         // RefreshTokenEntity
+        modelBuilder.Entity<RefreshTokenEntity>().Property(e => e.CreationTime).HasDefaultValueSql(DateFunction);
         modelBuilder.Entity<RefreshTokenEntity>().Property(e => e.IsActive).HasDefaultValue(true);
 
         // ImageEntity
-        modelBuilder.Entity<ImageEntity>().HasIndex(e => e.ImageId).IsUnique();
+        modelBuilder.Entity<ImageEntity>().Property(e => e.CreationTime).HasDefaultValueSql(DateFunction);
         modelBuilder.Entity<ImageEntity>().Property(e => e.IsActive).HasDefaultValue(true);
+        modelBuilder.Entity<ImageEntity>().HasIndex(e => e.ImageId).IsUnique();
 
         // PostEntity
+        modelBuilder.Entity<PostEntity>().Property(e => e.CreationTime).HasDefaultValueSql(DateFunction);
         modelBuilder.Entity<PostEntity>().Property(e => e.IsActive).HasDefaultValue(true);
 
         // SubscriptionEntities
+        modelBuilder.Entity<SubscriptionEntity>().Property(e => e.CreationTime).HasDefaultValueSql(DateFunction);
         modelBuilder.Entity<SubscriptionEntity>().Property(e => e.IsActive).HasDefaultValue(true);
 
         modelBuilder
@@ -61,6 +65,7 @@ public class MySqlDbContext : DbContext
             .HasForeignKey(se => se.UserId);
 
         // CommentEntity
+        modelBuilder.Entity<CommentEntity>().Property(e => e.CreationTime).HasDefaultValueSql(DateFunction);
         modelBuilder.Entity<CommentEntity>().Property(e => e.IsActive).HasDefaultValue(true);
     }
 }

@@ -25,6 +25,11 @@ public class DeletePostHandler : IRequestHandler<DeletePostRequest>
     {
         var post = await _postRepository.GetByIdAsync(request.id);
 
+        if (post.UserId != _user.Id)
+        {
+            throw new ValidationException("Authorized user has nor rights to delete this post");
+        }
+
         if (post == null)
         {
             throw new ValidationException("No post found");

@@ -10,5 +10,5 @@ public record RefreshToken
 
     public DateTime Expires { get; set; }
 
-    public bool? IsActive { get; set; }
+    public bool IsActive { get; set; }
 }

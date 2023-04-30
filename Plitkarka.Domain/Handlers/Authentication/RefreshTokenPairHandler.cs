@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using Plitkarka.Commons.Exceptions;
 using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.Authentication;
+using Plitkarka.Domain.ResponseModels;
 using Plitkarka.Domain.Services.Authentication;
 using Plitkarka.Domain.Services.Authorization;
 using Plitkarka.Domain.Services.ContextAccessToken;
@@ -14,7 +14,6 @@ namespace Plitkarka.Domain.Handlers.Authentication;
 
 public class RefreshTokenPairHandler : IRequestHandler<RefreshTokenPairRequest, TokenPair>
 {
-    private ILogger<RefreshTokenPairHandler> _logger { get; init; }
     private IAuthenticationService _authenticationService { get; init; }
     private IContextAccessTokenService _contextAccessTokenService { get; init; }
     private IAuthorizationService _authorizationService { get; init; }
@@ -22,14 +21,12 @@ public class RefreshTokenPairHandler : IRequestHandler<RefreshTokenPairRequest, 
     private IMapper _mapper { get; init; }
 
     public RefreshTokenPairHandler(
-        ILogger<RefreshTokenPairHandler> logger,
         IAuthenticationService authenticationService,
         IContextAccessTokenService contextAccessTokenService,
         IAuthorizationService authorizationService,
         IRepository<UserEntity> userRepository,
         IMapper mapper)
     {
-        _logger = logger;
         _authenticationService = authenticationService;
         _contextAccessTokenService = contextAccessTokenService;
         _authorizationService = authorizationService;

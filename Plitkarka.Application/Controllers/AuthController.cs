@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Plitkarka.Application.Models;
 using Plitkarka.Domain.Filters;
-using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.Authentication;
+using Plitkarka.Domain.ResponseModels;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Plitkarka.Application.Controllers;
@@ -74,6 +74,7 @@ public class AuthController : Controller
         return Ok(pair);
     }
 
+    [NeedAuthorizeToken]
     [HttpGet("refresh")]
     [SwaggerOperation(Summary = "Refresh Token Pair", Description = "Receive refresh token to return new token pair")]
     public async Task<ActionResult<TokenPair>> RefreshTokenPair(

@@ -16,7 +16,12 @@ public class AuthorizationHeaderSwaggerAttribute : IOperationFilter
             .OfType<AuthorizeAttribute>()
             .ToList();
 
-        if (attrs.Count == 0)
+        var needAttrs = context.MethodInfo
+            .GetCustomAttributes()
+            .OfType<NeedAuthorizeTokenAttribute>()
+            .ToList();
+
+        if (attrs.Count == 0 && needAttrs.Count == 0)
         {
             return;
         }

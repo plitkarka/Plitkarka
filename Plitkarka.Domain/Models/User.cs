@@ -22,11 +22,11 @@ public record User
 
     public DateTime BirthDate { get; set; }
 
-    public DateTime CreatedDate { get; set; }
+    public DateTime CreationTime { get; set; }
 
     public DateTime LastLoginDate { get; set; }
 
-    public bool? IsActive { get; set; }
+    public bool IsActive { get; set; }
 
 
     // ----- Relation properties -----

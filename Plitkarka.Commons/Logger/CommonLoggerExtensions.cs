@@ -15,9 +15,8 @@ public static partial class CommonLoggerExtensions
     [LoggerMessage(
         EventId = 101,
         Level = LogLevel.Error,
-        Message = "{methodName}: argument '{argumentName}' is null")]
-    public static partial void LogArgumentNullError(
+        Message = "Null argument detected")]
+    public static partial void LogArgumentNullException(
         this ILogger logger,
-        string methodName,
-        string argumentName);
+        string message);
 }

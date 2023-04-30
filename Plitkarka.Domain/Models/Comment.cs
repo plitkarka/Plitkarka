@@ -1,6 +1,6 @@
 ﻿namespace Plitkarka.Domain.Models;
 
-public class Comment
+public record Comment
 {
     public Guid Id { get; set; }
 
@@ -8,7 +8,7 @@ public class Comment
 
     public DateTime CreationTime { get; set; }
 
-    public bool? IsActive { get; set; }
+    public bool IsActive { get; set; }
 
     // ----- Relation properties -----
 

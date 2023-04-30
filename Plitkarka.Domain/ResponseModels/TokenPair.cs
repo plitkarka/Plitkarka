@@ -1,4 +1,4 @@
-﻿namespace Plitkarka.Domain.Models;
+﻿namespace Plitkarka.Domain.ResponseModels;
 
 /// <summary>
 /// Describe result of getting JwtTokens

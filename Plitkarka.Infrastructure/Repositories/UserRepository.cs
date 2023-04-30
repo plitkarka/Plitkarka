@@ -1,8 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System.Linq.Expressions;
 using Plitkarka.Infrastructure.Models;
-using Plitkarka.Commons.Logger;
 using Plitkarka.Infrastructure.Services;
 using Plitkarka.Commons.Exceptions;
 
@@ -11,21 +8,17 @@ namespace Plitkarka.Infrastructure.Repositories;
 public class UserRepository : IRepository<UserEntity>
 {
     private MySqlDbContext _db { get; init; }
-    private ILogger<UserRepository> _logger;
 
     public UserRepository(
-        MySqlDbContext db,
-        ILogger<UserRepository> logger)
+        MySqlDbContext db)
     {
         _db = db;
-        _logger = logger;
     }
 
     public async Task<Guid> AddAsync(UserEntity user)
     {
         if (user == null)
         {
-            _logger.LogArgumentNullError(nameof(AddAsync), nameof(user));
             throw new ArgumentNullException(nameof(user));
         }
 
@@ -38,7 +31,6 @@ public class UserRepository : IRepository<UserEntity>
         }
         catch(Exception ex)
         {
-            _logger.LogDatabaseError($"{nameof(UserRepository)}.{nameof(AddAsync)}", ex.Message);
             throw new MySqlException(ex.Message);
         }        
     }
@@ -55,7 +47,6 @@ public class UserRepository : IRepository<UserEntity>
         }
         catch(Exception ex)
         {
-            _logger.LogDatabaseError($"{nameof(UserRepository)}.{nameof(GetByIdAsync)}", ex.Message);
             throw new MySqlException(ex.Message);
         }      
     }
@@ -69,7 +60,6 @@ public class UserRepository : IRepository<UserEntity>
     {
         if (user == null)
         {
-            _logger.LogArgumentNullError(nameof(UpdateAsync), nameof(user));
             throw new ArgumentNullException(nameof(user));
         }
 
@@ -82,7 +72,6 @@ public class UserRepository : IRepository<UserEntity>
         }
         catch (Exception ex)
         {
-            _logger.LogDatabaseError($"{nameof(UserRepository)}.{nameof(UpdateAsync)}", ex.Message);
             throw new MySqlException(ex.Message);
         }
     }
@@ -91,7 +80,6 @@ public class UserRepository : IRepository<UserEntity>
     {
         if (user == null)
         {
-            _logger.LogArgumentNullError(nameof(DeleteAsync), nameof(user));
             throw new ArgumentNullException(nameof(user));
         }
 
@@ -104,7 +92,6 @@ public class UserRepository : IRepository<UserEntity>
         }
         catch (Exception ex)
         {
-            _logger.LogDatabaseError($"{nameof(UserRepository)}.{nameof(DeleteAsync)}", ex.Message);
             throw new MySqlException(ex.Message);
         }
     }

@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Plitkarka.Commons.Exceptions;
-using Plitkarka.Commons.Logger;
 using Plitkarka.Infrastructure.Models;
 using Plitkarka.Infrastructure.Services;
 
@@ -10,21 +8,17 @@ namespace Plitkarka.Infrastructure.Repositories;
 public class PostRepository : IRepository<PostEntity>
 {
     private MySqlDbContext _db { get; init; }
-    private ILogger<PostRepository> _logger;
 
     public PostRepository(
-        MySqlDbContext db,
-        ILogger<PostRepository> logger)
+        MySqlDbContext db)
     {
         _db = db;
-        _logger = logger;
     }
 
     public async Task<Guid> AddAsync(PostEntity item)
     {
         if (item == null)
         {
-            _logger.LogArgumentNullError(nameof(AddAsync), nameof(item));
             throw new ArgumentNullException(nameof(item));
         }
 
@@ -37,7 +31,6 @@ public class PostRepository : IRepository<PostEntity>
         }
         catch (Exception ex)
         {
-            _logger.LogDatabaseError($"{nameof(PostRepository)}.{nameof(AddAsync)}", ex.Message);
             throw new MySqlException(ex.Message);
         }
     }
@@ -46,7 +39,6 @@ public class PostRepository : IRepository<PostEntity>
     {
         if (item == null)
         {
-            _logger.LogArgumentNullError(nameof(DeleteAsync), nameof(item));
             throw new ArgumentNullException(nameof(item));
         }
 
@@ -59,7 +51,6 @@ public class PostRepository : IRepository<PostEntity>
         }
         catch (Exception ex)
         {
-            _logger.LogDatabaseError($"{nameof(PostRepository)}.{nameof(DeleteAsync)}", ex.Message);
             throw new MySqlException(ex.Message);
         }
     }
@@ -79,7 +70,6 @@ public class PostRepository : IRepository<PostEntity>
         }
         catch (Exception ex)
         {
-            _logger.LogDatabaseError($"{nameof(PostRepository)}.{nameof(GetByIdAsync)}", ex.Message);
             throw new MySqlException(ex.Message);
         }
     }
@@ -88,7 +78,6 @@ public class PostRepository : IRepository<PostEntity>
     {
         if (item == null)
         {
-            _logger.LogArgumentNullError(nameof(UpdateAsync), nameof(item));
             throw new ArgumentNullException(nameof(item));
         }
 
@@ -101,7 +90,6 @@ public class PostRepository : IRepository<PostEntity>
         }
         catch (Exception ex)
         {
-            _logger.LogDatabaseError($"{nameof(PostRepository)}.{nameof(UpdateAsync)}", ex.Message);
             throw new MySqlException(ex.Message);
         }
     }

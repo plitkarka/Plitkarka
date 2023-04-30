@@ -1,6 +1,6 @@
 ﻿namespace Plitkarka.Domain.Models;
 
-public class PostLike
+public record PostLike
 {
     public Guid Id { get; set; }
 

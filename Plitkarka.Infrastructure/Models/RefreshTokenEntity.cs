@@ -1,26 +1,17 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Plitkarka.Infrastructure.ModelAbstractions;
 
 namespace Plitkarka.Infrastructure.Models;
 
-public record RefreshTokenEntity
+public record RefreshTokenEntity : ActivatedEntity
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid Id { get; set; }
-
     [Required]
     public string Token { get; set; }
 
     [Required]
-    public DateTime CreationTime { get; set; }
-
-    [Required]
     public DateTime Expires { get; set; }
-
-    public bool? IsActive { get; set; }
-
 
     // ----- Relation properties -----
 

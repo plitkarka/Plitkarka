@@ -8,7 +8,7 @@ public record Post
 
     public DateTime CreationTime { get; set; }
 
-    public bool? IsActive { get; set; }
+    public bool IsActive { get; set; }
 
     // ----- Relation properties -----
 
