@@ -48,6 +48,9 @@ public class MySqlDbContext : DbContext
         modelBuilder.Entity<PostEntity>().Property(e => e.CreationTime).HasDefaultValueSql(DateFunction);
         modelBuilder.Entity<PostEntity>().Property(e => e.IsActive).HasDefaultValue(true);
 
+        // PostLileEntity
+        modelBuilder.Entity<PostLikeEntity>().Property(e => e.CreationTime).HasDefaultValueSql(DateFunction);
+
         // SubscriptionEntities
         modelBuilder.Entity<SubscriptionEntity>().Property(e => e.CreationTime).HasDefaultValueSql(DateFunction);
         modelBuilder.Entity<SubscriptionEntity>().Property(e => e.IsActive).HasDefaultValue(true);
@@ -67,5 +70,8 @@ public class MySqlDbContext : DbContext
         // CommentEntity
         modelBuilder.Entity<CommentEntity>().Property(e => e.CreationTime).HasDefaultValueSql(DateFunction);
         modelBuilder.Entity<CommentEntity>().Property(e => e.IsActive).HasDefaultValue(true);
+
+        // CommentLikeEntity
+        modelBuilder.Entity<CommentLikeEntity>().Property(e => e.CreationTime).HasDefaultValueSql(DateFunction);
     }
 }

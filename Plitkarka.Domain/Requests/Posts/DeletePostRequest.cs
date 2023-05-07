@@ -2,5 +2,5 @@
 
 namespace Plitkarka.Domain.Requests.Posts;
 
-public record DeletePostRequest (Guid id) 
+public record DeletePostRequest (Guid PostId) 
     : IRequest;

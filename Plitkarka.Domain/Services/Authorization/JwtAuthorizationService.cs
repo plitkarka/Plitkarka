@@ -45,7 +45,7 @@ public class JwtAuthorizationService : IAuthorizationService
         }
         catch
         {
-            throw new ValidationException("Token is invalid");
+            throw new UnauthorizedUserException("Token is invalid");
         }
         
         var jwtToken = (JwtSecurityToken) validatedToken;
