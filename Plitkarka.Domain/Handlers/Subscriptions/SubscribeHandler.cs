@@ -47,7 +47,7 @@ public class SubscribeHandler : IRequestHandler<SubscribeRequest, Guid>
         try
         {
             existing = await _subscriptionRepository.GetAll().FirstOrDefaultAsync(
-                pl => pl.SubscribedToId == request.SusbcribeToId && pl.UserId == _user.Id);
+                s => s.SubscribedToId == request.SusbcribeToId && s.UserId == _user.Id);
         }
         catch (Exception ex)
         {
@@ -70,15 +70,15 @@ public class SubscribeHandler : IRequestHandler<SubscribeRequest, Guid>
             }
         }
 
-        var newLike = new Subscription()
+        var newSubscription = new Subscription()
         {
             UserId = _user.Id,
             SubscribedToId = request.SusbcribeToId,
         };
 
-        var likeEntity = _mapper.Map<SubscriptionEntity>(newLike);
+        var subscriptionEntity = _mapper.Map<SubscriptionEntity>(newSubscription);
 
-        var id = await _subscriptionRepository.AddAsync(likeEntity);
+        var id = await _subscriptionRepository.AddAsync(subscriptionEntity);
 
         return id;
     }

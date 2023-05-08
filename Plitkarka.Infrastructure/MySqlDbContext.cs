@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
+using Microsoft.EntityFrameworkCore;
+using Plitkarka.Infrastructure.ModelAbstractions;
 using Plitkarka.Infrastructure.Models;
 
 namespace Plitkarka.Infrastructure;
@@ -13,9 +16,10 @@ public class MySqlDbContext : DbContext
     public DbSet<PostLikeEntity> PostLikes { get; set; }
     public DbSet<CommentEntity> Comments { get; set; }
     public DbSet<CommentLikeEntity> CommentLikes { get; set; }
+    public DbSet<PostPinEntity> PostPins { get; set; }
+    public DbSet<PostShareEntity> PostShares { get; set; }
 
     private const string Collation = "latin1_bin";
-    private const string DateFunction = "(CURRENT_TIMESTAMP)";
 
     public MySqlDbContext(DbContextOptions<MySqlDbContext> options)
             : base(options)
@@ -29,32 +33,28 @@ public class MySqlDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         // used to setup fields to be case-sensitive
-        modelBuilder.UseCollation(Collation);
+        modelBuilder
+            .UseCollation(Collation);
 
-        // UserEntity
-        modelBuilder.Entity<UserEntity>().Property(e => e.CreationTime).HasDefaultValueSql(DateFunction);
-        modelBuilder.Entity<UserEntity>().Property(e => e.IsActive).HasDefaultValue(true);
+        modelBuilder
+            .SetupActivatedEntity<UserEntity>()
+            .SetupActivatedEntity<RefreshTokenEntity>()
+            .SetupActivatedEntity<ImageEntity>()
+            .SetupActivatedEntity<PostEntity>()
+            .SetupActivatedEntity<SubscriptionEntity>()
+            .SetupActivatedEntity<SubscriptionEntity>()
+            .SetupActivatedEntity<CommentEntity>()
+            .SetupActivatedEntity<PostShareEntity>();
 
-        // RefreshTokenEntity
-        modelBuilder.Entity<RefreshTokenEntity>().Property(e => e.CreationTime).HasDefaultValueSql(DateFunction);
-        modelBuilder.Entity<RefreshTokenEntity>().Property(e => e.IsActive).HasDefaultValue(true);
+        modelBuilder
+            .SetupEntity<CommentLikeEntity>()
+            .SetupEntity<PostLikeEntity>()
+            .SetupEntity<PostPinEntity>();
 
         // ImageEntity
-        modelBuilder.Entity<ImageEntity>().Property(e => e.CreationTime).HasDefaultValueSql(DateFunction);
-        modelBuilder.Entity<ImageEntity>().Property(e => e.IsActive).HasDefaultValue(true);
         modelBuilder.Entity<ImageEntity>().HasIndex(e => e.ImageId).IsUnique();
 
-        // PostEntity
-        modelBuilder.Entity<PostEntity>().Property(e => e.CreationTime).HasDefaultValueSql(DateFunction);
-        modelBuilder.Entity<PostEntity>().Property(e => e.IsActive).HasDefaultValue(true);
-
-        // PostLileEntity
-        modelBuilder.Entity<PostLikeEntity>().Property(e => e.CreationTime).HasDefaultValueSql(DateFunction);
-
         // SubscriptionEntities
-        modelBuilder.Entity<SubscriptionEntity>().Property(e => e.CreationTime).HasDefaultValueSql(DateFunction);
-        modelBuilder.Entity<SubscriptionEntity>().Property(e => e.IsActive).HasDefaultValue(true);
-
         modelBuilder
             .Entity<SubscriptionEntity>()
             .HasOne(se => se.SubscribedTo)
@@ -66,12 +66,5 @@ public class MySqlDbContext : DbContext
             .HasOne(se => se.User)
             .WithMany(ue => ue.Subscriptions)
             .HasForeignKey(se => se.UserId);
-
-        // CommentEntity
-        modelBuilder.Entity<CommentEntity>().Property(e => e.CreationTime).HasDefaultValueSql(DateFunction);
-        modelBuilder.Entity<CommentEntity>().Property(e => e.IsActive).HasDefaultValue(true);
-
-        // CommentLikeEntity
-        modelBuilder.Entity<CommentLikeEntity>().Property(e => e.CreationTime).HasDefaultValueSql(DateFunction);
     }
 }

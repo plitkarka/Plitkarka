@@ -40,7 +40,7 @@ public class DeleteCommentLikeHandler : IRequestHandler<DeleteCommentLikeRequest
         try
         {
             existing = await _commentLikeRepository.GetAll().FirstOrDefaultAsync(
-                pl => pl.CommentId == request.CommentId && pl.UserId == _user.Id);
+                cl => cl.CommentId == request.CommentId && cl.UserId == _user.Id);
         }
         catch (Exception ex)
         {

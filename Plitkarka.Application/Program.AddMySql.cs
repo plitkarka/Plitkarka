@@ -30,6 +30,8 @@ public static partial class Program
             .AddTransient<IRepository<SubscriptionEntity>, SubscriptionRepository>()
             .AddTransient<IRepository<PostLikeEntity>, PostLikeRepository>()
             .AddTransient<IRepository<CommentEntity>, CommentRepository>()
-            .AddTransient<IRepository<CommentLikeEntity>, CommentLikeRepository>(); 
+            .AddTransient<IRepository<CommentLikeEntity>, CommentLikeRepository>()
+            .AddTransient<IRepository<PostPinEntity>, PostPinRepository>()
+            .AddTransient<IRepository<PostShareEntity>, PostShareRepository>(); 
     }
 }

@@ -10,7 +10,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace Plitkarka.Application.Controllers;
 
 [ApiController]
-[Route("api/comment")]
+[Route("api/comments")]
 public class CommentController : Controller
 {
     private IMediator _mediator { get; init; }
@@ -24,7 +24,9 @@ public class CommentController : Controller
     [HttpPost]
     [Authorize]
     [ModelStateValidation]
-    [SwaggerOperation(Summary = "Creates new comment", Description = "Creates comment at specific post for authorized user. Throws 400 if post not found")]
+    [SwaggerOperation(
+        Summary = "Creates new comment",
+        Description = "Creates comment at specific post for authorized user. Throws 400 if post not found")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IdResponse>> CreateCommentLike(

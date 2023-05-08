@@ -9,7 +9,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace Plitkarka.Application.Controllers;
 
 [ApiController]
-[Route("api/commentLike")]
+[Route("api/comments/like")]
 public class CommentLikeController : Controller
 {
     private IMediator _mediator { get; init; }
@@ -39,7 +39,9 @@ public class CommentLikeController : Controller
     [HttpDelete]
     [Authorize]
     [ModelStateValidation]
-    [SwaggerOperation(Summary = "Deletes like", Description = "Deletes like at specific comment for authorized user. Throw 400 if comment or like not found")]
+    [SwaggerOperation(
+        Summary = "Deletes like",
+        Description = "Deletes like at specific comment for authorized user. Throw 400 if comment or like not found")]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> DeleteCommentLike(

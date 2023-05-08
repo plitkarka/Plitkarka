@@ -31,19 +31,18 @@ public class TestController : Controller
     }
 
     [HttpPost("defaultUser")]
-    public async Task<IActionResult> TestPost()
+    public async Task<IActionResult> TestPost(string name = "admin")
 {
         var salt = _encryptionService.GenerateSalt();
         var newUser = new User()
         {
-            Login = "Admin",
-            Name = "AdminName",
-            Email = "admin@gmail.com",
+            Login = name,
+            Name = name,
+            Email = name + "@gmail.com",
             EmailCode = "",
-            Password = _encryptionService.Hash("1234" + salt),
+            Password = _encryptionService.Hash("123" + salt),
             Salt = salt,
             BirthDate = DateTime.UtcNow,
-            CreationTime = DateTime.UtcNow,
             LastLoginDate = DateTime.UtcNow
         };
 

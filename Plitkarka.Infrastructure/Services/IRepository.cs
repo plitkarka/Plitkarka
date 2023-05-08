@@ -1,8 +1,8 @@
-﻿using System.Linq.Expressions;
+﻿using Plitkarka.Infrastructure.ModelAbstractions;
 
 namespace Plitkarka.Infrastructure.Services;
 
-public interface IRepository<T>
+public interface IRepository<T> where T : Entity
 {
     Task<Guid> AddAsync(T item);
     Task DeleteAsync(T item);

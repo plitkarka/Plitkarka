@@ -2,19 +2,19 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Plitkarka.Domain.Filters;
-using Plitkarka.Domain.Requests.PostLikes;
+using Plitkarka.Domain.Requests.PinedPosts;
 using Plitkarka.Domain.ResponseModels;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Plitkarka.Application.Controllers;
 
 [ApiController]
-[Route("api/posts/like")]
-public class PostLikeController : Controller
+[Route("api/posts/pin")]
+public class PostPinController : Controller
 {
     private IMediator _mediator { get; init; }
 
-    public PostLikeController(
+    public PostPinController(
         IMediator mediator)
     {
         _mediator = mediator;
@@ -24,30 +24,30 @@ public class PostLikeController : Controller
     [Authorize]
     [ModelStateValidation]
     [SwaggerOperation(
-        Summary = "Creates new like",
-        Description = "Creates like at specific post for authorized user. Throws 400 if user has already liked this post or post not found")]
+        Summary = "Pin post",
+        Description = "Pin post for authorized user. Throws 400 if user has already pinned this post or post not found")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<IdResponse>> CreatePostLike(
+    public async Task<ActionResult<IdResponse>> PinPost(
         [Required] Guid PostId)
     {
-        var id = await _mediator.Send(new CreatePostLikeRequest(PostId));
+        var id = await _mediator.Send(new PinPostRequest(PostId));
 
-        return Created(nameof(CreatePostLike), new IdResponse(id));
+        return Created(nameof(PinPost), new IdResponse(id));
     }
 
     [HttpDelete]
     [Authorize]
     [ModelStateValidation]
     [SwaggerOperation(
-        Summary = "Deletes like",
-        Description = "Deletes like at specific post for authorized user. Throws 400 if post or like not found")]
+        Summary = "Unpin post", 
+        Description = "Unpin post for authorized user. Throw 400 if post not found or if it was not pinned before")]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> DeletePostLike(
+    public async Task<ActionResult> UnpinPost(
         [Required] Guid PostId)
     {
-        await _mediator.Send(new DeletePostLikeRequest(PostId));
+        await _mediator.Send(new UnpinPostRequest(PostId));
 
         return Accepted();
     }
