@@ -12,12 +12,15 @@ builder.Host
             .AddConfiguration()
             .AddMySql()
             .AddMapping()
-            .AddSwagger();
+            .AddSwagger()
+            .AddMyHealthChecks(hostContext.Configuration);
     });
 
 var app = builder.Build();
 
 app.UseCors(builder => builder.AllowAnyOrigin());
+
+app.MapHealthChecks("/api/health");
 
 app.UseAuthentication();
 app.UseAuthorization();
