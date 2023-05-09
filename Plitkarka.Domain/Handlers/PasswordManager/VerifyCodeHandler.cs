@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Plitkarka.Commons.Exceptions;
 using Plitkarka.Commons.Logger;
-using Plitkarka.Domain.Handlers.Users;
 using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.PasswordManager;
 using Plitkarka.Domain.Services.EmailService;
@@ -42,7 +41,6 @@ public class VerifyCodeHandler : IRequestHandler<VerifyCodeRequest, VerifyCodeRe
         }
         catch (Exception ex)
         {
-            _logger.LogDatabaseError($"{nameof(VerifyCodeHandler)}.{nameof(Handle)}", ex.Message);
             throw new MySqlException(ex.Message);
         }
 

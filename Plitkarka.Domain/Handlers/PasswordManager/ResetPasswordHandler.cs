@@ -6,6 +6,7 @@ using Plitkarka.Commons.Exceptions;
 using Plitkarka.Commons.Logger;
 using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.PasswordManager;
+using Plitkarka.Domain.ResponseModels;
 using Plitkarka.Domain.Services.Authentication;
 using Plitkarka.Domain.Services.EmailService;
 using Plitkarka.Domain.Services.Encryption;
@@ -17,7 +18,6 @@ namespace Plitkarka.Domain.Handlers.PasswordManager;
 public class ResetPasswordHandler : IRequestHandler<ResetPasswordRequest, TokenPair>
 {
     private IRepository<UserEntity> _repository { get; init; }
-    private ILogger<ResetPasswordRequest> _logger { get; init; }
     private IMapper _mapper { get; init; }
     private IEmailService _emailService { get; init; }
     private IAuthenticationService _authenticationService { get; init; }
@@ -35,7 +35,6 @@ public class ResetPasswordHandler : IRequestHandler<ResetPasswordRequest, TokenP
         _emailService = emailService;
         _authenticationService = authenticationService;
         _encryptionService = encryptionService;
-        _logger = logger;
         _mapper = mapper;
     }
     public async Task<TokenPair> Handle(ResetPasswordRequest request, CancellationToken cancellationToken)
@@ -49,7 +48,6 @@ public class ResetPasswordHandler : IRequestHandler<ResetPasswordRequest, TokenP
         }
         catch (Exception ex)
         {
-            _logger.LogDatabaseError($"{nameof(ResetPasswordHandler)}.{nameof(Handle)}", ex.Message);
             throw new MySqlException(ex.Message);
         }
 

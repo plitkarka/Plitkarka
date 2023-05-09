@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Plitkarka.Application.Models.AuthControllerModels;
+namespace Plitkarka.Application.Models.AuthController;
 
 public record class SignUpRequestModel
 {
