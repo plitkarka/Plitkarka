@@ -4,7 +4,7 @@ public record Post
 {
     public Guid Id { get; set; }
 
-    public string TextContent { get; set; }
+    public string? TextContent { get; set; }
 
     public DateTime CreationTime { get; set; }
 
@@ -13,4 +13,6 @@ public record Post
     // ----- Relation properties -----
 
     public Guid UserId { get; set; }
+
+    public Guid ImageId { get; set; }
 }

@@ -26,12 +26,16 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseMiddleware<ExceptionMiddleware>();
-app.UseMiddleware<AuthorizationMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseMiddleware<DevAuthorizationMiddleware>();
+}
+else
+{
+    app.UseMiddleware<AuthorizationMiddleware>();
 }
 
 app.MapControllers();     

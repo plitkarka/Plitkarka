@@ -24,12 +24,13 @@ public class PostController : Controller
     [HttpPost]
     [Authorize]
     [ModelStateValidation]
-    [SwaggerOperation(Summary = "Create new Post", Description = "Creates new post for authorized user")]
+    [SwaggerOperation(Summary = "Create new Post", Description = "Creates new post for authorized user. Throw 400 if post does not contain data")]
     [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IdResponse>> CreatePost(
-        [FromBody] CreatePostRequestModel body)
+        [FromForm] CreatePostRequestModel body)
     {
-        var id = await _mediator.Send(new CreatePostRequest(body.TextContent));
+        var id = await _mediator.Send(new CreatePostRequest(body.TextContent, body.Image));
 
         return Created(nameof(CreatePost), new IdResponse(id));
     }
