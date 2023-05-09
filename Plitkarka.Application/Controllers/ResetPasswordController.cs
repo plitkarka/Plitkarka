@@ -4,6 +4,7 @@ using Plitkarka.Application.Models.ResetPasswordController;
 using Plitkarka.Domain.Filters;
 using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.PasswordManager;
+using Plitkarka.Domain.ResponseModels;
 
 namespace Plitkarka.Application.Controllers;
 

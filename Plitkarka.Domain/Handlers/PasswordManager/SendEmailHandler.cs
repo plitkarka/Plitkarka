@@ -41,7 +41,6 @@ public class SendEmailHandler : IRequestHandler<SendEmailRequest, string>
         }
         catch (Exception ex)
         {
-            _logger.LogDatabaseError($"{nameof(SendEmailHandler)}.{nameof(Handle)}", ex.Message);
             throw new MySqlException(ex.Message);
         }
 

@@ -101,31 +101,15 @@ public record S3Image : IImageService
         }
     }
 
-    public async Task DeleteImageAsync(string keyName)
+    public async Task DeleteImageAsync(Guid imageId)
     {
-        if (string.IsNullOrEmpty(keyName))
-        {
-            throw new Exception(nameof(keyName));
-        }
-
-        ImageEntity? toDelete;
-
-        try
-        {
-            toDelete = await _repository.GetAll()
-                .FirstOrDefaultAsync(i => i.ImageId == keyName);
-
-            await _repository.DeleteAsync(toDelete);
-
-        }
-        catch (Exception ex)
-        {
-            throw new MySqlException(ex.Message);
-        }
+        var toDelete = await _repository.GetByIdAsync(imageId);
 
         if (toDelete == null)
         {
-            throw new ValidationException("Image does not exist");
+            throw new ValidationException("Image not found");
         }
+
+        await _repository.DeleteAsync(toDelete);
     }
 }
