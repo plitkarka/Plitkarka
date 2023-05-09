@@ -1,4 +1,4 @@
-﻿using Amazon.S3.Model;
+using Amazon.S3.Model;
 using Microsoft.Extensions.Options;
 using Plitkarka.Commons.Configuration;
 using Plitkarka.Commons.Exceptions;
@@ -114,6 +114,9 @@ public record S3Image : IImageService
         {
             toDelete = await _repository.GetAll()
                 .FirstOrDefaultAsync(i => i.ImageId == keyName);
+
+            await _repository.DeleteAsync(toDelete);
+
         }
         catch (Exception ex)
         {

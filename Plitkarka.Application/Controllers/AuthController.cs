@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Plitkarka.Application.Models;
+using Plitkarka.Application.Models.AuthControllerModels;
 using Plitkarka.Domain.Filters;
 using Plitkarka.Domain.Requests.Authentication;
 using Plitkarka.Domain.ResponseModels;

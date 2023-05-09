@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Plitkarka.Infrastructure.ModelAbstractions;
@@ -36,6 +36,8 @@ public record UserEntity : ActivatedEntity
 
     public DateTime LastLoginDate { get; set; }
 
+    [MaxLength(6)]
+    public string ChangePasswordCode { get; set; }
 
     // ----- Relation properties -----
 
