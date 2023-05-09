@@ -1,14 +1,11 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Plitkarka.Commons.Exceptions;
-using Plitkarka.Commons.Logger;
-using Plitkarka.Domain.Handlers.Users;
 using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.Authentication;
+using Plitkarka.Domain.ResponseModels;
 using Plitkarka.Domain.Services.Authentication;
-using Plitkarka.Domain.Services.Authorization;
 using Plitkarka.Domain.Services.EmailService;
 using Plitkarka.Infrastructure.Models;
 using Plitkarka.Infrastructure.Services;
@@ -19,18 +16,15 @@ public class VerifyEmailHandler
     : IRequestHandler<VerifyEmailRequest, TokenPair>
 {
     private IRepository<UserEntity> _repository { get; init; }
-    private ILogger<VerifyEmailHandler> _logger { get; init; }
     private IMapper _mapper { get; init; }
     private IAuthenticationService _authenticationService { get; init; }
 
     public VerifyEmailHandler(
         IRepository<UserEntity> repository,
-        ILogger<VerifyEmailHandler> logger,
         IMapper mapper,
         IAuthenticationService authenticationService)
     {
         _repository = repository;
-        _logger = logger;
         _mapper = mapper;
         _authenticationService = authenticationService;
     }
@@ -44,11 +38,10 @@ public class VerifyEmailHandler
         try
         {
             userEntity = await _repository.GetAll().FirstOrDefaultAsync(
-                user => user.Email == request.Email);
+                user => user.IsActive == true && user.Email == request.Email);
         }
         catch(Exception ex)
         {
-            _logger.LogDatabaseError($"{nameof(AddUserHandler)}.{nameof(Handle)}", ex.Message);
             throw new MySqlException(ex.Message);
         }
 

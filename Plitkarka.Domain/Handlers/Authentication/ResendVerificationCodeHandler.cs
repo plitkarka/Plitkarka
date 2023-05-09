@@ -1,10 +1,8 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Plitkarka.Commons.Exceptions;
 using Plitkarka.Commons.Features;
 using Plitkarka.Commons.Logger;
-using Plitkarka.Domain.Handlers.Users;
 using Plitkarka.Domain.Requests.Authentication;
 using Plitkarka.Domain.Services.EmailService;
 using Plitkarka.Infrastructure.Models;
@@ -16,16 +14,13 @@ public class ResendVerificationCodeHandler
     : IRequestHandler<ResendVerificationCodeRequest, string>
 {
     private IRepository<UserEntity> _repository { get; init; }
-    private ILogger<ResendVerificationCodeHandler> _logger { get; init; }
     private IEmailService _emailService { get; init; }
 
     public ResendVerificationCodeHandler(
         IRepository<UserEntity> repository,
-        ILogger<ResendVerificationCodeHandler> logger,
         IEmailService emailService)
     {
         _repository = repository;
-        _logger = logger;
         _emailService = emailService;
     }
 
@@ -36,11 +31,10 @@ public class ResendVerificationCodeHandler
         try
         {
             userEntity = await _repository.GetAll().FirstOrDefaultAsync(
-                user => user.Email == request.Email);
+                user =>  user.IsActive == true && user.Email == request.Email);
         }
         catch (Exception ex)
         {
-            _logger.LogDatabaseError($"{nameof(AddUserHandler)}.{nameof(Handle)}", ex.Message);
             throw new MySqlException(ex.Message);
         }
 

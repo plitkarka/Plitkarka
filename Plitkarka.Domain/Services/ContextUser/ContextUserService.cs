@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Plitkarka.Commons.Exceptions;
 using Plitkarka.Domain.Models;
 
 namespace Plitkarka.Domain.Services.ContextUser;
@@ -19,6 +20,11 @@ public class ContextUserService : IContextUserService
         get
         {
             var user = _accessor.HttpContext.Items[UserItem];
+
+            if (user == null)
+            {
+                throw new UnauthorizedUserException("Authorization required to access this resource");
+            }
 
             return (user as User)!;
         }

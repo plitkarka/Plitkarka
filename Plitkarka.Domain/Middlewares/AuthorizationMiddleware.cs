@@ -14,11 +14,11 @@ namespace Plitkarka.Domain.Middlewares;
 
 public class AuthorizationMiddleware
 {
-    private RequestDelegate _next { get; init; }
-    private IAuthorizationService _authorizationService { get; init; }
-    private IMapper _mapper { get; init; }
-    private IContextUserService _contextUserService { get; init; }
-    private IContextAccessTokenService _contextAccessTokenService { get; init; }
+    protected RequestDelegate _next { get; init; }
+    protected IAuthorizationService _authorizationService { get; init; }
+    protected IMapper _mapper { get; init; }
+    protected IContextUserService _contextUserService { get; init; }
+    protected IContextAccessTokenService _contextAccessTokenService { get; init; }
 
     public AuthorizationMiddleware(
         RequestDelegate next,
@@ -34,7 +34,7 @@ public class AuthorizationMiddleware
         _contextAccessTokenService = contextAccessTokenService;
     }
 
-    public async Task Invoke(
+    virtual public async Task InvokeAsync(
         HttpContext context)
     {
         var token = _contextAccessTokenService.AccessToken;
@@ -52,7 +52,7 @@ public class AuthorizationMiddleware
                 return;
             }
 
-            IRepository<UserEntity> userRepository = context
+            var userRepository = context
                 .RequestServices
                 .GetRequiredService<IRepository<UserEntity>>();
 

@@ -6,8 +6,8 @@ public static partial class Program
 {
     public static IServiceCollection AddMapping(this IServiceCollection services)
     {
-        services.AddAutoMapper(typeof(UserMappingProfile));
-        services.AddAutoMapper(typeof(RefreshTokenMappingProfile));
+        services
+            .AddAutoMapper(typeof(UserMappingProfile));
 
         return services;
     }

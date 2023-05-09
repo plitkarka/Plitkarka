@@ -2,8 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Plitkarka.Application.Models.AuthControllerModels;
 using Plitkarka.Domain.Filters;
-using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.Authentication;
+using Plitkarka.Domain.ResponseModels;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Plitkarka.Application.Controllers;
 
@@ -21,6 +22,7 @@ public class AuthController : Controller
 
     [HttpPost]
     [ModelStateValidation]
+    [SwaggerOperation(Summary = "User Sign up", Description = "Register new user entity using specified data sent with request")]
     public async Task<ActionResult<string>> SignUp(
         [FromBody] SignUpRequestModel body)
     {
@@ -36,6 +38,7 @@ public class AuthController : Controller
 
     [HttpPost("email")]
     [ModelStateValidation]
+    [SwaggerOperation(Summary = "Verify email", Description = "Receives email code sent after registration and verifies it")]
     public async Task<ActionResult<TokenPair>> VerifyEmail(
         [FromBody] VerifyEmailRequestModel body)
     {
@@ -48,6 +51,7 @@ public class AuthController : Controller
 
     [HttpPut("email")]
     [ModelStateValidation]
+    [SwaggerOperation(Summary = "Resend Verification Code", Description = "Send verification code once more time at certain email")]
     public async Task<ActionResult<string>> ResendVerificationCode(
         [FromBody] ResendVerificationCodeRequestModel body)
     {
@@ -59,6 +63,7 @@ public class AuthController : Controller
 
     [HttpPost("signin")]
     [ModelStateValidation]
+    [SwaggerOperation(Summary = "User Sign In", Description = "Login user into his account. Return token pair for account access")]
     public async Task<ActionResult<TokenPair>> SignIn(
         [FromBody] SignInBodyRequestModel body)
     {
@@ -69,7 +74,9 @@ public class AuthController : Controller
         return Ok(pair);
     }
 
+    [NeedAuthorizeToken]
     [HttpGet("refresh")]
+    [SwaggerOperation(Summary = "Refresh Token Pair", Description = "Receive refresh token to return new token pair")]
     public async Task<ActionResult<TokenPair>> RefreshTokenPair(
         [FromQuery] string refreshToken)
     {
