@@ -6,6 +6,7 @@ using Plitkarka.Domain.Services.Authentication;
 using Plitkarka.Domain.Services.Encryption;
 using Plitkarka.Infrastructure.Models;
 using Plitkarka.Infrastructure.Services;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Plitkarka.Application.Controllers;
 
@@ -31,7 +32,10 @@ public class TestController : Controller
     }
 
     [HttpPost("defaultUser")]
-    public async Task<IActionResult> TestPost(string name = "admin")
+    [SwaggerOperation(
+        Summary = "Creates default user with specified name",
+        Description = "Adds user with prepared credentials to database. Default user name is \"admin\", but can be set down with reqeust param to create multiple instances")]
+    public async Task<IActionResult> CreateDefaultUser(string name = "admin")
 {
         var salt = _encryptionService.GenerateSalt();
         var newUser = new User()

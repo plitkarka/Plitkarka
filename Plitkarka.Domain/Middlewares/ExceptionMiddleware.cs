@@ -23,6 +23,8 @@ public class ExceptionMiddleware
 
     public async Task InvokeAsync(HttpContext httpContext)
     {
+        httpContext.Response.ContentType = "application/json";
+        
         try
         {
             await _next(httpContext);

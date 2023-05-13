@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Plitkarka.Commons.Exceptions;
-using Plitkarka.Commons.Logger;
 using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.PasswordManager;
 using Plitkarka.Domain.ResponseModels;
@@ -13,26 +11,22 @@ using Plitkarka.Domain.Services.Encryption;
 using Plitkarka.Infrastructure.Models;
 using Plitkarka.Infrastructure.Services;
 
-namespace Plitkarka.Domain.Handlers.PasswordManager;
+namespace Plitkarka.Domain.Handlers.ResetPassword;
 
 public class ResetPasswordHandler : IRequestHandler<ResetPasswordRequest, TokenPair>
 {
     private IRepository<UserEntity> _repository { get; init; }
     private IMapper _mapper { get; init; }
-    private IEmailService _emailService { get; init; }
     private IAuthenticationService _authenticationService { get; init; }
     private IEncryptionService _encryptionService { get; init; }
 
     public ResetPasswordHandler(
         IRepository<UserEntity> repository,
-        ILogger<ResetPasswordRequest> logger,
         IAuthenticationService authenticationService,
         IEncryptionService encryptionService,
-        IEmailService emailService,
         IMapper mapper)
     {
         _repository = repository;
-        _emailService = emailService;
         _authenticationService = authenticationService;
         _encryptionService = encryptionService;
         _mapper = mapper;
@@ -58,7 +52,7 @@ public class ResetPasswordHandler : IRequestHandler<ResetPasswordRequest, TokenP
 
         if (userEntity.ChangePasswordCode == EmailService.VerifiedCode)
         {
-            throw new ValidationException("Missing password reset code request");
+            throw new ValidationException("Password reset wasn't requested");
         }
 
         if (userEntity.ChangePasswordCode != request.PasswordCode)

@@ -57,7 +57,7 @@ public class VerifyEmailHandler
 
         if (userEntity.EmailCode != request.EmailCode)
         {
-            throw new ValidationException("Email code is wrong");
+            throw new ValidationException("Email code is wrong", nameof(request.EmailCode));
         }
 
         userEntity.EmailCode = EmailService.VerifiedCode;

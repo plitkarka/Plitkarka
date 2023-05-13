@@ -1,34 +1,23 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Plitkarka.Commons.Exceptions;
-using Plitkarka.Commons.Logger;
 using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.PasswordManager;
 using Plitkarka.Domain.Services.EmailService;
 using Plitkarka.Infrastructure.Models;
 using Plitkarka.Infrastructure.Services;
 
-namespace Plitkarka.Domain.Handlers.PasswordManager;
+namespace Plitkarka.Domain.Handlers.ResetPassword;
 
 public class VerifyCodeHandler : IRequestHandler<VerifyCodeRequest, VerifyCodeResponse>
 {
     private IRepository<UserEntity> _repository { get; init; }
-    private ILogger<VerifyCodeHandler> _logger { get; init; }
-    private IMapper _mapper { get; init; }
-    private IEmailService _emailService { get; init; }
 
     public VerifyCodeHandler(
-        IRepository<UserEntity> repository,
-        ILogger<VerifyCodeHandler> logger,
-        IEmailService emailService,
-        IMapper mapper)
+        IRepository<UserEntity> repository)
     {
         _repository = repository;
-        _emailService = emailService;
-        _logger = logger;
-        _mapper = mapper;
     }
     public async Task<VerifyCodeResponse> Handle(VerifyCodeRequest request, CancellationToken cancellationToken)
     {
@@ -51,7 +40,7 @@ public class VerifyCodeHandler : IRequestHandler<VerifyCodeRequest, VerifyCodeRe
 
         if (userEntity.ChangePasswordCode == EmailService.VerifiedCode)
         {
-            throw new ValidationException("Missing password reset code request");
+            throw new ValidationException("Password reset wasn't requested");
         }
 
         if (userEntity.ChangePasswordCode != request.PasswordCode)
@@ -59,6 +48,12 @@ public class VerifyCodeHandler : IRequestHandler<VerifyCodeRequest, VerifyCodeRe
             throw new ValidationException("Reset password code is wrong");
         }
 
-        return new VerifyCodeResponse() { Email = userEntity.Email, PasswordCode= userEntity.ChangePasswordCode };
+        var response = new VerifyCodeResponse() 
+        { 
+            Email = userEntity.Email, 
+            PasswordCode = userEntity.ChangePasswordCode 
+        };
+
+        return response;
     }
 }

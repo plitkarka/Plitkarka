@@ -56,9 +56,9 @@ public class RefreshTokenPairHandler : IRequestHandler<RefreshTokenPairRequest, 
 
         var refreshToken = request.RefreshToken;
 
-        if (user.RefreshToken.Expires < DateTime.UtcNow)
+        if (user.RefreshToken.Token != refreshToken)
         {
-            throw new AuthorizationErrorException("Refresh token expired");
+            throw new AuthorizationErrorException("Refresh token is wrong");
         }
 
         if (user.RefreshToken.IsActive != true)
@@ -66,11 +66,13 @@ public class RefreshTokenPairHandler : IRequestHandler<RefreshTokenPairRequest, 
             throw new AuthorizationErrorException("Refresh token is not active");
         }
 
-        if (user.RefreshToken.Token == refreshToken)
+        if (user.RefreshToken.Expires < DateTime.UtcNow)
         {
-            return await _authenticationService.Authenticate(user);
+            throw new AuthorizationErrorException("Refresh token expired");
         }
 
-        throw new AuthorizationErrorException("Refresh token is wrong");
+        var pair = await _authenticationService.Authenticate(user);
+
+        return pair;
     }
 }

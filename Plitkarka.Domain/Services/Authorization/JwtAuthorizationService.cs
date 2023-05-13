@@ -21,7 +21,7 @@ public class JwtAuthorizationService : IAuthorizationService
     /// Authorize user from token data
     /// </summary>
     /// <param name="token">User access token</param>
-    /// <returns>Id of authorized user. Returns Guid.Empty if token is expired </returns>
+    /// <returns>User id crypted in access token. Returns Guid.Empty if token is expired. Do not validate if id is actual user id</returns>
     /// <exception cref="InvalidTokenException">If token is invalid</exception>
     public Guid Authorize(string token, bool validateTime = true)
     {

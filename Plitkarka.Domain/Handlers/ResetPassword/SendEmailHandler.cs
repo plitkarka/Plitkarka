@@ -1,34 +1,26 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Plitkarka.Commons.Exceptions;
 using Plitkarka.Commons.Features;
-using Plitkarka.Commons.Logger;
 using Plitkarka.Domain.Requests.PasswordManager;
 using Plitkarka.Domain.Services.EmailService;
 using Plitkarka.Infrastructure.Models;
 using Plitkarka.Infrastructure.Services;
 
-namespace Plitkarka.Domain.Handlers.PasswordManager;
+namespace Plitkarka.Domain.Handlers.ResetPassword;
 
 public class SendEmailHandler : IRequestHandler<SendEmailRequest, string>
 {
     private IRepository<UserEntity> _repository { get; init; }
-    private ILogger<SendEmailRequest> _logger { get; init; }
-    private IMapper _mapper { get; init; }
     private IEmailService _emailService { get; init; }
 
     public SendEmailHandler(
         IRepository<UserEntity> repository,
-        ILogger<SendEmailRequest> logger,
-        IEmailService emailService,
-        IMapper mapper)
+        IEmailService emailService)
     {
         _repository = repository;
         _emailService = emailService;
-        _logger = logger;
-        _mapper = mapper;
     }
     public async Task<string> Handle(SendEmailRequest request, CancellationToken cancellationToken)
     {

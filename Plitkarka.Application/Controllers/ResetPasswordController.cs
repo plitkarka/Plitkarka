@@ -5,6 +5,7 @@ using Plitkarka.Domain.Filters;
 using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.PasswordManager;
 using Plitkarka.Domain.ResponseModels;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Plitkarka.Application.Controllers;
 
@@ -22,17 +23,26 @@ public class ResetPasswordController : Controller
 
     [HttpPost]
     [ModelStateValidation]
-    public async Task<ActionResult<string>> SendEmail(
+    [SwaggerOperation(
+        Summary = "Send an email with code to reset password", 
+        Description = "Check if user with sepcific email exist and send code to reset passwrod on this email. Returns email. Throw 400 if there is no user with such email")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<StringResponse>> SendEmail(
         [FromBody] SendEmailRequestModel body)
     {
-        var email = await _mediator.Send(new SendEmailRequest(
-            body.Email));
+        var email = await _mediator.Send(new SendEmailRequest(body.Email));
 
-        return Ok(email);
+        return Ok(new StringResponse(email));
     }
 
     [HttpGet]
     [ModelStateValidation]
+    [SwaggerOperation(
+        Summary = "Verify code for reseting email",
+        Description = "Check if the code is valid. Throw 400 if there is no user with such email, password reset wasn't requested or code is wrong")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<VerifyCodeResponse>> VerifyCode(
         [FromQuery] VerifyCodeRequestModel body)
     {
@@ -45,6 +55,11 @@ public class ResetPasswordController : Controller
 
     [HttpPut]
     [ModelStateValidation]
+    [SwaggerOperation(
+        Summary = "Resets password",
+        Description = "Sets new password for user. Throw 400 if there is no user with such email, password reset wasn't requested or code is wrong")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<TokenPair>> ResetPassword(
        [FromBody] ResetPasswordRequestModel body)
     {
