@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Plitkarka.Commons.Configuration;
 using Plitkarka.Domain.Models;
+using Plitkarka.Domain.ResponseModels;
 using Plitkarka.Infrastructure.Models;
 using Plitkarka.Infrastructure.Services;
 using System.IdentityModel.Tokens.Jwt;
@@ -84,7 +85,6 @@ public class JwtAuthenticationService : IAuthenticationService
         {
             Token = token,
             Expires = DateTime.Now.AddMinutes(_authorizationConfiguration.RefreshTokenDaysLifetime),
-            Created = DateTime.UtcNow,
         };
 
         var refreshTokenEntity = _mapper.Map<RefreshTokenEntity>(refreshToken);

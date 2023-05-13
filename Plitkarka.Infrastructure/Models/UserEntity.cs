@@ -1,15 +1,12 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Plitkarka.Infrastructure.ModelAbstractions;
 
 namespace Plitkarka.Infrastructure.Models;
 
-public record UserEntity
+public record UserEntity : ActivatedEntity
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public Guid Id { get; set; }
-
     [Required]
     [MaxLength(20)]
     public string Login { get; set; }
@@ -37,11 +34,7 @@ public record UserEntity
 
     public DateTime BirthDate { get; set; }
 
-    public DateTime CreatedDate { get; set; }
-
     public DateTime LastLoginDate { get; set; }
-
-    public bool? IsActive { get; set; }
 
     [MaxLength(6)]
     public string ChangePasswordCode { get; set; }
@@ -51,4 +44,16 @@ public record UserEntity
     public Guid? RefreshTokenId { get; set; }
 
     public RefreshTokenEntity? RefreshToken { get; set; }
+
+    public ICollection<PostEntity> Posts { get; set; }
+
+    public ICollection<PostLikeEntity> PostLikes { get; set; }
+
+    public ICollection<CommentEntity> Comments { get; set; }
+
+    public ICollection<CommentLikeEntity> CommentLikes { get; set; }
+
+    public ICollection<SubscriptionEntity> Subscriptions { get; set; }
+
+    public ICollection<SubscriptionEntity> Subscribers { get; set; }
 }

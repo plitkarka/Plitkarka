@@ -6,9 +6,9 @@ public record RefreshToken
 
     public string Token { get; set; }
 
-    public DateTime Created { get; set; }
+    public DateTime CreationTime { get; set; }
 
     public DateTime Expires { get; set; }
 
-    public bool? IsActive { get; set; }
+    public bool IsActive { get; set; }
 }

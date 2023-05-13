@@ -2,6 +2,7 @@
 
 public record EmailConfiguration
 {
+    public bool ShouldSendEmails { get; set; } = false;
     public string DisplayName { get; set; }
     public string From { get; set; }
     public string UserName { get; set; }

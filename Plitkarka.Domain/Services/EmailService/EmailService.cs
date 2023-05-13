@@ -16,35 +16,39 @@ public class EmailService : IEmailService
     private static readonly int CodeLength = 6;
     public static readonly string VerifiedCode = String.Empty;
 
-    public EmailService(IOptions<EmailConfiguration> emailConfiguration)
+    public EmailService(
+        IOptions<EmailConfiguration> emailConfiguration)
     {
         _settings = emailConfiguration.Value;
     }
 
     public async Task SendEmailAsync(string email, string body, string subject)
     {
-        try
+        if (_settings.ShouldSendEmails)
         {
-            using var mail = new MimeMessage();
-
-            mail.From.Add(new MailboxAddress(_settings.DisplayName, _settings.From));
-            mail.To.Add(MailboxAddress.Parse(email));
-            mail.Subject = subject;
-            mail.Body = new BodyBuilder()
+            try
             {
-                HtmlBody = body
-            }.ToMessageBody();
+                using var mail = new MimeMessage();
 
-            using var smtp = new SmtpClient();
+                mail.From.Add(new MailboxAddress(_settings.DisplayName, _settings.From));
+                mail.To.Add(MailboxAddress.Parse(email));
+                mail.Subject = subject;
+                mail.Body = new BodyBuilder()
+                {
+                    HtmlBody = body
+                }.ToMessageBody();
 
-            await smtp.ConnectAsync(_settings.Host, _settings.Port, SecureSocketOptions.StartTls);
-            await smtp.AuthenticateAsync(_settings.UserName, _settings.Password);
-            await smtp.SendAsync(mail);
-            await smtp.DisconnectAsync(true);
-        }
-        catch (Exception ex)
-        {
-            throw new EmailServiceException(ex.Message);
+                using var smtp = new SmtpClient();
+
+                await smtp.ConnectAsync(_settings.Host, _settings.Port, SecureSocketOptions.StartTls);
+                await smtp.AuthenticateAsync(_settings.UserName, _settings.Password);
+                await smtp.SendAsync(mail);
+                await smtp.DisconnectAsync(true);
+            }
+            catch (Exception ex)
+            {
+                throw new EmailServiceException(ex.Message);
+            }
         }
     }
 

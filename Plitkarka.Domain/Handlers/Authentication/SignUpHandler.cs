@@ -1,12 +1,8 @@
-﻿using System.Reflection;
-using AutoMapper;
+﻿using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Plitkarka.Commons.Exceptions;
 using Plitkarka.Commons.Features;
-using Plitkarka.Commons.Logger;
-using Plitkarka.Domain.Handlers.Users;
 using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.Authentication;
 using Plitkarka.Domain.Services.Authentication;
@@ -21,21 +17,18 @@ public class SignUpHandler : IRequestHandler<SignUpRequest, string>
 {
     private IRepository<UserEntity> _repository { get; init; }
     private IMapper _mapper { get; init; }
-    private ILogger<SignUpHandler> _logger { get; init; }
     private IEmailService _emailService { get; init; }
     private IEncryptionService _encryptionService { get; init; }
 
     public SignUpHandler(
         IRepository<UserEntity> repository,
         IMapper mapper,
-        ILogger<SignUpHandler> logger,
         IEmailService emailService,
         IEncryptionService encryptionService,
         IAuthenticationService authenticationService)
     {
         _repository = repository;
         _mapper = mapper;
-        _logger = logger;
         _emailService = emailService;
         _encryptionService = encryptionService;
     }
@@ -57,9 +50,7 @@ public class SignUpHandler : IRequestHandler<SignUpRequest, string>
             Password = _encryptionService.Hash(request.Password + salt),
             Salt = salt,
             BirthDate = request.BirthDate,
-            CreatedDate = DateTime.UtcNow,
-            LastLoginDate = DateTime.UtcNow,
-            IsActive = true
+            LastLoginDate = DateTime.UtcNow
         };
 
         newUser.Id = await _repository.AddAsync(
@@ -80,7 +71,7 @@ public class SignUpHandler : IRequestHandler<SignUpRequest, string>
         try
         {
             userExist = await _repository.GetAll().FirstOrDefaultAsync(
-               user => user.Email == request.Email || user.Login == request.Login);
+               user => user.IsActive == true && (user.Email == request.Email || user.Login == request.Login));
 
             if (userExist != null)
             {
@@ -96,11 +87,8 @@ public class SignUpHandler : IRequestHandler<SignUpRequest, string>
             }
         }
         catch (Exception ex) when (ex is not ValidationException)
-{
-            _logger.LogDatabaseError($"{nameof(AddUserHandler)}.{nameof(ValidateEmailAndlogin)}", ex.Message);
+        {
             throw new MySqlException(ex.Message);
         }
     }
-
-
 }
