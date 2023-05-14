@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Plitkarka.Commons.Exceptions;
-using Plitkarka.Commons.Features;
+using Plitkarka.Commons.Helpers;
 using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.Authentication;
 using Plitkarka.Domain.Services.Authentication;

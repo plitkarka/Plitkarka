@@ -36,13 +36,17 @@ public record UserEntity : ActivatedEntity
     public DateTime LastLoginDate { get; set; }
 
     [MaxLength(6)]
-    public string ChangePasswordCode { get; set; }
+    public string? ChangePasswordCode { get; set; }
 
     // ----- Relation properties -----
 
     public Guid? RefreshTokenId { get; set; }
 
     public RefreshTokenEntity? RefreshToken { get; set; }
+
+    public Guid? UserImageId { get; set; }
+
+    public UserImageEntity? UserImage { get; set; }
 
     public ICollection<PostEntity> Posts { get; set; }
 

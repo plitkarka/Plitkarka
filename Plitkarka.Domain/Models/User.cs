@@ -30,4 +30,6 @@ public record User : ActivatedLogicModel
     // ----- Relation properties -----
 
     public RefreshToken? RefreshToken { get; set; } = null;
+
+    public Guid UserImageId { get; set; }
 }

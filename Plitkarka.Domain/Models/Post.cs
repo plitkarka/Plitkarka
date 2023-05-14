@@ -10,5 +10,5 @@ public record Post : ActivatedLogicModel
 
     public Guid UserId { get; set; }
 
-    public Guid ImageId { get; set; }
+    public Guid PostImageId { get; set; }
 }

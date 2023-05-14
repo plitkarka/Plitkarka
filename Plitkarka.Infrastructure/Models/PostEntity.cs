@@ -14,9 +14,9 @@ public record PostEntity : ActivatedEntity
 
     public UserEntity? User { get; set; }
 
-    public Guid ImageId { get; set; }
+    public Guid PostImageId { get; set; }
 
-    public ImageEntity? Image { get; set; }
+    public PostImageEntity? PostImage { get; set; }
 
     public ICollection<PostLikeEntity> PostLikes { get; set; }
 
