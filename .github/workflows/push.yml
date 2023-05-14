@@ -1,0 +1,61 @@
+name: push
+run-name: Create, Test and Push Docker image to DockerHub
+
+on:
+  push:
+    branches: [ "docker" ]
+    paths:
+      - 'Dockerfile'
+      - '.github/workflows/push.yml'
+
+jobs:
+  push_docker:
+    name: Create, test and push Docker image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: plitkarka/back_dev
+          tags: |
+            # Latest tag for master branch in DockerHub
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
+            # Tag for dev branch in DockerHub
+            type=raw,value=dev-{{sha}},enable=${{ github.ref == format('refs/heads/{0}', 'docker') }}            
+
+      - name: Build Docker image
+        id: build
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: false
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Test Docker conteiner
+        id: test
+        #command return 200 or ok or true like result
+        run:
+
+      - name: Push Docker image
+        #make testing status true from heals_cheak
+        if: ${{ steps.test.outputs.status = true }}
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+#make another job for push with true push and need(for test result)
+
