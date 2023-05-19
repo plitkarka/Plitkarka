@@ -45,7 +45,7 @@ jobs:
       - name: Test Docker conteiner
         id: test
         #command return 200 or ok or true like result
-        run:
+        #run:
 
       - name: Push Docker image
         #make testing status true from heals_cheak
