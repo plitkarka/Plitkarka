@@ -41,20 +41,20 @@ jobs:
           push: false
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+#
+#      - name: Test Docker conteiner
+#        id: test
+#        #command return 200 or ok or true like result
+#        run:
 
-      - name: Test Docker conteiner
-        id: test
-        #command return 200 or ok or true like result
-        #run:
-
-      - name: Push Docker image
-        #make testing status true from heals_cheak
-        if: ${{ steps.test.outputs.status = true }}
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+#      - name: Push Docker image
+#        #make testing status true from heals_cheak
+#        if: ${{ steps.test.outputs.status = true }}
+#        uses: docker/build-push-action@v4
+#        with:
+#          context: .
+#          push: true
+#          tags: ${{ steps.meta.outputs.tags }}
+#          labels: ${{ steps.meta.outputs.labels }}
 
 #make another job for push with true push and need(for test result)
