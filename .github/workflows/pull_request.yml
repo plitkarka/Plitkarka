@@ -42,4 +42,4 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Test Docker container
-        uses: docker://plitkarka/back_dev:latest
+        run: docker --version
