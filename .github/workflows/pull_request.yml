@@ -25,8 +25,8 @@ jobs:
             # Latest tag for master branch in DockerHub
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
             # Tag for dev branch in DockerHub
-            type=raw,value=dev-{{sha}},enable=${{ github.ref == format('refs/heads/{0}', 'docker') }}            
-
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'docker') }}            
+            #dev-{{sha}}
       - name: Build Docker image
         uses: docker/build-push-action@v4
         with:
@@ -35,4 +35,5 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Test Docker conteiner
+      - name: Test Docker container
+        uses: docker://plitkarka/back_dev:latest
