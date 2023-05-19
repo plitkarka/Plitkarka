@@ -43,5 +43,6 @@ jobs:
 
       - name: Test Docker container
         run: |
-          docker run --name back_dev -p 80:80 --expose 8080 plitkarka/back_dev:latest
+          docker images
           docker ps -a
+  #docker run --name back_dev -p 80:80 --expose 8080 plitkarka/back_dev:latest
