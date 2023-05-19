@@ -42,7 +42,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
 
       - name: Run Docker container
-        run: docker run --name back_dev -p 80:80 --expose 8080 plitkarka/back_dev:latest
+        run: docker run -d --name back_dev -p 80:80 --expose 8080 plitkarka/back_dev:latest
 
       - name: Test Docker container
         run: curl -LI http://localhost/api/health -o /dev/null -w '%{http_code}\n' -s
