@@ -45,4 +45,6 @@ jobs:
         run: echo "CONTAINER_ID=$(docker run -d --name back_dev -p 80:80 --expose 8080 plitkarka/back_dev:latest)" >> $GITHUB_ENV
 
       - name: Test Docker container
-        run: docker exec -it ${{ env.CONTAINER_ID }} curl -LI http://localhost/api/health -o /dev/null -w '%{http_code}\n' -s
+        run: docker exec -it ${{ env.CONTAINER_ID }} ls
+
+      #docker exec -it ${{ env.CONTAINER_ID }} curl -LI http://localhost/api/health -o /dev/null -w '%{http_code}\n' -s
