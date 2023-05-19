@@ -2,11 +2,17 @@ name: pull_request
 run-name: Create and test Docker image
 
 on:
-  pull_request:
+  push:
     branches: [ "docker" ]
     paths:
       - 'Dockerfile'
-      - '.github/workflows/pull_request.yml'
+      - '.github/workflows/push.yml'
+#on:
+#  pull_request:
+#    branches: [ "docker" ]
+#    paths:
+#      - 'Dockerfile'
+#      - '.github/workflows/pull_request.yml'
 
 jobs:
   pl_docker:

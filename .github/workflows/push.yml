@@ -1,12 +1,12 @@
 name: push
 run-name: Create, Test and Push Docker image to DockerHub
 
-on:
-  push:
-    branches: [ "docker" ]
-    paths:
-      - 'Dockerfile'
-      - '.github/workflows/push.yml'
+#on:
+#  push:
+#    branches: [ "docker" ]
+#    paths:
+#      - 'Dockerfile'
+#      - '.github/workflows/push.yml'
 
 jobs:
   push_docker:
