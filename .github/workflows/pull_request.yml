@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Extract metadata (tags, labels) for Docker
-        id: meta
+        id: metadata
         uses: docker/metadata-action@v4
         with:
           images: plitkarka/back_dev
@@ -34,15 +34,16 @@ jobs:
             type=raw,value=dev-{{sha}},enable=${{ github.ref == format('refs/heads/{0}', 'docker') }}            
 
       - name: Build Docker image
+        id: build_image
         uses: docker/build-push-action@v4
         with:
           context: .
           push: false
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.metadata.outputs.tags }}
+          labels: ${{ steps.metadata.outputs.labels }}
 
       - name: Run Docker container
-        run: docker run -d --name back_dev -p 80:80 --expose 8080 plitkarka/back_dev:latest
+        run: docker run -d --name back_dev -p 80:80 --expose 8080 ${{ steps.build_image.outputs.imageid }} #plitkarka/back_dev:latest
 
       - name: Test Docker container
         run: curl -Ik https://localhost/api/health #curl -LI http://localhost/api/health -o /dev/null -w '%{http_code}\n' -s
