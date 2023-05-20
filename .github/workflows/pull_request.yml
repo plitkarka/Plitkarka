@@ -49,9 +49,10 @@ jobs:
         run: sleep 10
 
       - name: Test Docker container
+        id: test
         run: echo "HTTP_CODE=$(curl -LI http://localhost/api/health -o /dev/null -w '%{http_code}\n' -s)" #curl http://localhost/api/health curl -LI http://localhost/api/health -o /dev/null -w '%{http_code}\n' -s
 
       - name: Info Docker container
-        run: echo ${{ env.HTTP_CODE }}
+        run: echo ${{ steps.test.outputs.HTTP_CODE }}
       #run: echo "CONTAINER_ID=$(docker run -d --name back_dev -p 80:80 --expose 8080 plitkarka/back_dev:latest)" >> $GITHUB_ENV
       #docker exec -it ${{ env.CONTAINER_ID }} curl -LI http://localhost/api/health -o /dev/null -w '%{http_code}\n' -s
