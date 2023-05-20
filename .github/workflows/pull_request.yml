@@ -45,15 +45,11 @@ jobs:
       - name: Run Docker container
         run: docker run -d --name back_dev -p 80:80 ${{ steps.build_image.outputs.imageid }} #plitkarka/back_dev:latest
 
-      - name: Sleep
-        run: sleep 20
+#      - name: Sleep
+#        run: sleep 20
 
       - name: Info Docker container
         run: docker ps -a
 
       - name: Test Docker container
-        run: curl -LI http://localhost/api/health -o /dev/null -w '%{http_code}\n' -s #curl http://localhost/api/health curl -LI http://localhost/api/health -o /dev/null -w '%{http_code}\n' -s
-
-
-      #run: echo "CONTAINER_ID=$(docker run -d --name back_dev -p 80:80 --expose 8080 plitkarka/back_dev:latest)" >> $GITHUB_ENV
-      #docker exec -it ${{ env.CONTAINER_ID }} curl -LI http://localhost/api/health -o /dev/null -w '%{http_code}\n' -s
+        run: curl -LI http://localhost/api/health -o /dev/null -w '%{http_code}\n' -s
