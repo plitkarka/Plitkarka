@@ -45,12 +45,12 @@ jobs:
       - name: Run Docker container
         run: docker run -d --name back_dev -p 80:80 ${{ steps.build_image.outputs.imageid }} #plitkarka/back_dev:latest
 
-      - name: Sleep
+      - name: Sleep for 10s
         run: sleep 10
 
       - name: Test Docker container
         id: test
-        run: echo "HTTP_CODE=$(curl -LI http://localhost/api/health -o /dev/null -w '%{http_code}\n' -s)" >> "$GITHUB_OUTPUT" #curl http://localhost/api/health curl -LI http://localhost/api/health -o /dev/null -w '%{http_code}\n' -s
+        run: echo "HTTP_CODE=$(curl http://localhost/api/health)" >> "$GITHUB_OUTPUT" #echo "HTTP_CODE=$(curl -LI http://localhost/api/health -o /dev/null -w '%{http_code}\n' -s)" >> "$GITHUB_OUTPUT"
 
       - name: Info Docker container
         run: echo ${{ steps.test.outputs.HTTP_CODE }}
