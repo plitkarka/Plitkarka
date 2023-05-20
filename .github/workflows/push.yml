@@ -9,12 +9,10 @@ on:
       - '.github/workflows/push.yml'
 
 jobs:
-  docker_build:
+  build:
     name: Create and test Docker image
     runs-on: ubuntu-latest
     outputs:
-      image_tags: ${{ steps.metadata.outputs.tags }}
-      image_labels: ${{ steps.metadata.outputs.labels }}
       health_check: ${{ steps.test.outputs.STATUS }}
     steps:
       - name: Check out the repository
@@ -59,11 +57,11 @@ jobs:
       - name: Info HTTP
         run: echo ${{ steps.test.outputs.STATUS }}
 
-  docker_push:
+  push:
     name: Push Docker image
     runs-on: ubuntu-latest
-    needs: docker_build
-    if: ${{ needs.docker_build.outputs.health_check == 'Healthy' }}
+    needs: build
+    if: ${{ needs.build.outputs.health_check == 'Healthy' }}
     steps:
       - name: Check out the repository
         uses: actions/checkout@v3
