@@ -52,6 +52,9 @@ jobs:
         id: test
         run: echo "HTTP_CODE=$(curl http://localhost/api/health)" >> "$GITHUB_OUTPUT" #echo "HTTP_CODE=$(curl -LI http://localhost/api/health -o /dev/null -w '%{http_code}\n' -s)" >> "$GITHUB_OUTPUT"
 
+      - name: Info HTTP
+        run: echo ${{ steps.test.outputs.HTTP_CODE }}
+
   docker_push:
     name: Push Docker image
     runs-on: ubuntu-latest
