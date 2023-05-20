@@ -56,7 +56,7 @@ jobs:
     name: Push Docker image
     runs-on: ubuntu-latest
     needs: docker_build
-    if: ${{ (needs.docker_build.test.outputs.HTTP_CODE = "Healthy") }}
+    if: ${{ (needs.docker_build.steps.test.outputs.HTTP_CODE = "Healthy") }}
     steps:
       - name: Check out the repository
         uses: actions/checkout@v3
