@@ -50,7 +50,7 @@ jobs:
 
       - name: Test Docker container
         id: test
-        run: echo "HTTP_CODE=$(curl -LI http://localhost/api/health -o /dev/null -w '%{http_code}\n' -s)" #curl http://localhost/api/health curl -LI http://localhost/api/health -o /dev/null -w '%{http_code}\n' -s
+        run: echo "HTTP_CODE=$(curl -LI http://localhost/api/health -o /dev/null -w '%{http_code}\n' -s)" >> "$GITHUB_OUTPUT" #curl http://localhost/api/health curl -LI http://localhost/api/health -o /dev/null -w '%{http_code}\n' -s
 
       - name: Info Docker container
         run: echo ${{ steps.test.outputs.HTTP_CODE }}
