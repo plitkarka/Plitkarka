@@ -50,13 +50,13 @@ jobs:
 
       - name: Test Docker container
         id: test
-        run: echo "HTTP_CODE=$(curl http://localhost/api/health)" >> "$GITHUB_ENV" #echo "HTTP_CODE=$(curl -LI http://localhost/api/health -o /dev/null -w '%{http_code}\n' -s)" >> "$GITHUB_OUTPUT"
+        run: echo "HTTP_CODE=$(curl http://localhost/api/health)" >> "$GITHUB_OUTPUT" #echo "HTTP_CODE=$(curl -LI http://localhost/api/health -o /dev/null -w '%{http_code}\n' -s)" >> "$GITHUB_OUTPUT"
 
   docker_push:
     name: Push Docker image
     runs-on: ubuntu-latest
     needs: docker_build
-    if: ${{ env.HTTP_CODE = "Healthy" }}
+    if: ${{ needs.docker_build.test.outputs.HTTP_CODE = "Healthy" }}
     steps:
       - name: Check out the repository
         uses: actions/checkout@v3
