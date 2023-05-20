@@ -31,8 +31,8 @@ jobs:
             # Latest tag for master branch in DockerHub
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
             # Tag for dev branch in DockerHub
-            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'docker') }}            
-            #dev-{{sha}}
+            type=raw,value=dev-{{sha}},enable=${{ github.ref == format('refs/heads/{0}', 'docker') }}            
+
       - name: Build Docker image
         uses: docker/build-push-action@v4
         with:
@@ -45,7 +45,7 @@ jobs:
         run: docker run -d --name back_dev -p 80:80 --expose 8080 plitkarka/back_dev:latest
 
       - name: Test Docker container
-        run: curl https://localhost/api/health #curl -LI http://localhost/api/health -o /dev/null -w '%{http_code}\n' -s
+        run: curl -Ik https://localhost/api/health #curl -LI http://localhost/api/health -o /dev/null -w '%{http_code}\n' -s
 
       #run: echo "CONTAINER_ID=$(docker run -d --name back_dev -p 80:80 --expose 8080 plitkarka/back_dev:latest)" >> $GITHUB_ENV
       #docker exec -it ${{ env.CONTAINER_ID }} curl -LI http://localhost/api/health -o /dev/null -w '%{http_code}\n' -s
