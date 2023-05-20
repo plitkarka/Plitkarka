@@ -1,12 +1,12 @@
 name: push
 run-name: Create, Test and Push Docker image to DockerHub
 
-#on:
-#  push:
-#    branches: [ "docker" ]
-#    paths:
-#      - 'Dockerfile'
-#      - '.github/workflows/push.yml'
+on:
+  push:
+    branches: [ "docker" ]
+    paths:
+      - 'Dockerfile'
+      - '.github/workflows/push.yml'
 
 jobs:
   push_docker:
@@ -41,20 +41,26 @@ jobs:
           push: false
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-#
-#      - name: Test Docker conteiner
-#        id: test
-#        #command return 200 or ok or true like result
-#        run:
 
-#      - name: Push Docker image
-#        #make testing status true from heals_cheak
-#        if: ${{ steps.test.outputs.status = true }}
-#        uses: docker/build-push-action@v4
-#        with:
-#          context: .
-#          push: true
-#          tags: ${{ steps.meta.outputs.tags }}
-#          labels: ${{ steps.meta.outputs.labels }}
+      - name: Run Docker container
+        run: docker run -d --name back_dev -p 80:80 ${{ steps.build_image.outputs.imageid }} #plitkarka/back_dev:latest
+
+      - name: Sleep for 10s
+        run: sleep 10
+
+      - name: Test Docker container
+        id: test
+        run: echo "HTTP_CODE=$(curl http://localhost/api/health)" >> "$GITHUB_OUTPUT" #echo "HTTP_CODE=$(curl -LI http://localhost/api/health -o /dev/null -w '%{http_code}\n' -s)" >> "$GITHUB_OUTPUT"
+
+
+      - name: Push Docker image
+        #make testing status true from heals_cheak
+        if: ${{ steps.test.outputs.HTTP_CODE = Healthy }}
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
 #make another job for push with true push and need(for test result)
