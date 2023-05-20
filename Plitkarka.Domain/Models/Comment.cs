@@ -1,14 +1,10 @@
-﻿namespace Plitkarka.Domain.Models;
+﻿using Plitkarka.Domain.Models.Abstractions;
 
-public record Comment
+namespace Plitkarka.Domain.Models;
+
+public record Comment : ActivatedLogicModel
 {
-    public Guid Id { get; set; }
-
     public string TextContent { get; set; }
-
-    public DateTime CreationTime { get; set; }
-
-    public bool IsActive { get; set; }
 
     // ----- Relation properties -----
 

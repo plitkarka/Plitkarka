@@ -1,13 +1,9 @@
-﻿namespace Plitkarka.Domain.Models;
+﻿using Plitkarka.Domain.Models.Abstractions;
 
-public record PostShare
+namespace Plitkarka.Domain.Models;
+
+public record PostShare : ActivatedLogicModel
 {
-    public Guid Id { get; set; }
-
-    public DateTime CreationTime { get; set; }
-
-    public bool IsActive { get; set; }
-
     // ----- Relation properties -----
 
     public Guid UserId { get; set; }

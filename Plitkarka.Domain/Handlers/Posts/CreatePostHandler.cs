@@ -15,16 +15,19 @@ public class CreatePostHandler : IRequestHandler<CreatePostRequest, Guid>
 {
     private User _user { get; init; }
     private IRepository<PostEntity> _postRepository { get; init; }
+    private IRepository<PostImageEntity> _postImageRepository { get; init; }
     private IImageService _imageService { get; init; }
     private IMapper _mapper { get; init; }
 
     public CreatePostHandler(
         IRepository<PostEntity> postRepository,
+        IRepository<PostImageEntity> postImageRepository,
         IContextUserService contextUserService,
         IImageService imageService,
         IMapper mapper)
     {
         _postRepository = postRepository;
+        _postImageRepository = postImageRepository;
         _user = contextUserService.User;
         _imageService = imageService;
         _mapper = mapper;
@@ -41,13 +44,20 @@ public class CreatePostHandler : IRequestHandler<CreatePostRequest, Guid>
 
         if (request.Image != null)
         {
-            imageId = await _imageService.UploadImageAsync(request.Image);
+            var imageKey = await _imageService.UploadImageAsync(request.Image);
+
+            var imageEntity = new PostImageEntity()
+            {
+                ImageKey = imageKey
+            };
+
+            imageId = await _postImageRepository.AddAsync(imageEntity);
         }
 
         var newPost = new Post()
         {
             TextContent = request.TextContent,
-            ImageId = imageId,
+            PostImageId = imageId,
             UserId = _user.Id
         };
 

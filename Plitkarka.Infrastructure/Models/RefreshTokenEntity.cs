@@ -1,7 +1,5 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Plitkarka.Infrastructure.ModelAbstractions;
+﻿using System.ComponentModel.DataAnnotations;
+using Plitkarka.Infrastructure.Models.Abstractions;
 
 namespace Plitkarka.Infrastructure.Models;
 

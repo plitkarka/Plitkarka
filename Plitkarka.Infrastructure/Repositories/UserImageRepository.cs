@@ -1,22 +1,21 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 using Plitkarka.Infrastructure.Models;
 using Plitkarka.Infrastructure.Services;
 using Plitkarka.Commons.Exceptions;
 
 namespace Plitkarka.Infrastructure.Repositories;
 
-public class ImageRepository : IRepository<ImageEntity>
+public class UserImageRepository : IRepository<UserImageEntity>
 {
     private MySqlDbContext _db { get; init; }
 
-    public ImageRepository(
+    public UserImageRepository(
        MySqlDbContext db)
     {
         _db = db;
     }
 
-    public async Task<Guid> AddAsync(ImageEntity image)
+    public async Task<Guid> AddAsync(UserImageEntity image)
     {
         if (image == null)
         {
@@ -25,7 +24,7 @@ public class ImageRepository : IRepository<ImageEntity>
 
         try
         {
-            var res = await _db.Images.AddAsync(image);
+            var res = await _db.UserImages.AddAsync(image);
             await _db.SaveChangesAsync();
 
             return res.Entity.Id;
@@ -36,16 +35,16 @@ public class ImageRepository : IRepository<ImageEntity>
         }
     }
 
-    public IQueryable<ImageEntity> GetAll() 
+    public IQueryable<UserImageEntity> GetAll() 
     {
-        return _db.Images;
+        return _db.UserImages;
     }
 
-    public async Task<ImageEntity?> GetByIdAsync(Guid id)
+    public async Task<UserImageEntity?> GetByIdAsync(Guid id)
     {
         try 
         {
-            var res = await _db.Images.FindAsync(id);
+            var res = await _db.UserImages.FindAsync(id);
 
             return res;
         }
@@ -55,7 +54,7 @@ public class ImageRepository : IRepository<ImageEntity>
         }
     }
 
-    public async Task<ImageEntity> UpdateAsync(ImageEntity image)
+    public async Task<UserImageEntity> UpdateAsync(UserImageEntity image)
     {
         if (image == null)
         {
@@ -74,7 +73,7 @@ public class ImageRepository : IRepository<ImageEntity>
             throw new MySqlException(ex.Message);
         }
     }
-    public async Task DeleteAsync(ImageEntity image)
+    public async Task DeleteAsync(UserImageEntity image)
     {
         if (image == null)
         {

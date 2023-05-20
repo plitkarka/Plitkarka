@@ -1,10 +1,10 @@
-﻿namespace Plitkarka.Domain.Models;
+﻿using Plitkarka.Domain.Models.Abstractions;
 
-public record User
+namespace Plitkarka.Domain.Models;
+
+public record User : ActivatedLogicModel
 {
     public static int PasswordAttemptsCount { get; } = 3;
-
-    public Guid Id { get; set; }
 
     public string Login { get; set; }
 
@@ -22,11 +22,7 @@ public record User
 
     public DateTime BirthDate { get; set; }
 
-    public DateTime CreationTime { get; set; }
-
     public DateTime LastLoginDate { get; set; }
-
-    public bool IsActive { get; set; }
 
     public string ChangePasswordCode { get; set; }
 
@@ -34,4 +30,6 @@ public record User
     // ----- Relation properties -----
 
     public RefreshToken? RefreshToken { get; set; } = null;
+
+    public Guid UserImageId { get; set; }
 }
