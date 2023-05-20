@@ -37,7 +37,7 @@ public record UserEntity : ActivatedEntity
     public DateTime LastLoginDate { get; set; }
 
     [MaxLength(6)]
-    public string ChangePasswordCode { get; set; }
+    public string? ChangePasswordCode { get; set; }
 
     // ----- Relation properties -----
 
