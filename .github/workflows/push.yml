@@ -23,7 +23,7 @@ jobs:
           password: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Extract metadata (tags, labels) for Docker
-        id: meta
+        id: metadata
         uses: docker/metadata-action@v4
         with:
           images: plitkarka/back_dev
@@ -34,13 +34,13 @@ jobs:
             type=raw,value=dev-{{sha}},enable=${{ github.ref == format('refs/heads/{0}', 'docker') }}
 
       - name: Build Docker image
-        id: build
+        id: build_image
         uses: docker/build-push-action@v4
         with:
           context: .
           push: false
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.metadata.outputs.tags }}
+          labels: ${{ steps.metadata.outputs.labels }}
 
       - name: Run Docker container
         run: docker run -d -p 80:80 ${{ steps.build_image.outputs.imageid }}
@@ -72,7 +72,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ needs.docker_build.steps.metadata.outputs.tags }}
+          labels: ${{ needs.docker_build.steps.metadata.outputs.labels }}
 
 #make another job for push with true push and need(for test result)
