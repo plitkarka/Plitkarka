@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Org.BouncyCastle.Asn1.Ocsp;
 using Plitkarka.Domain.Models;
+using Plitkarka.Domain.ResponseModels;
 using Plitkarka.Domain.Services.Authentication;
 using Plitkarka.Domain.Services.Encryption;
 using Plitkarka.Infrastructure.Models;
@@ -34,8 +35,11 @@ public class TestController : Controller
     [HttpPost("defaultUser")]
     [SwaggerOperation(
         Summary = "Creates default user with specified name",
-        Description = "Adds user with prepared credentials to database. Default user name is \"admin\", but can be set down with reqeust param to create multiple instances")]
-    public async Task<IActionResult> CreateDefaultUser(string name = "admin")
+        Description = $@"
+            Adds user with prepared credentials to database.
+            Default user name is 'admin', but can be set down with request param to create multiple instances
+        ")]
+    public async Task<ActionResult<TokenPair>> CreateDefaultUser(string name = "admin")
 {
         var salt = _encryptionService.GenerateSalt();
         var newUser = new User()
@@ -56,5 +60,40 @@ public class TestController : Controller
         var pair = await _authenticationService.Authenticate(newUser);
 
         return Ok(pair);
+    }
+
+
+    [HttpPost("defaultUser/many")]
+    [SwaggerOperation(
+        Summary = "Creates many default users",
+        Description = @"
+            Adds some count of users with prepared credentials to database.
+            Default user name is 'admin', but can be set down with request param to create multiple instances
+        ")]
+    public async Task<IActionResult> CreateManyDefaultUsers(string name = "admin", int count = 2)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            var newName = name + i;
+
+            var salt = _encryptionService.GenerateSalt();
+
+            var newUser = new User()
+            {
+                Login = newName,
+                Name = newName,
+                Email = newName + "@gmail.com",
+                EmailCode = "",
+                Password = _encryptionService.Hash("123" + salt),
+                Salt = salt,
+                BirthDate = DateTime.UtcNow,
+                LastLoginDate = DateTime.UtcNow
+            };
+
+            await _userRepository.AddAsync(
+                _mapper.Map<UserEntity>(newUser));
+        }
+
+        return Ok();
     }
 }

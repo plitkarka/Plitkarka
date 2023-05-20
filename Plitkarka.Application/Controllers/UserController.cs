@@ -2,8 +2,10 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using MimeKit.Encodings;
+using Plitkarka.Application.Models;
 using Plitkarka.Application.Models.UserController;
 using Plitkarka.Domain.Filters;
+using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.Users;
 using Plitkarka.Domain.ResponseModels;
 using Swashbuckle.AspNetCore.Annotations;
@@ -74,4 +76,24 @@ public class UserController : Controller
         return Ok(response);
     }
 
+    [HttpGet("all")]
+    [Authorize]
+    [ModelStateValidation]
+    [SwaggerOperation(
+        Summary = "Returns list of users for preview",
+        Description = @$"
+            Returns list of users of specific size, link for next part of the list and total count of users.
+            If Page is not equal 1 total count of users will be -1
+            If there are no more users 
+        ")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<UsersListResponse>> SearchUsers(
+        [FromQuery] PaginationFilterRequestModel query)
+{
+        var response = await _mediator.Send(new SearchUsersRequest(
+            query.Page, 
+            query.Filter));
+
+        return Ok(response);
+    }
 }

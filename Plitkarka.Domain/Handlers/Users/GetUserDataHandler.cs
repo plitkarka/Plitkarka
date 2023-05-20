@@ -35,9 +35,9 @@ public class GetUserDataHandler : IRequestHandler<GetUserDataRequest, UserDataRe
         try
         {
             response = await _userRepository.GetAll()
-                .Include(u => u.Subscribers)
-                .Include(u => u.Subscriptions)
-                .Where(u => u.Id == id)
+                .Include(user => user.Subscribers)
+                .Include(user => user.Subscriptions)
+                .Where(user => user.Id == id)
                 .Select(user => new UserDataResponse
                 {
                     Id = user.Id,
