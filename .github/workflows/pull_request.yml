@@ -45,6 +45,9 @@ jobs:
       - name: Run Docker container
         run: docker run -d --name back_dev -p 80:80 --expose 8080 ${{ steps.build_image.outputs.imageid }} #plitkarka/back_dev:latest
 
+      - name: Info Docker container
+        run: docker ps -a
+
       - name: Test Docker container
         run: curl -Ik http://localhost/api/health #curl -LI http://localhost/api/health -o /dev/null -w '%{http_code}\n' -s
 
