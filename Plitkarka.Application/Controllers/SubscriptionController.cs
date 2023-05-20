@@ -25,7 +25,7 @@ public class SubscriptionController : Controller
     [ModelStateValidation]
     [SwaggerOperation(
         Summary = "Subscribe user to other one", 
-        Description = "Subscribe user to other one. Throws 400 if already subscribed ot user not found")]
+        Description = "Subscribe user to other one. Throws 400 if already subscribed, user not found or user tried to subscribe to himself")]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IdResponse>> Subscribe(

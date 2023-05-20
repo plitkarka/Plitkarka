@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using MimeKit.Encodings;
 using Plitkarka.Application.Models.UserController;
 using Plitkarka.Domain.Filters;
 using Plitkarka.Domain.Requests.Users;
@@ -52,4 +53,25 @@ public class UserController : Controller
 
         return Ok(new StringResponse(url));
     }
+
+    [HttpGet]
+    [Authorize]
+    [ModelStateValidation]
+    [SwaggerOperation(
+        Summary = "Returns info of specific user",
+        Description = @$"
+            Returns info of specific user.
+            If user id is not specified returns info of authorized user.
+            Throws 400 if user not found
+        ")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<UserDataResponse>> GetUserData(
+        [FromQuery] Guid userId)
+    {
+        var response = await _mediator.Send(new GetUserDataRequest(userId));
+
+        return Ok(response);
+    }
+
 }
