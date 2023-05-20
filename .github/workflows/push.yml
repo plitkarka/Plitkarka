@@ -74,12 +74,24 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
+      - name: Extract metadata (tags, labels) for Docker
+        id: metadata
+        uses: docker/metadata-action@v4
+        with:
+          images: plitkarka/back_dev
+          tags: |
+            # Latest tag for master branch in DockerHub
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
+            # Tag for dev branch in DockerHub
+            type=raw,value=dev-{{sha}},enable=${{ github.ref == format('refs/heads/{0}', 'docker') }}
+
+
       - name: Push Docker image
         uses: docker/build-push-action@v4
         with:
           context: .
           push: true
-          tags: ${{ needs.docker_build.outputs.image_tags }}
-          labels: ${{ needs.docker_build.outputs.image_labels }}
+          tags: ${{ steps.metadata.outputs.tags }}
+          labels: ${{ steps.metadata.outputs.labels }}
 
 #make another job for push with true push and need(for test result)
