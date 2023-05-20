@@ -45,8 +45,8 @@ jobs:
       - name: Run Docker container
         run: docker run -d --name back_dev -p 80:80 ${{ steps.build_image.outputs.imageid }} #plitkarka/back_dev:latest
 
-#      - name: Sleep
-#        run: sleep 20
+      - name: Sleep
+        run: sleep 5
 
       - name: Info Docker container
         run: docker ps -a
