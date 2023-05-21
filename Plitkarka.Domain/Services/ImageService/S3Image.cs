@@ -6,26 +6,25 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Plitkarka.Infrastructure.Services;
 using Plitkarka.Infrastructure.Models;
+using Plitkarka.Infrastructure.Models.Abstractions;
+using Org.BouncyCastle.Crypto.Tls;
 
 namespace Plitkarka.Domain.Services.ImageService;
 
-public record S3Image : IImageService
+public record S3Image: IImageService
 {
     private static readonly List<string> _imageExtension = new List<string>() { ".jpg", ".png", ".webp", ".jpeg" };
     private static readonly int _urlExpiresMinutes = 10;
 
     private S3Configuration _s3Configuration { get; init; }
-    private IRepository<ImageEntity> _repository { get; init; }
 
     public S3Image(
-        IOptions<S3Configuration> s3Configuration,
-        IRepository<ImageEntity> repository) 
+        IOptions<S3Configuration> s3Configuration) 
     {
         _s3Configuration = s3Configuration.Value;
-        _repository = repository;
     }
 
-    public async Task<Guid> UploadImageAsync(IFormFile fileStream)
+    public async Task<string> UploadImageAsync(IFormFile fileStream)
     {
         if (fileStream.Length<=0)
         {
@@ -56,25 +55,18 @@ public record S3Image : IImageService
 
                 }
             };
+
             await _s3Configuration.GetClient().PutObjectAsync(putRequest);
-           
         }
         catch (S3ServiceException ex)
         {
             throw new S3ServiceException(ex.Message);
         }
 
-        ImageEntity entity = new ImageEntity()
-        {
-            ImageId = key,
-        };
-
-        var imageId = await _repository.AddAsync(entity);
-
-        return imageId;
+        return key;
     }
 
-    public string DownloadImage(string keyName)
+    public string GetImageUrl(string keyName)
     {
         if (string.IsNullOrEmpty(keyName))
         {
@@ -83,7 +75,7 @@ public record S3Image : IImageService
 
         try
         {
-            GetPreSignedUrlRequest request = new GetPreSignedUrlRequest
+            var request = new GetPreSignedUrlRequest
             {
                 BucketName = _s3Configuration.BucketName,
                 Key = keyName,
@@ -101,15 +93,26 @@ public record S3Image : IImageService
         }
     }
 
-    public async Task DeleteImageAsync(Guid imageId)
+    public async Task DeleteImageAsync(string keyName)
     {
-        var toDelete = await _repository.GetByIdAsync(imageId);
-
-        if (toDelete == null)
+        if (string.IsNullOrEmpty(keyName))
         {
-            throw new ValidationException("Image not found");
+            throw new Exception(nameof(keyName));
         }
 
-        await _repository.DeleteAsync(toDelete);
+        try
+        {
+            var request = new DeleteObjectRequest
+            {
+                BucketName = _s3Configuration.BucketName,
+                Key = keyName,
+            };
+
+            await _s3Configuration.GetClient().DeleteObjectAsync(request);
+        }
+        catch (S3ServiceException ex)
+        {
+            throw new S3ServiceException(ex.Message);
+        }
     }
 }

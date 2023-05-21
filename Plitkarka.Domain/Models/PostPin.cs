@@ -1,11 +1,9 @@
-﻿namespace Plitkarka.Domain.Models;
+﻿using Plitkarka.Domain.Models.Abstractions;
 
-public record PostPin
+namespace Plitkarka.Domain.Models;
+
+public record PostPin : LogicModel
 {
-    public Guid Id { get; set; }
-
-    public DateTime CreationTime { get; set; }
-
     // ----- Relation properties -----
 
     public Guid UserId { get; set; }

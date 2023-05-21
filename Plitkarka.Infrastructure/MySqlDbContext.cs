@@ -1,16 +1,17 @@
-using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
 using Microsoft.EntityFrameworkCore;
-using Plitkarka.Infrastructure.ModelAbstractions;
 using Plitkarka.Infrastructure.Models;
 
 namespace Plitkarka.Infrastructure;
 
 public class MySqlDbContext : DbContext
 {
+    private static bool ShouldDelete = true;
+    private static bool Deleted = false;
+
     public DbSet<UserEntity> Users { get; set; }
     public DbSet<RefreshTokenEntity> RefreshTokens { get; set; }
-    public DbSet<ImageEntity> Images { get; set; }
+    public DbSet<PostImageEntity> PostImages { get; set; }
+    public DbSet<UserImageEntity> UserImages { get; set; }
     public DbSet<PostEntity> Posts { get; set; }
     public DbSet<SubscriptionEntity> Subscriptions { get; set; }
     public DbSet<PostLikeEntity> PostLikes { get; set; }
@@ -24,7 +25,14 @@ public class MySqlDbContext : DbContext
     public MySqlDbContext(DbContextOptions<MySqlDbContext> options)
             : base(options)
     {
-        Database.EnsureDeleted();
+        if (ShouldDelete)
+        {
+            if (!Deleted)
+            {
+                Database.EnsureDeleted();
+                Deleted = true;
+            }
+        }
         Database.EnsureCreated();
     }
 
@@ -39,7 +47,8 @@ public class MySqlDbContext : DbContext
         modelBuilder
             .SetupActivatedEntity<UserEntity>()
             .SetupActivatedEntity<RefreshTokenEntity>()
-            .SetupActivatedEntity<ImageEntity>()
+            .SetupActivatedEntity<PostImageEntity>()
+            .SetupActivatedEntity<UserImageEntity>()
             .SetupActivatedEntity<PostEntity>()
             .SetupActivatedEntity<SubscriptionEntity>()
             .SetupActivatedEntity<SubscriptionEntity>()
@@ -51,20 +60,35 @@ public class MySqlDbContext : DbContext
             .SetupEntity<PostLikeEntity>()
             .SetupEntity<PostPinEntity>();
 
-        // ImageEntity
-        modelBuilder.Entity<ImageEntity>().HasIndex(e => e.ImageId).IsUnique();
+        // PostImageEntity
+        modelBuilder.Entity<PostImageEntity>().HasIndex(e => e.ImageKey).IsUnique();
+
+        // UserImageEntity
+        modelBuilder.Entity<UserImageEntity>().HasIndex(e => e.ImageKey).IsUnique();
 
         // SubscriptionEntities
         modelBuilder
             .Entity<SubscriptionEntity>()
-            .HasOne(se => se.SubscribedTo)
-            .WithMany(ue => ue.Subscribers)
-            .HasForeignKey(se => se.SubscribedToId);
+            .HasOne(e => e.SubscribedTo)
+            .WithMany(e => e.Subscribers)
+            .HasForeignKey(e => e.SubscribedToId);
 
         modelBuilder
             .Entity<SubscriptionEntity>()
-            .HasOne(se => se.User)
-            .WithMany(ue => ue.Subscriptions)
-            .HasForeignKey(se => se.UserId);
+            .HasOne(e => e.User)
+            .WithMany(e => e.Subscriptions)
+            .HasForeignKey(e => e.UserId);
+
+        modelBuilder.Entity<UserImageEntity>()
+            .HasOne(e => e.User)
+            .WithOne(e => e.UserImage)
+            .HasForeignKey<UserEntity>(e => e.UserImageId)
+            .IsRequired(false);
+
+        modelBuilder.Entity<UserEntity>()
+            .HasOne(e => e.UserImage)
+            .WithOne(e => e.User)
+            .HasForeignKey<UserImageEntity>(e => e.UserId)
+            .IsRequired(false);
     }
 }

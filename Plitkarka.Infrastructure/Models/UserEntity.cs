@@ -1,7 +1,6 @@
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Plitkarka.Infrastructure.ModelAbstractions;
+using Plitkarka.Infrastructure.Models.Abstractions;
 
 namespace Plitkarka.Infrastructure.Models;
 
@@ -44,6 +43,10 @@ public record UserEntity : ActivatedEntity
     public Guid? RefreshTokenId { get; set; }
 
     public RefreshTokenEntity? RefreshToken { get; set; }
+
+    public Guid? UserImageId { get; set; }
+
+    public UserImageEntity? UserImage { get; set; }
 
     public ICollection<PostEntity> Posts { get; set; }
 
