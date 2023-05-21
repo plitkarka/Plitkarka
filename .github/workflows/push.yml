@@ -3,7 +3,8 @@ run-name: Create, Test and Push Docker image to DockerHub
 
 on:
   push:
-    branches: [ "docker" ]
+    branches:
+      - docker
     paths:
       - 'Dockerfile'
       - '.github/workflows/push.yml'
