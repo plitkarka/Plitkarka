@@ -40,7 +40,15 @@ public class CreatePostHandler : IRequestHandler<CreatePostRequest, Guid>
             throw new ValidationException("Post should contain either text or image");
         }
 
-        Guid imageId = Guid.Empty;
+        var newPost = new Post()
+        {
+            TextContent = request.TextContent,
+            UserId = _user.Id
+        };
+
+        var postEntity = _mapper.Map<PostEntity>(newPost);
+
+        var id = await _postRepository.AddAsync(postEntity);
 
         if (request.Image != null)
         {
@@ -48,22 +56,14 @@ public class CreatePostHandler : IRequestHandler<CreatePostRequest, Guid>
 
             var imageEntity = new PostImageEntity()
             {
+                PostId = id,
                 ImageKey = imageKey
             };
 
-            imageId = await _postImageRepository.AddAsync(imageEntity);
+            postEntity.PostImageId = await _postImageRepository.AddAsync(imageEntity);
+
+            await _postRepository.UpdateAsync(postEntity);
         }
-
-        var newPost = new Post()
-        {
-            TextContent = request.TextContent,
-            PostImageId = imageId,
-            UserId = _user.Id
-        };
-
-        var postEntity = _mapper.Map<PostEntity>(newPost);
-
-        var id = await _postRepository.AddAsync(postEntity);
 
         return id;
     }

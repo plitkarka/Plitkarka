@@ -1,4 +1,4 @@
-﻿namespace Plitkarka.Application.Models;
+﻿namespace Plitkarka.Application.Models.PaginationModels;
 
 public record PaginationFilterRequestModel : PaginationRequestModel
 {

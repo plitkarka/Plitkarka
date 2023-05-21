@@ -13,7 +13,6 @@ namespace Plitkarka.Domain.Handlers.Users;
 public class GetUserDataHandler : IRequestHandler<GetUserDataRequest, UserDataResponse>
 {
     private User _user { get; init; }
-
     private IRepository<UserEntity> _userRepository { get; init; }
 
     public GetUserDataHandler(

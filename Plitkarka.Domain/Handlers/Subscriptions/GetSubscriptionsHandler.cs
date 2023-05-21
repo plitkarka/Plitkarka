@@ -7,6 +7,7 @@ using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.Subscriptions;
 using Plitkarka.Domain.ResponseModels;
 using Plitkarka.Domain.Services.ContextUser;
+using Plitkarka.Domain.Services.ImageService;
 using Plitkarka.Domain.Services.Pagination;
 using Plitkarka.Infrastructure.Models;
 
@@ -15,15 +16,17 @@ namespace Plitkarka.Domain.Handlers.Subscriptions;
 public class GetSubscriptionsHandler : IRequestHandler<GetSubscriptionsRequest, PaginationResponse<UserPreviewResponse>>
 {
     private User _user { get; init; }
-
     private IPaginationService<SubscriptionEntity> _paginationService { get; init; }
+    private IImageService _imageService { get; init; }
 
     public GetSubscriptionsHandler(
         IContextUserService contextUserService,
-        IPaginationService<SubscriptionEntity> paginationService)
+        IPaginationService<SubscriptionEntity> paginationService,
+        IImageService imageService)
     {
         _user = contextUserService.User;
         _paginationService = paginationService;
+        _imageService = imageService;
     }
 
     public async Task<PaginationResponse<UserPreviewResponse>> Handle(GetSubscriptionsRequest request, CancellationToken cancellationToken)
@@ -34,27 +37,42 @@ public class GetSubscriptionsHandler : IRequestHandler<GetSubscriptionsRequest, 
             ? _user.Id
             : request.UserId;
 
+        if (!await _paginationService.IsEntityExists(userId))
+        {
+            throw new ValidationException("User not found");
+        }
+
         Expression<Func<SubscriptionEntity, bool>> predicate = sub =>
-            sub.UserId == userId;
+            sub.IsActive && sub.UserId == userId;
 
         response.Items = await _paginationService
             .GetPaginatedItemsQuery(
                 request.Page,
                 where: predicate,
                 orderBy: e => e.CreationTime)
-            .Include(e => e.SubscribedTo)
-            .Select(subscription => new UserPreviewResponse
+            .Include(e => e.User)
+                .ThenInclude(e => e.UserImage)
+            .Select(item => new UserPreviewResponse
             {
-                Id = subscription.SubscribedToId,
-                Login = subscription.SubscribedTo.Login,
-                Name = subscription.SubscribedTo.Name,
-                Email = subscription.SubscribedTo.Email
+                UserId = item.SubscribedToId,
+                Login = item.SubscribedTo.Login,
+                Name = item.SubscribedTo.Name,
+                Email = item.SubscribedTo.Email,
+                ImageKey = item.User.UserImage.ImageKey
             })
             .ToListAsync();
 
         if (response.Items.Count == 0)
         {
             throw new NoContentException("No more subscriptions left");
+        }
+
+        foreach (var user in response.Items)
+        {
+            if (user.ImageKey != null)
+            {
+                user.ImageUrl = _imageService.GetImageUrl(user.ImageKey);
+            }
         }
 
         response.TotalCount = request.Page == PaginationConsts.DefaultPage

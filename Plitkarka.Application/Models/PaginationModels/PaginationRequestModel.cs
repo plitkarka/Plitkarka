@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Plitkarka.Commons.Helpers;
 
-namespace Plitkarka.Application.Models;
+namespace Plitkarka.Application.Models.PaginationModels;
 
 public record PaginationRequestModel
 {

@@ -88,7 +88,12 @@ public class PaginationService<T> : IPaginationService<T> where T : Entity
         return filter.IsNullOrEmpty()
             ? nextLink
             : $"{nextLink}&Filter={filter}";
-    }            
+    }   
+    
+    public async Task<bool> IsEntityExists(Guid id)
+    {
+        return await _repository.GetByIdAsync(id) != null;
+    }
 
     private string GetExceptionMessage(Exception ex)
         => $"PaginationService throws exception: {ex.Message}";

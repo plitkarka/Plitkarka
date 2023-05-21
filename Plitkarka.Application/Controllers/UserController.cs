@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using MimeKit.Encodings;
-using Plitkarka.Application.Models;
+using Plitkarka.Application.Models.PaginationModels;
 using Plitkarka.Application.Models.UserController;
 using Plitkarka.Domain.Filters;
 using Plitkarka.Domain.Models;
@@ -92,8 +92,8 @@ public class UserController : Controller
         Summary = "Returns list of users for preview",
         Description = @$"
             Returns list of users of specific size, link for next part of the list and total count of users.
-            If Page is not equal 1 total count of users will be -1.
-            If result list has less number of items then normal the next link will be 'String.Empty'.
+            If 'Page' is not equal 0 total count of users will be -1.
+            If result list has less number of items then normal the 'NextLink' will be 'String.Empty'.
             Returns 204 if no users left
         ")]
     [ProducesResponseType(StatusCodes.Status200OK)]
