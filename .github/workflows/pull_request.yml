@@ -3,10 +3,9 @@ run-name: Create and test Docker image
 
 on:
   pull_request:
-    branches: [ "docker" ]
-    paths:
-      - 'Dockerfile'
-      - '.github/workflows/pull_request.yml'
+    branches:
+      - master
+      - dev
 
 jobs:
   build:
@@ -25,7 +24,7 @@ jobs:
             # Latest tag for master branch in DockerHub
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
             # Tag for dev branch in DockerHub
-            type=raw,value=dev-{{sha}},enable=${{ github.ref == format('refs/heads/{0}', 'docker') }}            
+            type=raw,value=dev-{{sha}},enable=${{ github.ref == format('refs/heads/{0}', 'dev') }}            
 
       - name: Build Docker image
         id: build_image
