@@ -57,7 +57,7 @@ jobs:
 
   push:
     name: Push Docker image
-    runs-on: ${{ env.runner }}
+    runs-on: $env.runner
     needs: build
     if: ${{ needs.build.outputs.health_check == 'Healthy' }}
     steps:
