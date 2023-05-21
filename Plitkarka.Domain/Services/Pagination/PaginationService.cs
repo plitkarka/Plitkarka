@@ -10,6 +10,7 @@ namespace Plitkarka.Domain.Services.Pagination;
 
 public class PaginationService<T> : IPaginationService<T> where T : Entity
 {
+
     private IRepository<T> _repository { get; init; }
 
     public PaginationService(
@@ -42,7 +43,7 @@ public class PaginationService<T> : IPaginationService<T> where T : Entity
         }
 
         if (where != null)
-        {
+    {
             query = query
                 .Where(where);
         }
@@ -65,7 +66,7 @@ public class PaginationService<T> : IPaginationService<T> where T : Entity
         var query = _repository.GetAll();
 
         if (predicate != null)
-        {
+    {
             query = query
                 .Where(predicate);
         }
@@ -87,7 +88,7 @@ public class PaginationService<T> : IPaginationService<T> where T : Entity
         return filter.IsNullOrEmpty()
             ? nextLink
             : $"{nextLink}&Filter={filter}";
-    }
+    }            
 
     private string GetExceptionMessage(Exception ex)
         => $"PaginationService throws exception: {ex.Message}";
