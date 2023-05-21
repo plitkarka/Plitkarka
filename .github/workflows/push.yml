@@ -57,12 +57,10 @@ jobs:
 
       - name: Test Docker container
         id: test
-        run: |
-          echo "STATUS=$(curl http://localhost/api/health)" >> "$GITHUB_OUTPUT"
-          echo ${{ steps.test.outputs.STATUS }}
+        run: echo "STATUS=$(curl http://localhost/api/health)" >> "$GITHUB_OUTPUT"
 
-      - name: Info Docker container
-        run: echo ${{ steps.test.outputs.STATUS }}
+      - name: Information about Testing
+        run: echo Status of working Database - ${{ steps.test.outputs.STATUS }}
 
   push:
     name: Push Docker image
