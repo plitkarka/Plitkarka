@@ -13,7 +13,7 @@ using Plitkarka.Infrastructure.Services;
 
 namespace Plitkarka.Domain.Handlers.ResetPassword;
 
-public class ResetPasswordHandler : IRequestHandler<ResetPasswordRequest, TokenPair>
+public class ResetPasswordHandler : IRequestHandler<ResetPasswordRequest, TokenPairResponse>
 {
     private IRepository<UserEntity> _repository { get; init; }
     private IMapper _mapper { get; init; }
@@ -31,7 +31,7 @@ public class ResetPasswordHandler : IRequestHandler<ResetPasswordRequest, TokenP
         _encryptionService = encryptionService;
         _mapper = mapper;
     }
-    public async Task<TokenPair> Handle(ResetPasswordRequest request, CancellationToken cancellationToken)
+    public async Task<TokenPairResponse> Handle(ResetPasswordRequest request, CancellationToken cancellationToken)
     {
         UserEntity? userEntity;
 

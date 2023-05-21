@@ -5,7 +5,7 @@ namespace Plitkarka.Infrastructure;
 
 public class MySqlDbContext : DbContext
 {
-    private static bool ShouldDelete = true;
+    private static bool ShouldDelete = false;
     private static bool Deleted = false;
 
     public DbSet<UserEntity> Users { get; set; }
@@ -79,6 +79,7 @@ public class MySqlDbContext : DbContext
             .WithMany(e => e.Subscriptions)
             .HasForeignKey(e => e.UserId);
 
+        // UserImageEntity
         modelBuilder.Entity<UserImageEntity>()
             .HasOne(e => e.User)
             .WithOne(e => e.UserImage)
@@ -89,6 +90,19 @@ public class MySqlDbContext : DbContext
             .HasOne(e => e.UserImage)
             .WithOne(e => e.User)
             .HasForeignKey<UserImageEntity>(e => e.UserId)
+            .IsRequired(false);
+
+        // PostImageEntity
+        modelBuilder.Entity<PostImageEntity>()
+            .HasOne(e => e.Post)
+            .WithOne(e => e.PostImage)
+            .HasForeignKey<PostEntity>(e => e.PostImageId)
+            .IsRequired(false);
+
+        modelBuilder.Entity<PostEntity>()
+            .HasOne(e => e.PostImage)
+            .WithOne(e => e.Post)
+            .HasForeignKey<PostImageEntity>(e => e.PostId)
             .IsRequired(false);
     }
 }

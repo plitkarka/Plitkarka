@@ -25,7 +25,10 @@ public class CommentLikeController : Controller
     [ModelStateValidation]
     [SwaggerOperation(
         Summary = "Creates new like", 
-        Description = "Creates like at specific comment for authorized user. Throws 400 if user has already liked this comment or comment not found")]
+        Description = $@"
+            Creates like at specific comment for authorized user.
+            Returns 400 if user has already liked this comment or comment not found
+        ")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IdResponse>> CreateCommentLike(
@@ -41,7 +44,10 @@ public class CommentLikeController : Controller
     [ModelStateValidation]
     [SwaggerOperation(
         Summary = "Deletes like",
-        Description = "Deletes like at specific comment for authorized user. Throw 400 if comment or like not found")]
+        Description = $@"
+            Deletes like at specific comment for authorized user.
+            Returns 400 if comment or like not found
+        ")]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> DeleteCommentLike(
