@@ -62,7 +62,7 @@ jobs:
           echo ${{ steps.test.outputs.STATUS }}
 
       - name: Info Docker container
-        run: echo ${{ steps.test.outputs.HTTP_CODE }}
+        run: echo ${{ steps.test.outputs.STATUS }}
 
   push:
     name: Push Docker image
