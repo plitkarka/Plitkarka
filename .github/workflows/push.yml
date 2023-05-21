@@ -57,7 +57,7 @@ jobs:
           echo Status of working Database: ${{ steps.test.outputs.STATUS }}
 
       - name: Create annotation for build error
-        run: echo "::error file=app.js,line=1::Missing semicolon"
+        run: echo ::set-output name=status::failure
 
   push:
     name: Push Docker image
