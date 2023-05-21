@@ -59,7 +59,7 @@ jobs:
         id: test
         run: |
           echo "STATUS=$(curl http://localhost/api/health)" >> "$GITHUB_OUTPUT"
-          echo Status of working Database: "${{ steps.test.outputs.STATUS }}"
+          echo "Status of working Database: ${{ steps.test.outputs.STATUS }}"
 
   push:
     name: Push Docker image
@@ -94,5 +94,3 @@ jobs:
           push: true
           tags: ${{ steps.metadata.outputs.tags }}
           labels: ${{ steps.metadata.outputs.labels }}
-
-#make another job for push with true push and need(for test result)
