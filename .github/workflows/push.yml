@@ -1,4 +1,4 @@
-name: Docker image
+name: push
 run-name: Create, Test and Push Docker image to DockerHub
 
 on:
@@ -6,6 +6,7 @@ on:
     branches:
       - master
       - dev
+      - docker
 
 jobs:
   build:
