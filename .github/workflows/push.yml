@@ -61,6 +61,9 @@ jobs:
           echo "STATUS=$(curl http://localhost/api/health)" >> "$GITHUB_OUTPUT"
           echo ${{ steps.test.outputs.STATUS }}
 
+      - name: Info Docker container
+        run: echo ${{ steps.test.outputs.HTTP_CODE }}
+
   push:
     name: Push Docker image
     runs-on: ubuntu-latest
