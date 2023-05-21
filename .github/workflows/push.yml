@@ -2,38 +2,31 @@ name: Docker image
 run-name: Create, Test and Push Docker image to DockerHub
 
 on:
-  pull_request:
-    branches: [ "docker" ]
-    paths:
-      - 'Dockerfile'
-      - '.github/workflows/pull_request.yml'
   push:
     branches: [ "docker" ]
     paths:
       - 'Dockerfile'
       - '.github/workflows/push.yml'
 
+env:
+  runner: ubuntu-latest
+  dockerhub_path: plitkarka/back
+
 jobs:
   build:
     name: Create and test Docker image
-    runs-on: ubuntu-latest
+    runs-on: ${{ env.runner }}
     outputs:
       health_check: ${{ steps.test.outputs.STATUS }}
     steps:
       - name: Check out the repository
         uses: actions/checkout@v3
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_TOKEN }}
-
       - name: Extract metadata (tags, labels) for Docker
         id: metadata
         uses: docker/metadata-action@v4
         with:
-          images: plitkarka/back
+          images: ${{ env.dockerhub_path }}
           tags: |
             # Latest tag for master branch in DockerHub
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
@@ -64,9 +57,9 @@ jobs:
 
   push:
     name: Push Docker image
-    runs-on: ubuntu-latest
+    runs-on: ${{ env.runner }}
     needs: build
-    if: github.event.push == true #${{ needs.build.outputs.health_check == 'Healthy' }} && ${{ github.event.issue.pull_request }}
+    if: ${{ needs.build.outputs.health_check == 'Healthy' }}
     steps:
       - name: Check out the repository
         uses: actions/checkout@v3
@@ -81,7 +74,7 @@ jobs:
         id: metadata
         uses: docker/metadata-action@v4
         with:
-          images: plitkarka/back
+          images: ${{ env.dockerhub_path }}
           tags: |
             # Latest tag for master branch in DockerHub
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
