@@ -1,4 +1,4 @@
-name: Testing
+name: push
 run-name: Create, Test and Push Docker image to DockerHub
 
 on:
@@ -52,12 +52,9 @@ jobs:
 
       - name: Test Docker container
         id: test
-        run: echo "STATUS=$(curl http://localhost/api/health)" >> "$GITHUB_OUTPUT"
-
-      - name: Info HTTP
         run: |
-          echo ${{ steps.test.outputs.STATUS }}
-          echo 1111
+          echo "STATUS=$(curl http://localhost/api/health)" >> "$GITHUB_OUTPUT"
+          echo Status of working Database: ${{ steps.test.outputs.STATUS }}
 
   push:
     name: Push Docker image
