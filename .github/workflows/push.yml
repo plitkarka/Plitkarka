@@ -56,14 +56,11 @@ jobs:
           echo "STATUS=$(curl http://localhost/api/health)" >> "$GITHUB_OUTPUT"
           echo Status of working Database: ${{ steps.test.outputs.STATUS }}
 
-      - name: Create annotation for build error
-        run: echo ::set-output name=status::failure
-
   push:
     name: Push Docker image
     runs-on: ubuntu-latest
     needs: build
-    if: ${{ needs.build.outputs.health_check == 'Healthy' }}
+    if: ${{ (needs.build.outputs.health_check == 'Healthy' && github.event.issue.push) }}
     steps:
       - name: Check out the repository
         uses: actions/checkout@v3
