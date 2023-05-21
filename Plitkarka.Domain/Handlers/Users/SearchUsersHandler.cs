@@ -1,6 +1,7 @@
 ﻿using System.Linq.Expressions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Plitkarka.Commons.Exceptions;
 using Plitkarka.Commons.Helpers;
 using Plitkarka.Domain.Requests.Users;
 using Plitkarka.Domain.ResponseModels;
@@ -9,7 +10,7 @@ using Plitkarka.Infrastructure.Models;
 
 namespace Plitkarka.Domain.Handlers.Users;
 
-public class SearchUsersHandler : IRequestHandler<SearchUsersRequest, UsersListResponse>
+public class SearchUsersHandler : IRequestHandler<SearchUsersRequest, PaginationResponse<UserPreviewResponse>>
 {
     private IPaginationService<UserEntity> _paginationService { get; init; }
 
@@ -19,17 +20,18 @@ public class SearchUsersHandler : IRequestHandler<SearchUsersRequest, UsersListR
         _paginationService = paginationService;
     }
 
-    public async Task<UsersListResponse> Handle(SearchUsersRequest request, CancellationToken cancellationToken)
+    public async Task<PaginationResponse<UserPreviewResponse>> Handle(SearchUsersRequest request, CancellationToken cancellationToken)
     {
-        var response = new UsersListResponse();
+        var response = new PaginationResponse<UserPreviewResponse>();
 
         Expression<Func<UserEntity, bool>> predicate = user => 
             user.Login.Contains(request.Filter) || user.Name.Contains(request.Filter);
 
-        response.Users = await _paginationService
+        response.Items = await _paginationService
             .GetPaginatedItemsQuery(
                 request.Page,
-                where: predicate)
+                where: predicate,
+                orderBy: e => e.Login)
             .Select(user => new UserPreviewResponse
             {
                 Id = user.Id,
@@ -39,11 +41,16 @@ public class SearchUsersHandler : IRequestHandler<SearchUsersRequest, UsersListR
             })
             .ToListAsync();
 
+        if (response.Items.Count == 0)
+        {
+            throw new NoContentException("No more users left");
+        }
+
         response.TotalCount = request.Page == PaginationConsts.DefaultPage
             ? await _paginationService.GetCountAsync(predicate)
             : -1;
 
-        response.NextLink = response.Users.Count == PaginationConsts.ItemsPerPage
+        response.NextLink = response.Items.Count == PaginationConsts.ItemsPerPage
             ? _paginationService.GetNextLink(request.Page, request.Filter)
             : String.Empty;
 

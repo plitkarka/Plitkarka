@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Org.BouncyCastle.Asn1.Ocsp;
 using Plitkarka.Domain.Models;
 using Plitkarka.Domain.ResponseModels;
@@ -39,7 +40,7 @@ public class TestController : Controller
             Adds user with prepared credentials to database.
             Default user name is 'admin', but can be set down with request param to create multiple instances
         ")]
-    public async Task<ActionResult<TokenPair>> CreateDefaultUser(string name = "admin")
+    public async Task<ActionResult<TokenPairResponse>> CreateDefaultUser(string name = "admin")
 {
         var salt = _encryptionService.GenerateSalt();
         var newUser = new User()
@@ -95,5 +96,25 @@ public class TestController : Controller
         }
 
         return Ok();
+    }
+
+    [HttpGet("defaultUser")]
+    [SwaggerOperation(
+        Summary = "Login with user name",
+        Description = $@"
+            Login with user name.
+            Default user name is 'admin', but can be set down with request
+        ")]
+    public async Task<ActionResult<TokenPairResponse>> LoginUser(string name = "admin")
+    {
+        var userEntity = await _userRepository
+            .GetAll()
+            .FirstOrDefaultAsync(user => user.Name == name);
+
+        var user = _mapper.Map<User>(userEntity);
+
+        var pair = await _authenticationService.Authenticate(user); 
+
+        return Ok(pair);
     }
 }

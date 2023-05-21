@@ -38,7 +38,7 @@ public class JwtAuthenticationService : IAuthenticationService
     /// </summary>
     /// <param name="toAuthenticate">User that needs to be authenticated</param>
     /// <returns>Pair of tokens</returns>
-    public async Task<TokenPair> Authenticate(User toAuthenticate)
+    public async Task<TokenPairResponse> Authenticate(User toAuthenticate)
     {
         var claims = new List<Claim>
         {
@@ -58,7 +58,7 @@ public class JwtAuthenticationService : IAuthenticationService
 
         var refreshToken = await GenerateRefreshTokenForUser(toAuthenticate);
 
-        var tokenPair =  new TokenPair
+        var tokenPair =  new TokenPairResponse
         {
             AccessToken = accessToken,
             RefreshToken = refreshToken,

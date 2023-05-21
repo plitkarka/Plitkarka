@@ -26,7 +26,10 @@ public class CommentController : Controller
     [ModelStateValidation]
     [SwaggerOperation(
         Summary = "Creates new comment",
-        Description = "Creates comment at specific post for authorized user. Throws 400 if post not found")]
+        Description = $@"
+            Creates comment at specific post for authorized user.
+            Returns 400 if post not found
+        ")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IdResponse>> CreateCommentLike(
@@ -42,7 +45,10 @@ public class CommentController : Controller
     [ModelStateValidation]
     [SwaggerOperation(
         Summary = "Deletes comment", 
-        Description = "Deletes comment at specific post for authorized user. Throws 400 in if user try to delete someone's comment or comment not found")]
+        Description = $@"
+            Deletes comment at specific post for authorized user.
+            Returns 400 in if user try to delete someone's comment or comment not found
+        ")]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> DeleteCommentLike(

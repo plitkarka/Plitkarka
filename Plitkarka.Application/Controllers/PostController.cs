@@ -26,7 +26,10 @@ public class PostController : Controller
     [ModelStateValidation]
     [SwaggerOperation(
         Summary = "Create new Post", 
-        Description = "Creates new post for authorized user. Throws 400 if post does not contain data")]
+        Description = $@"
+            Creates new post for authorized user.
+            Returns 400 if post does not contain data
+        ")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IdResponse>> CreatePost(
@@ -42,7 +45,10 @@ public class PostController : Controller
     [ModelStateValidation]
     [SwaggerOperation(
         Summary = "Delete Post", 
-        Description = "Delete post with specific id for authorized user. Throws 400 in case of: user try to delete someone's post or post not found")]
+        Description = $@"
+            Delete post with specific id for authorized user.
+            Returns 400 in case of: user try to delete someone's post or post not found
+        ")]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> DeletePost(

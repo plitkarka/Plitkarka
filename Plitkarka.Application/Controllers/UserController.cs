@@ -29,7 +29,11 @@ public class UserController : Controller
     [ModelStateValidation]
     [SwaggerOperation(
         Summary = "Sets user profile image",
-        Description = "Sets user profile image. If user already has image, previous would be overwritten. Throws 400 if image bot provided")]
+        Description = @$"
+            Sets user profile image.
+            If user already has image, previous will be overwritten.
+            Returns 400 if image is not provided
+        ")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IdResponse>> SetUserImage(
@@ -45,7 +49,12 @@ public class UserController : Controller
     [ModelStateValidation]
     [SwaggerOperation(
         Summary = "Returns URL for profile image of user whose id was provided",
-        Description = "Returns URL for profile image of user whose id was provided. If user has no image, returns String.Empty. If user id is not provided, returns image of authorized user. Throws 400 if user not found")]
+        Description = @$"
+            Returns URL for profile image of user whose id was provided.
+            If user has no image, returns 'String.Empty'.
+            If user id is not provided, returns image of authorized user.
+            Returns 400 if user not found
+        ")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<StringResponse>> GetUserProfileImage(
@@ -64,7 +73,7 @@ public class UserController : Controller
         Description = @$"
             Returns info of specific user.
             If user id is not specified returns info of authorized user.
-            Throws 400 if user not found
+            Returns 400 if user not found
         ")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -83,11 +92,13 @@ public class UserController : Controller
         Summary = "Returns list of users for preview",
         Description = @$"
             Returns list of users of specific size, link for next part of the list and total count of users.
-            If Page is not equal 1 total count of users will be -1
-            If there are no more users 
+            If Page is not equal 1 total count of users will be -1.
+            If result list has less number of items then normal the next link will be 'String.Empty'.
+            Returns 204 if no users left
         ")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<UsersListResponse>> SearchUsers(
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<ActionResult<PaginationResponse<UserPreviewResponse>>> SearchUsers(
         [FromQuery] PaginationFilterRequestModel query)
 {
         var response = await _mediator.Send(new SearchUsersRequest(

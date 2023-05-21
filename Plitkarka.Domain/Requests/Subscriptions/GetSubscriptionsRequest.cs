@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using Plitkarka.Domain.ResponseModels;
 
-namespace Plitkarka.Domain.Requests.Users;
+namespace Plitkarka.Domain.Requests.Subscriptions;
 
-public record SearchUsersRequest(
+public record GetSubscriptionsRequest(
     int Page,
-    string Filter)
+    Guid UserId)
     : IRequest<PaginationResponse<UserPreviewResponse>>;

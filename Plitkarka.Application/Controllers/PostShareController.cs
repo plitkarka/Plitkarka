@@ -26,7 +26,10 @@ public class PostShareController : Controller
     [ModelStateValidation]
     [SwaggerOperation(
         Summary = "Share post",
-        Description = "Share post for authorized user. Throws 400 if user has already shared this post, post not found or user shares his own post")]
+        Description = $@"
+            Share post for authorized user.
+            Returns 400 if user has already shared this post, post not found or user shares his own post
+        ")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IdResponse>> SharePost(
@@ -42,7 +45,10 @@ public class PostShareController : Controller
     [ModelStateValidation]
     [SwaggerOperation(
         Summary = "Deletes post sharing",
-        Description = "Deletes post sharing for authorized user. Throw 400 if post was not shared or post not found")]
+        Description = $@"
+            Deletes post sharing for authorized user.
+            Returns 400 if post was not shared or post not found
+        ")]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> DeleteCommentLike(

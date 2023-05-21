@@ -1,6 +1,6 @@
 ﻿namespace Plitkarka.Application.Models;
 
-public class PaginationFilterRequestModel : PaginationRequestModel
+public record PaginationFilterRequestModel : PaginationRequestModel
 {
     public string Filter { get; set; } = string.Empty;
 }

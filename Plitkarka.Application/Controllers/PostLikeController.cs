@@ -25,7 +25,10 @@ public class PostLikeController : Controller
     [ModelStateValidation]
     [SwaggerOperation(
         Summary = "Creates new like",
-        Description = "Creates like at specific post for authorized user. Throws 400 if user has already liked this post or post not found")]
+        Description = $@"
+            Creates like at specific post for authorized user.
+            Returns 400 if user has already liked this post or post not found
+        ")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<IdResponse>> CreatePostLike(
@@ -41,7 +44,10 @@ public class PostLikeController : Controller
     [ModelStateValidation]
     [SwaggerOperation(
         Summary = "Deletes like",
-        Description = "Deletes like at specific post for authorized user. Throws 400 if post or like not found")]
+        Description = $@"
+            Deletes like at specific post for authorized user.
+            Returns 400 if post or like not found
+        ")]
     [ProducesResponseType(StatusCodes.Status202Accepted)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> DeletePostLike(

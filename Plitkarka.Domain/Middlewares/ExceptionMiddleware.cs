@@ -44,6 +44,11 @@ public class ExceptionMiddleware
             _logger.LogEmailSendingError(ex.Message);
             await HandleEmailServiceException(httpContext);
         }
+        catch (ArgumentNullException ex)
+        {
+            _logger.LogArgumentNullException(ex.Message);
+            await HandleException(httpContext, ex);
+        }
         catch (ValidationException ex)
         {
             await HandleValidationException(httpContext, ex);
@@ -56,10 +61,9 @@ public class ExceptionMiddleware
         {
             await HandleAuthorizationErrorException(httpContext, ex);
         }
-        catch (ArgumentNullException ex)
+        catch (NoContentException ex)
         {
-            _logger.LogArgumentNullException(ex.Message);
-            await HandleException(httpContext, ex);
+            HandleNoContentException(httpContext, ex);
         }
         catch (Exception ex)
         {
@@ -119,6 +123,12 @@ public class ExceptionMiddleware
         await httpContext.Response.WriteAsync(ex.Message);
     }
 
+    private void HandleNoContentException(HttpContext httpContext, NoContentException ex)
+    {
+        httpContext.Response.StatusCode = (int)HttpStatusCode.NoContent;
+        httpContext.Response.ContentType = textPlain;
+    }
+
     #endregion
 
     private async Task HandleException(HttpContext httpContext, Exception ex)
@@ -126,6 +136,6 @@ public class ExceptionMiddleware
         _logger.LogError(ex.Message);
         httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
         httpContext.Response.ContentType = textPlain;
-        await httpContext.Response.WriteAsync("Internal server error");
+        await httpContext.Response.WriteAsync(ex.Message);
     }
 }

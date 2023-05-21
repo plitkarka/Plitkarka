@@ -12,7 +12,7 @@ using Plitkarka.Infrastructure.Services;
 
 namespace Plitkarka.Domain.Handlers.Authentication;
 
-public class RefreshTokenPairHandler : IRequestHandler<RefreshTokenPairRequest, TokenPair>
+public class RefreshTokenPairHandler : IRequestHandler<RefreshTokenPairRequest, TokenPairResponse>
 {
     private IAuthenticationService _authenticationService { get; init; }
     private IContextAccessTokenService _contextAccessTokenService { get; init; }
@@ -34,7 +34,7 @@ public class RefreshTokenPairHandler : IRequestHandler<RefreshTokenPairRequest, 
         _mapper = mapper;
     }
 
-    public async Task<TokenPair> Handle(RefreshTokenPairRequest request, CancellationToken cancellationToken)
+    public async Task<TokenPairResponse> Handle(RefreshTokenPairRequest request, CancellationToken cancellationToken)
     {
         var token = _contextAccessTokenService.AccessToken;
 

@@ -3,7 +3,7 @@
 /// <summary>
 /// Describe result of getting JwtTokens
 /// </summary>
-public class TokenPair
+public class TokenPairResponse
 {
     public string AccessToken { get; set; }
 

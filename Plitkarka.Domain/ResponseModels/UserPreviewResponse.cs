@@ -10,12 +10,3 @@ public record UserPreviewResponse
 
     public string Email { get; set; }
 }
-
-public record UsersListResponse
-{
-    public string NextLink { get; set; }
-
-    public int TotalCount { get; set; }
-
-    public IList<UserPreviewResponse> Users { get; set; }
-}
