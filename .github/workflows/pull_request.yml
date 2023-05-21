@@ -1,0 +1,36 @@
+name: pull_request
+run-name: Create and test Docker image
+
+on:
+  pull_request:
+    branches:
+      - master
+      - dev
+
+jobs:
+  build:
+    name: Create, build and test Docker image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v3
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: metadata
+        uses: docker/metadata-action@v4
+        with:
+          images: plitkarka/back
+          tags: |
+            # Latest tag for master branch in DockerHub
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
+            # Tag for dev branch in DockerHub
+            type=raw,value=dev-{{sha}},enable=${{ github.ref == format('refs/heads/{0}', 'dev') }}            
+
+      - name: Build Docker image
+        id: build_image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: false
+          tags: ${{ steps.metadata.outputs.tags }}
+          labels: ${{ steps.metadata.outputs.labels }}

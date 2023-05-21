@@ -1,10 +1,10 @@
-﻿namespace Plitkarka.Domain.Models;
+﻿using Plitkarka.Domain.Models.Abstractions;
 
-public class Subscription
+namespace Plitkarka.Domain.Models;
+
+public record Subscription : ActivatedLogicModel
 {
-    public Guid Id { get; set; }
-
-    public bool IsActive { get; set; }
+    // ----- Relation properties -----
 
     public Guid UserId { get; set; }
 

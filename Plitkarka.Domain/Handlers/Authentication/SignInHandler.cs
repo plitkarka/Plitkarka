@@ -13,7 +13,7 @@ using Plitkarka.Infrastructure.Services;
 namespace Plitkarka.Domain.Handlers.Authentication;
 
 public class SignInHandler
-    : IRequestHandler<SignInRequest, TokenPair>
+    : IRequestHandler<SignInRequest, TokenPairResponse>
 {
     private static readonly string ValidationExceptionText = "Wrong email or password";
     private IRepository<UserEntity> _repository { get; init; }
@@ -33,7 +33,7 @@ public class SignInHandler
         _authenticationService = authenticationService; 
     }
 
-    public async Task<TokenPair> Handle(
+    public async Task<TokenPairResponse> Handle(
         SignInRequest request, 
         CancellationToken cancellationToken)
     {

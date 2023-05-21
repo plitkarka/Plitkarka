@@ -13,7 +13,7 @@ using Plitkarka.Infrastructure.Services;
 namespace Plitkarka.Domain.Handlers.Authentication;
 
 public class VerifyEmailHandler 
-    : IRequestHandler<VerifyEmailRequest, TokenPair>
+    : IRequestHandler<VerifyEmailRequest, TokenPairResponse>
 {
     private IRepository<UserEntity> _repository { get; init; }
     private IMapper _mapper { get; init; }
@@ -29,7 +29,7 @@ public class VerifyEmailHandler
         _authenticationService = authenticationService;
     }
 
-    public async Task<TokenPair> Handle(
+    public async Task<TokenPairResponse> Handle(
         VerifyEmailRequest request,
         CancellationToken cancellationToken)
     {

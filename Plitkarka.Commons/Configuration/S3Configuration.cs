@@ -18,6 +18,7 @@ public record S3Configuration
             var awsCredentials = new Amazon.Runtime.BasicAWSCredentials(AccessKey, SecretKey);
             _client = new AmazonS3Client(awsCredentials, RegionEndpoint.EUCentral1);
         }
+
         return _client;
     }
 }

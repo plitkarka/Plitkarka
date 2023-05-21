@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Plitkarka.Infrastructure.Models.Abstractions;
 
 namespace Plitkarka.Domain.Services.ImageService;
 
 public interface IImageService
 {
-    Task<Guid> UploadImageAsync(IFormFile fileStream);
-    string DownloadImage(string keyName);
-    Task DeleteImageAsync(Guid imageId);
+    Task<string> UploadImageAsync(IFormFile fileStream);
+    string GetImageUrl(string keyName);
+    Task DeleteImageAsync(string keyName);
 }
 

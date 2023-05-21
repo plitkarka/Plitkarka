@@ -24,7 +24,12 @@ public class AuthController : Controller
     [ModelStateValidation]
     [SwaggerOperation(
         Summary = "User Sign up",
-        Description = "Register new user entity using data sent with request. Returns email. Throws 400 if Login or Email is already used. In this case has response header \"FailedParam\" with the name of failed parameter (Email/Login)")]
+        Description = $@"
+            Register new user entity using data sent with request.
+            Returns email.
+            Returns 400 if Login or Email is already used.
+            In this case has response header 'FailedParam' with the name of failed parameter (Email/Login)
+        ")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<StringResponse>> SignUp(
@@ -44,10 +49,14 @@ public class AuthController : Controller
     [ModelStateValidation]
     [SwaggerOperation(
         Summary = "Verify email", 
-        Description = "Receives email code sent after registration and verifies it. Throws 400 if email is not found, email code is wrong or user is already verified. If code is wrong has response header \"FailedParam\" with value \"EmailCode\"")]
+        Description = $@"
+            Receives email code sent after registration and verifies it.
+            Returns 400 if email is not found, email code is wrong or user is already verified.
+            If code is wrong has response header 'FailedParam' with value 'EmailCode'
+        ")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<TokenPair>> VerifyEmail(
+    public async Task<ActionResult<TokenPairResponse>> VerifyEmail(
         [FromBody] VerifyEmailRequestModel body)
     {
         var pair = await _mediator.Send(new VerifyEmailRequest(
@@ -61,7 +70,10 @@ public class AuthController : Controller
     [ModelStateValidation]
     [SwaggerOperation(
         Summary = "Resend Verification Code", 
-        Description = "Send verification code once more time at certain email. Returns email. Throws 400 if email is not found or user already verified")]
+        Description = $@"
+            Send verification code once more time at certain email.
+            Returns email.
+            Returns 400 if email is not found or user already verified")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<StringResponse>> ResendVerificationCode(
@@ -76,10 +88,14 @@ public class AuthController : Controller
     [ModelStateValidation]
     [SwaggerOperation(
         Summary = "User Sign In", 
-        Description = "Login user into his account. Return token pair for account access. Throws 400 if email or passwrod is wrong")]
+        Description = $@"
+            Login user into his account.
+            Return token pair for account access.
+            Returns 400 if email or passwrod is wrong
+        ")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<TokenPair>> SignIn(
+    public async Task<ActionResult<TokenPairResponse>> SignIn(
         [FromBody] SignInBodyRequestModel body)
     {
         var pair = await _mediator.Send(new SignInRequest(
@@ -93,10 +109,13 @@ public class AuthController : Controller
     [HttpGet("refresh")]
     [SwaggerOperation(
         Summary = "Refresh Token Pair", 
-        Description = "Receive refresh token to return new token pair. Throws 403 if access token user not found, refresh token is invalid, not active or expired")]
+        Description = $@"
+            Receive refresh token to return new token pair.
+            Throws 403 if access token user not found, refresh token is invalid, not active or expired
+        ")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<ActionResult<TokenPair>> RefreshTokenPair(
+    public async Task<ActionResult<TokenPairResponse>> RefreshTokenPair(
         [FromQuery] string refreshToken)
     {
         var pair = await _mediator.Send(new RefreshTokenPairRequest(refreshToken));
