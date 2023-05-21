@@ -33,7 +33,6 @@ public class MySqlDbContext : DbContext
                 Deleted = true;
             }
         }
-
         Database.EnsureCreated();
     }
 
