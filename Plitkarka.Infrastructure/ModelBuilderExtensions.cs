@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Plitkarka.Infrastructure.ModelAbstractions;
+using Plitkarka.Infrastructure.Models.Abstractions;
 
 namespace Plitkarka.Infrastructure;
 

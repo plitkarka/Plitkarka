@@ -1,4 +1,4 @@
-﻿namespace Plitkarka.Domain.Models;
+﻿namespace Plitkarka.Domain.ResponseModels;
 
 public class VerifyCodeResponse
 {

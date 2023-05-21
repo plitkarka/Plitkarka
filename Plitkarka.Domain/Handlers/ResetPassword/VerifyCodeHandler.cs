@@ -2,8 +2,8 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Plitkarka.Commons.Exceptions;
-using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.PasswordManager;
+using Plitkarka.Domain.ResponseModels;
 using Plitkarka.Domain.Services.EmailService;
 using Plitkarka.Infrastructure.Models;
 using Plitkarka.Infrastructure.Services;
