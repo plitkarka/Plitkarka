@@ -1,7 +1,12 @@
-name: push
+name: Docker image
 run-name: Create, Test and Push Docker image to DockerHub
 
 on:
+  pull_request:
+    branches: [ "docker" ]
+    paths:
+      - 'Dockerfile'
+      - '.github/workflows/pull_request.yml'
   push:
     branches: [ "docker" ]
     paths:
@@ -54,7 +59,7 @@ jobs:
         id: test
         run: |
           echo "STATUS=$(curl http://localhost/api/health)" >> "$GITHUB_OUTPUT"
-          echo Status of working Database: ${{ steps.test.outputs.STATUS }}
+          echo Status of working Database: "${{ steps.test.outputs.STATUS }}"
 
   push:
     name: Push Docker image
