@@ -8,14 +8,10 @@ on:
       - 'Dockerfile'
       - '.github/workflows/push.yml'
 
-env:
-  runner: ubuntu-latest
-  dockerhub_path: plitkarka/back
-
 jobs:
   build:
     name: Create and test Docker image
-    runs-on: $env.runner
+    runs-on: ubuntu-latest
     outputs:
       health_check: ${{ steps.test.outputs.STATUS }}
     steps:
@@ -26,7 +22,7 @@ jobs:
         id: metadata
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.dockerhub_path }}
+          images: plitkarka/back
           tags: |
             # Latest tag for master branch in DockerHub
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
@@ -57,7 +53,7 @@ jobs:
 
   push:
     name: Push Docker image
-    runs-on: $env.runner
+    runs-on: ubuntu-latest
     needs: build
     if: ${{ needs.build.outputs.health_check == 'Healthy' }}
     steps:
@@ -74,7 +70,7 @@ jobs:
         id: metadata
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.dockerhub_path }}
+          images: plitkarka/back
           tags: |
             # Latest tag for master branch in DockerHub
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
