@@ -15,7 +15,7 @@ env:
 jobs:
   build:
     name: Create and test Docker image
-    runs-on: ${{ env.runner }}
+    runs-on: $env.runner
     outputs:
       health_check: ${{ steps.test.outputs.STATUS }}
     steps:
