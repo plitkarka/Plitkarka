@@ -39,7 +39,7 @@ public class PaginationService<T> : IPaginationService<T> where T : Entity
         if (orderBy != null)
         {
             query = query
-                .OrderBy(orderBy);
+                .OrderByDescending(orderBy);
         }
 
         if (where != null)
