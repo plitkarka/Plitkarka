@@ -12,5 +12,5 @@ public record UserPreviewResponse
 
     public string ImageKey { get; set; }
 
-    public string ImageUrl { get; set; }
+    public string? ImageUrl { get; set; }
 }

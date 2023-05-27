@@ -1,7 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using MimeKit.Encodings;
 using Plitkarka.Application.Models.PaginationModels;
 using Plitkarka.Application.Models.UserController;
 using Plitkarka.Domain.Filters;
