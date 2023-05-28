@@ -30,7 +30,7 @@ jobs:
         run: echo $EMAILSERVICE__USERNAME
 
       - name: Variables
-        run: echo $EMAILSERVICE__DISPLAYNAME
+        run: echo ${{ vars.EMAILSERVICE__DISPLAYNAME }}
 
 
 #      - name: Build Docker image
