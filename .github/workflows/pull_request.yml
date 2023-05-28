@@ -11,6 +11,8 @@ jobs:
   build:
     name: Create, build and test Docker image
     runs-on: ubuntu-latest
+    outputs:
+      health_check: ${{ steps.test.outputs.STATUS }}
     steps:
       - name: Check out the repository
         uses: actions/checkout@v3
