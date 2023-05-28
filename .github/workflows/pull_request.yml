@@ -72,4 +72,3 @@ jobs:
       - name: Information about Testing
         run: echo Status of working Database - ${{ steps.test.outputs.STATUS }}
 
-
