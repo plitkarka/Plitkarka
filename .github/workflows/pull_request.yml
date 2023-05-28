@@ -32,6 +32,7 @@ jobs:
       - name: Variables
         run: echo $EMAILSERVICE__DISPLAYNAME
 
+
 #      - name: Build Docker image
 #        id: build_image
 #        uses: docker/build-push-action@v4
