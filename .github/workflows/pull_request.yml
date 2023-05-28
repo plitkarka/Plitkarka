@@ -62,6 +62,9 @@ jobs:
       - name: Sleep for 10s
         run: sleep 10
 
+      - name: info
+        run: docker ps -a
+
       - name: Test Docker container
         id: test
         run: echo "STATUS=$(curl http://localhost/api/health)" >> "$GITHUB_OUTPUT"
