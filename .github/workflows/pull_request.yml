@@ -26,11 +26,18 @@ jobs:
             # Tag for dev branch in DockerHub
             type=raw,value=dev-{{sha}},enable=${{ github.ref == format('refs/heads/{0}', 'dev') }}
 
+      - name: Script
+        uses: actions/github-script@v6
+        with:
+          script: |
+            export EMAILSERVICE_USERNAME=${{ secrets.EMAILSERVICE__USERNAME }}
+            export EMAILSERVICE_DISPLAYNAME=${{ vars.EMAILSERVICE__DISPLAYNAME }}
+
       - name: Secrets
-        run: echo ${{ secrets.EMAILSERVICE__USERNAME }}
+        run: echo $EMAILSERVICE_USERNAME
 
       - name: Variables
-        run: echo ${{ vars.EMAILSERVICE__DISPLAYNAME }}
+        run: echo $EMAILSERVICE_DISPLAYNAME
 
 
 #      - name: Build Docker image
