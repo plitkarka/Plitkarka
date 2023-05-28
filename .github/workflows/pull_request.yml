@@ -27,7 +27,7 @@ jobs:
             type=raw,value=dev-{{sha}},enable=${{ github.ref == format('refs/heads/{0}', 'dev') }}
 
       - name: Secrets
-        run: echo $EMAILSERVICE__USERNAME
+        run: echo ${{ secrets.EMAILSERVICE__USERNAME }}
 
       - name: Variables
         run: echo ${{ vars.EMAILSERVICE__DISPLAYNAME }}
