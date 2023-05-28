@@ -24,13 +24,20 @@ jobs:
             # Latest tag for master branch in DockerHub
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
             # Tag for dev branch in DockerHub
-            type=raw,value=dev-{{sha}},enable=${{ github.ref == format('refs/heads/{0}', 'dev') }}            
+            type=raw,value=dev-{{sha}},enable=${{ github.ref == format('refs/heads/{0}', 'dev') }}
 
-      - name: Build Docker image
-        id: build_image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: false
-          tags: ${{ steps.metadata.outputs.tags }}
-          labels: ${{ steps.metadata.outputs.labels }}
+      - name: Secrets
+        run: echo $EMAILSERVICE__USERNAME
+
+      - name: Variables
+        run: echo $EMAILSERVICE__DISPLAYNAME
+
+#      - name: Build Docker image
+#        id: build_image
+#        uses: docker/build-push-action@v4
+#        with:
+#          context: .
+#          push: false
+#          tags: ${{ steps.metadata.outputs.tags }}
+#          labels: ${{ steps.metadata.outputs.labels }}
+
