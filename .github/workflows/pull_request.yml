@@ -11,8 +11,6 @@ jobs:
   build:
     name: Create, build and test Docker image
     runs-on: ubuntu-latest
-    outputs:
-      health_check: ${{ steps.test.outputs.STATUS }}
     steps:
       - name: Check out the repository
         uses: actions/checkout@v3
@@ -40,7 +38,7 @@ jobs:
       - name: Run Docker container
         run: |
           docker run -d \
-          -e Logging__LogLevel__Default='${{ vars.LOGGING__LOGLEVEL__DEFAULT }}' \
+          -e Logging__LogLevel__Default=${{ vars.LOGGING__LOGLEVEL__DEFAULT }} \
           -e Logging__LogLevel__Microsoft.AspNetCore='${{ vars.LOGGING__LOGLEVEL__MICROSOFT_ASPNETCORE }}' \
           -e Logging__LogLevel__Microsoft.EntityFrameworkCore.Database.Command='${{ vars.LOGGING__LOGLEVEL__MICROSOFT_ENTITYFRAMEWORKCORE_DATABASE_COMMAND }}' \
           -e AllowedHosts='${{ vars.ALLOWEDHOSTS }}' \
