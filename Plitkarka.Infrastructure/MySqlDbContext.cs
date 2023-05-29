@@ -5,7 +5,7 @@ namespace Plitkarka.Infrastructure;
 
 public class MySqlDbContext : DbContext
 {
-    private static bool ShouldDelete = true;
+    private static bool ShouldDelete = false;
     private static bool Deleted = false;
 
     public DbSet<UserEntity> Users { get; set; }
