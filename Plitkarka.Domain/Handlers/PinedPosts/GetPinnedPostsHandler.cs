@@ -79,7 +79,7 @@ public class GetPinnedPostsHandler : IRequestHandler<GetPinnedPostsRequest, Pagi
                 SharesCount = item.Post.Shares.Count(),
                 UserPreview = new UserPreviewResponse
                 {
-                    UserId = item.Post.UserId,
+                    Id = item.Post.Id,
                     Login = item.Post.User.Login,
                     Name = item.Post.User.Name,
                     Email = item.Post.User.Email,

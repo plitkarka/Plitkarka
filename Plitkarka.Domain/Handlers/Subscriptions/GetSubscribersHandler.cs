@@ -55,7 +55,7 @@ public class GetSubscribersHandler : IRequestHandler<GetSubscribersRequest, Pagi
                 .ThenInclude(e => e.UserImage)
             .Select(item => new UserPreviewResponse
             {
-                UserId = item.UserId,
+                Id = item.Id,
                 Login = item.User.Login,
                 Name = item.User.Name,
                 Email = item.User.Email,

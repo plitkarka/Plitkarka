@@ -54,7 +54,7 @@ public class GetSubscriptionsHandler : IRequestHandler<GetSubscriptionsRequest, 
                 .ThenInclude(e => e.UserImage)
             .Select(item => new UserPreviewResponse
             {
-                UserId = item.SubscribedToId,
+                Id = item.Id,
                 Login = item.SubscribedTo.Login,
                 Name = item.SubscribedTo.Name,
                 Email = item.SubscribedTo.Email,
