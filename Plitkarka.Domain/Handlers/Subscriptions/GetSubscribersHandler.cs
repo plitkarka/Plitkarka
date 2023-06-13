@@ -11,6 +11,7 @@ using Plitkarka.Domain.Services.ContextUser;
 using Plitkarka.Domain.Services.ImageService;
 using Plitkarka.Domain.Services.Pagination;
 using Plitkarka.Infrastructure.Models;
+using Plitkarka.Infrastructure.Services;
 
 namespace Plitkarka.Domain.Handlers.Subscriptions;
 
@@ -18,15 +19,18 @@ public class GetSubscribersHandler : IRequestHandler<GetSubscribersRequest, Pagi
 {
     private User _user { get; init; }
     private IPaginationService<SubscriptionEntity> _paginationService { get; init; }
+    private IRepository<UserEntity> _userRepository { get; init; }
     private IImageService _imageService { get; init; }
 
     public GetSubscribersHandler(
         IContextUserService contextUserService,
         IPaginationService<SubscriptionEntity> paginationService,
+        IRepository<UserEntity> userRepository,
         IImageService imageService)
     {
         _user = contextUserService.User;
         _paginationService = paginationService;
+        _userRepository = userRepository;
         _imageService = imageService;
     }
 
@@ -38,7 +42,7 @@ public class GetSubscribersHandler : IRequestHandler<GetSubscribersRequest, Pagi
             ? _user.Id
             : request.UserId;
 
-        if (!await _paginationService.IsEntityExists(userId))
+        if (await _userRepository.GetByIdAsync(userId) == null)
         {
             throw new ValidationException("User not found");
         }
