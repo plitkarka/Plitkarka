@@ -33,6 +33,11 @@ public static partial class Program
             .AddTransient<IRepository<CommentEntity>, CommentRepository>()
             .AddTransient<IRepository<CommentLikeEntity>, CommentLikeRepository>()
             .AddTransient<IRepository<PostPinEntity>, PostPinRepository>()
-            .AddTransient<IRepository<PostShareEntity>, PostShareRepository>(); 
+            .AddTransient<IRepository<PostShareEntity>, PostShareRepository>()
+            .AddTransient<IRepository<HubConnectionEntity>, HubConnectionRepository>()
+            .AddTransient<IRepository<ChatUserConfigurationEntity>, ChatUserConfigurationRepository>()
+            .AddTransient<IRepository<ChatEntity>, ChatRepository>()
+            .AddTransient<IRepository<ChatMessageEntity>, ChatMessageRepository>()
+            .AddTransient<IRepository<ChatMessageImageEntity>, ChatMessageImageRepository>(); 
     }
 }

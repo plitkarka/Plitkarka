@@ -15,7 +15,22 @@ public class ContextAccessTokenService : IContextAccessTokenService
 
     public string? AccessToken
     {
-        get => _httpContextAccessor.HttpContext.Request.Headers[AuthorizationHeaderName]
+        get
+        {
+            var token = GetHeaderValue(AuthorizationHeaderName);
+
+            if (token == null)
+            {
+                token = GetHeaderValue("Authorization");
+            }
+
+            return token;
+        }
+    }
+
+    private string? GetHeaderValue(string headerName)
+    {
+        return _httpContextAccessor.HttpContext.Request.Headers[headerName]
             .FirstOrDefault()
             ?.Split(" ")
             .Last();
