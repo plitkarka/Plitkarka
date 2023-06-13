@@ -1,4 +1,5 @@
 using Plitkarka.Application;
+using Plitkarka.Application.Hubs;
 using Plitkarka.Domain.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,10 +14,13 @@ builder.Host
             .AddMySql()
             .AddMapping()
             .AddSwagger()
+            .AddSignaR()
             .AddMyHealthChecks(hostContext.Configuration);
     });
 
 var app = builder.Build();
+
+app.UseRouting();
 
 app.UseCors(builder => builder.AllowAnyOrigin());
 
@@ -25,7 +29,12 @@ app.MapHealthChecks("/api/health");
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseMiddleware<ExceptionMiddleware>();
+app.UseWhen(
+    context => context.Request.Path.StartsWithSegments("/api"),
+    app =>
+    {
+        app.UseMiddleware<ExceptionMiddleware>();
+    });
 
 if (app.Environment.IsDevelopment())
 {
@@ -38,6 +47,10 @@ else
     app.UseMiddleware<AuthorizationMiddleware>();
 }
 
-app.MapControllers();     
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<ChatHub>("/signalr/chat");
+    endpoints.MapControllers();
+});
 
 app.Run();

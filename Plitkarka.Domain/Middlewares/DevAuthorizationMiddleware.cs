@@ -30,8 +30,7 @@ public class DevAuthorizationMiddleware : AuthorizationMiddleware
         authorizationService,
         mapper, 
         contextUserService,
-        contextAccessTokenService
-        )
+        contextAccessTokenService)
     {
 
     }

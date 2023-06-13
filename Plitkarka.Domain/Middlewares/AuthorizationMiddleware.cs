@@ -58,6 +58,11 @@ public class AuthorizationMiddleware
 
             user = await userRepository.GetByIdAsync(userId);
 
+            if (user == null)
+            {
+                throw new AuthorizationErrorException("User not found");
+            }
+
             if (user.EmailCode != EmailService.VerifiedCode)
             {
                 throw new AuthorizationErrorException("Email is not verified");
