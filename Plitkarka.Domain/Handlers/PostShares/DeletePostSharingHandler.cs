@@ -29,7 +29,7 @@ public class DeletePostSharingHandler : IRequestHandler<DeletePostSharingRequest
     {
         var post = await _postRepository.GetByIdAsync(request.PostId);
 
-        if (post == null || !post.IsActive)
+        if (post == null)
         {
             throw new ValidationException("Post not found");
         }

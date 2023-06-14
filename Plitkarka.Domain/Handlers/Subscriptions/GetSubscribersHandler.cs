@@ -47,8 +47,7 @@ public class GetSubscribersHandler : IRequestHandler<GetSubscribersRequest, Pagi
             throw new ValidationException("User not found");
         }
 
-        Expression<Func<SubscriptionEntity, bool>> predicate = sub =>
-            sub.IsActive && sub.SubscribedToId == userId;
+        Expression<Func<SubscriptionEntity, bool>> predicate = sub => sub.SubscribedToId == userId;
 
         response.Items = await _paginationService
             .GetPaginatedItemsQuery(

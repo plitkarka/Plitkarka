@@ -30,7 +30,7 @@ public class UnsubscribeHandler : IRequestHandler<UnsubscribeRequest>
     {
         var user = await _userRepository.GetByIdAsync(request.UnsubscribeFromId);
 
-        if (user == null || !user.IsActive)
+        if (user == null)
         {
             throw new ValidationException("No user found");
         }
@@ -47,7 +47,7 @@ public class UnsubscribeHandler : IRequestHandler<UnsubscribeRequest>
             throw new MySqlException(ex.Message);
         }
 
-        if (existing == null || !existing.IsActive)
+        if (existing == null)
         {
             throw new ValidationException("No subscription found");
         }

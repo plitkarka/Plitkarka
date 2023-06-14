@@ -55,16 +55,22 @@ public class PostShareRepository : IRepository<PostShareEntity>
         }
     }
 
-    public IQueryable<PostShareEntity> GetAll()
+    public IQueryable<PostShareEntity> GetAll(bool includeNonActive = false)
     {
-        return _db.PostShares;
+        return includeNonActive
+            ? _db.PostShares
+            : _db.PostShares.Where(u => u.IsActive);
     }
 
-    public async Task<PostShareEntity?> GetByIdAsync(Guid id)
+    public async Task<PostShareEntity?> GetByIdAsync(Guid id, bool includeNonActive = false)
     {
         try
         {
-            var result = await _db.PostShares.FindAsync(id);
+            var result = includeNonActive
+                ? await _db.PostShares
+                    .FirstOrDefaultAsync(u => u.Id == id)
+                : await _db.PostShares
+                    .FirstOrDefaultAsync(u => u.Id == id && u.IsActive);
 
             return result;
         }

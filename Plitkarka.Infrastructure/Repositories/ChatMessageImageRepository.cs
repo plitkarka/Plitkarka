@@ -35,16 +35,22 @@ public class ChatMessageImageRepository : IRepository<ChatMessageImageEntity>
         }
     }
 
-    public IQueryable<ChatMessageImageEntity> GetAll()
+    public IQueryable<ChatMessageImageEntity> GetAll(bool includeNonActive = false)
     {
-        return _db.ChatMessageImages;
+        return includeNonActive
+            ? _db.ChatMessageImages
+            : _db.ChatMessageImages.Where(u => u.IsActive);
     }
 
-    public async Task<ChatMessageImageEntity?> GetByIdAsync(Guid id)
+    public async Task<ChatMessageImageEntity?> GetByIdAsync(Guid id, bool includeNonActive = false)
     {
         try
         {
-            var res = await _db.ChatMessageImages.FindAsync(id);
+            var res = includeNonActive
+                ? await _db.ChatMessageImages
+                    .FirstOrDefaultAsync(u => u.Id == id)
+                : await _db.ChatMessageImages
+                    .FirstOrDefaultAsync(u => u.Id == id && u.IsActive);
 
             return res;
         }

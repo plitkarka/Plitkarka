@@ -35,16 +35,22 @@ public class UserImageRepository : IRepository<UserImageEntity>
         }
     }
 
-    public IQueryable<UserImageEntity> GetAll() 
+    public IQueryable<UserImageEntity> GetAll(bool includeNonActive = false) 
     {
-        return _db.UserImages;
+        return includeNonActive
+            ? _db.UserImages
+            : _db.UserImages.Where(u => u.IsActive);
     }
 
-    public async Task<UserImageEntity?> GetByIdAsync(Guid id)
+    public async Task<UserImageEntity?> GetByIdAsync(Guid id, bool includeNonActive = false)
     {
         try 
         {
-            var res = await _db.UserImages.FindAsync(id);
+            var res = includeNonActive
+                ? await _db.UserImages
+                    .FirstOrDefaultAsync(u => u.Id == id)
+                : await _db.UserImages
+                    .FirstOrDefaultAsync(u => u.Id == id && u.IsActive);
 
             return res;
         }
@@ -73,6 +79,7 @@ public class UserImageRepository : IRepository<UserImageEntity>
             throw new MySqlException(ex.Message);
         }
     }
+
     public async Task DeleteAsync(UserImageEntity image)
     {
         if (image == null)

@@ -35,12 +35,15 @@ public class ChatUserConfigurationRepository : IRepository<ChatUserConfiguration
         }
     }
 
-    public async Task<ChatUserConfigurationEntity?> GetByIdAsync(Guid id)
+    public async Task<ChatUserConfigurationEntity?> GetByIdAsync(Guid id, bool includeNonActive = false)
     {
         try
         {
-            var result = await _db.ChatUserConfigurations
-                .FirstOrDefaultAsync(u => u.Id == id);
+            var result = includeNonActive
+                ? await _db.ChatUserConfigurations
+                    .FirstOrDefaultAsync(u => u.Id == id)
+                : await _db.ChatUserConfigurations
+                    .FirstOrDefaultAsync(u => u.Id == id && u.IsActive);
 
             return result;
         }
@@ -50,9 +53,11 @@ public class ChatUserConfigurationRepository : IRepository<ChatUserConfiguration
         }
     }
 
-    public IQueryable<ChatUserConfigurationEntity> GetAll()
+    public IQueryable<ChatUserConfigurationEntity> GetAll(bool includeNonActive = false)
     {
-        return _db.ChatUserConfigurations;
+        return includeNonActive
+            ? _db.ChatUserConfigurations
+            : _db.ChatUserConfigurations.Where(u => u.IsActive);
     }
 
     public async Task<ChatUserConfigurationEntity> UpdateAsync(ChatUserConfigurationEntity item)

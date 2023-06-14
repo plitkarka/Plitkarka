@@ -35,7 +35,7 @@ public class HubConnectionRepository : IRepository<HubConnectionEntity>
         }
     }
 
-    public async Task<HubConnectionEntity?> GetByIdAsync(Guid id)
+    public async Task<HubConnectionEntity?> GetByIdAsync(Guid id, bool includeNonActive = false)
     {
         try
         {
@@ -50,7 +50,7 @@ public class HubConnectionRepository : IRepository<HubConnectionEntity>
         }
     }
 
-    public IQueryable<HubConnectionEntity> GetAll()
+    public IQueryable<HubConnectionEntity> GetAll(bool includeNonActive = false)
     {
         return _db.HubConnections;
     }

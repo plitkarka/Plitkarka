@@ -35,12 +35,15 @@ public class ChatMessageRepository : IRepository<ChatMessageEntity>
         }
     }
 
-    public async Task<ChatMessageEntity?> GetByIdAsync(Guid id)
+    public async Task<ChatMessageEntity?> GetByIdAsync(Guid id, bool includeNonActive = false)
     {
         try
         {
-            var result = await _db.ChatMessages
-                .FirstOrDefaultAsync(u => u.Id == id);
+            var result = includeNonActive
+                ? await _db.ChatMessages
+                    .FirstOrDefaultAsync(u => u.Id == id)
+                : await _db.ChatMessages
+                    .FirstOrDefaultAsync(u => u.Id == id && u.IsActive);
 
             return result;
         }
@@ -50,9 +53,11 @@ public class ChatMessageRepository : IRepository<ChatMessageEntity>
         }
     }
 
-    public IQueryable<ChatMessageEntity> GetAll()
+    public IQueryable<ChatMessageEntity> GetAll(bool includeNonActive = false)
     {
-        return _db.ChatMessages;
+        return includeNonActive
+            ? _db.ChatMessages
+            : _db.ChatMessages.Where(u => u.IsActive);
     }
 
     public async Task<ChatMessageEntity> UpdateAsync(ChatMessageEntity item)

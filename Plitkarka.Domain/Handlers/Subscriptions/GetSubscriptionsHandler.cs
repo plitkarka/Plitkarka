@@ -46,15 +46,14 @@ public class GetSubscriptionsHandler : IRequestHandler<GetSubscriptionsRequest, 
             throw new ValidationException("User not found");
         }
 
-        Expression<Func<SubscriptionEntity, bool>> predicate = sub =>
-            sub.IsActive && sub.UserId == userId;
+        Expression<Func<SubscriptionEntity, bool>> predicate = sub => sub.UserId == userId;
 
         response.Items = await _paginationService
             .GetPaginatedItemsQuery(
                 request.Page,
                 where: predicate,
                 orderBy: e => e.CreationTime)
-            .Include(e => e.User)
+            .Include(e => e.SubscribedTo)
                 .ThenInclude(e => e.UserImage)
             .Select(item => new UserPreviewResponse
             {

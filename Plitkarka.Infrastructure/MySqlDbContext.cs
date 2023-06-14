@@ -51,7 +51,6 @@ public class MySqlDbContext : DbContext
 
         modelBuilder
             .SetupActivatedEntity<UserEntity>()
-            .SetupActivatedEntity<RefreshTokenEntity>()
             .SetupActivatedEntity<PostImageEntity>()
             .SetupActivatedEntity<UserImageEntity>()
             .SetupActivatedEntity<ChatMessageImageEntity>()
@@ -65,6 +64,7 @@ public class MySqlDbContext : DbContext
             .SetupActivatedEntity<ChatMessageEntity>();
 
         modelBuilder
+            .SetupEntity<RefreshTokenEntity>()
             .SetupEntity<CommentLikeEntity>()
             .SetupEntity<PostLikeEntity>()
             .SetupEntity<PostPinEntity>()
