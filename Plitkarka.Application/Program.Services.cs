@@ -30,7 +30,7 @@ public static partial class Program
         // HttpContext
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddSingleton<IContextUserService, ContextUserService>();
-        services.AddSingleton<IContextAccessTokenService, ContextAccessTokenService>(); 
+        services.AddSingleton<IContextAccessTokenService, ContextAccessTokenService>();
 
         // Authentication and Authorization
         services.AddTransient<IAuthenticationService, JwtAuthenticationService>();

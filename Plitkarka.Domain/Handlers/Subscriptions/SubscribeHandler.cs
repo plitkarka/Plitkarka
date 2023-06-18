@@ -51,8 +51,9 @@ public class SubscribeHandler : IRequestHandler<SubscribeRequest, Guid>
 
         try
         {
-            existing = await _subscriptionRepository.GetAll().FirstOrDefaultAsync(
-                s => s.SubscribedToId == request.SusbcribeToId && s.UserId == _user.Id);
+            existing = await _subscriptionRepository
+                .GetAll(includeNonActive: true)
+                .FirstOrDefaultAsync(s => s.SubscribedToId == request.SusbcribeToId && s.UserId == _user.Id);
         }
         catch (Exception ex)
         {

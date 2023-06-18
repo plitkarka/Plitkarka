@@ -47,8 +47,7 @@ public class GetPostsHandler : IRequestHandler<GetPostsRequest, PaginationRespon
             throw new ValidationException("User not found");
         }
 
-        Expression<Func<PostEntity, bool>> predicate = item =>
-            item.IsActive && item.UserId == userId;
+        Expression<Func<PostEntity, bool>> predicate = item => item.UserId == userId;
 
         response.Items = await _paginationService
             .GetPaginatedItemsQuery(

@@ -2,7 +2,7 @@
 
 namespace Plitkarka.Domain.Models;
 
-public record RefreshToken : ActivatedLogicModel
+public record RefreshToken : LogicModel
 {
     public string Token { get; set; }
 

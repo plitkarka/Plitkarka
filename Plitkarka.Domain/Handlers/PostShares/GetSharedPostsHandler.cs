@@ -46,8 +46,7 @@ public class GetSharedPostsHandler : IRequestHandler<GetSharedPostsRequest, Pagi
             throw new ValidationException("User not found");
         }
 
-        Expression<Func<PostShareEntity, bool>> predicate = item =>
-            item.IsActive && item.UserId == userId;
+        Expression<Func<PostShareEntity, bool>> predicate = item => item.UserId == userId;
 
         response.Items = await _paginationService
             .GetPaginatedItemsQuery(

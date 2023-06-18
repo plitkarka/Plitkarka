@@ -28,8 +28,7 @@ public class SearchUsersHandler : IRequestHandler<SearchUsersRequest, Pagination
     {
         var response = new PaginationResponse<UserPreviewResponse>();
 
-        Expression<Func<UserEntity, bool>> predicate = user => 
-            user.IsActive && (user.Login.Contains(request.Filter) || user.Name.Contains(request.Filter));
+        Expression<Func<UserEntity, bool>> predicate = user => user.Login.Contains(request.Filter) || user.Name.Contains(request.Filter);
 
         response.Items = await _paginationService
             .GetPaginatedItemsQuery(

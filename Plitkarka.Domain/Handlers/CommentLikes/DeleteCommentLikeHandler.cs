@@ -30,7 +30,7 @@ public class DeleteCommentLikeHandler : IRequestHandler<DeleteCommentLikeRequest
     {
         var comment = await _commentRepository.GetByIdAsync(request.CommentId);
 
-        if (comment == null || !comment.IsActive)
+        if (comment == null)
         {
             throw new ValidationException("Comment not found");
         }
