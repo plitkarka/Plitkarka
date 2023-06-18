@@ -41,20 +41,32 @@ public class HubExceptionFilter : IHubFilter
     {
         try
         {
-            await next(invocationContext);
-
-            return new SignalRResponse
-            {
-                Code = (int)HttpStatusCode.OK,
-                Message = ""
-            };
+            return await next(invocationContext);
         }
-        catch(UnauthorizedUserException ex)
+        catch(Exception ex) when (ex is UnauthorizedUserException)
         {
             return new SignalRResponse
             {
-                Code = (int)HttpStatusCode.Unauthorized,
+                Code = (int) HttpStatusCode.Unauthorized,
                 Message = ex.Message
+            };
+        }
+        catch (Exception ex) when (ex is ValidationException)
+        {
+            return new SignalRResponse
+            {
+                Code = (int) HttpStatusCode.BadRequest,
+                Message = ex.Message
+            };
+        }
+        catch (Exception ex) when (ex is MySqlException)
+        {
+            HandleException(ex);
+
+            return new SignalRResponse
+            {
+                Code = (int)HttpStatusCode.InternalServerError,
+                Message = "Error working with databse"
             };
         }
         catch(Exception ex)

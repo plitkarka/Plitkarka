@@ -7,8 +7,6 @@ public record ChatMessage : ActivatedLogicModel
 {
     public string TextContent { get; set; }
 
-    public bool VisibleToCreator { get; set; } = true;
-
     public MessageType Type { get; set; } = MessageType.Message;
 
     // ----- Relation properties -----

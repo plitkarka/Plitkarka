@@ -26,8 +26,6 @@ public class ConnectHandler : IRequestHandler<ConnectRequest>
 
     public async Task<Unit> Handle(ConnectRequest request, CancellationToken cancellationToken)
     {
-        Console.WriteLine(_user.Login + " Connected with id " + request.ConnectionId);
-
         var connection = new HubConnection
         {
             ConnectionId = request.ConnectionId,

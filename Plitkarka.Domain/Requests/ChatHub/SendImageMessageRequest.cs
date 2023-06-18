@@ -6,5 +6,6 @@ namespace Plitkarka.Domain.Requests.ChatHub;
 
 public record SendImageMessageRequest(
     Guid ReceiverId,
-    IFormFile Image)
+    IFormFile Image,
+    string Message)
     : IRequest<HubNotificationHandlerResponse>;

@@ -2,33 +2,31 @@
 using Microsoft.EntityFrameworkCore;
 using Plitkarka.Commons.Exceptions;
 using Plitkarka.Domain.Models;
-using Plitkarka.Domain.ResponseModels;
 using Plitkarka.Domain.Services.ContextUser;
 using Plitkarka.Infrastructure.Models;
 using Plitkarka.Infrastructure.Services;
 
-namespace Plitkarka.Domain.Handlers.ChatHub;
+namespace Plitkarka.Domain.Handlers.ChatHub.Abstract;
 
-public abstract class ChatBase
+public abstract class ChatSendingBase : ChatBase
 {
-    protected User _user { get; init; }
     protected IMapper _mapper { get; init; }
     protected IRepository<ChatEntity> _chatRepository { get; init; }
     protected IRepository<ChatUserConfigurationEntity> _configurationRepository { get; init; }
-    protected IRepository<HubConnectionEntity> _connectionRepository { get; init; }
 
-    public ChatBase(
+    public ChatSendingBase(
         IContextUserService contextUserService,
         IMapper mapper,
         IRepository<ChatEntity> chatRepository,
         IRepository<ChatUserConfigurationEntity> configurationRepository,
         IRepository<HubConnectionEntity> connectionRepository)
+    : base (
+        contextUserService, 
+        connectionRepository)
     {
-        _user = contextUserService.User;
-        _mapper = mapper;   
+        _mapper = mapper;
         _chatRepository = chatRepository;
         _configurationRepository = configurationRepository;
-        _connectionRepository = connectionRepository;
     }
 
     public async Task<ChatEntity> GetChatWith(Guid receiverId)
@@ -37,10 +35,13 @@ public abstract class ChatBase
 
         try
         {
-            chatEntity = await _chatRepository.GetAll().FirstOrDefaultAsync(entity =>
+            chatEntity = await _chatRepository
+                .GetAll()
+                .Include(e => e.ChatUserConfigurations)
+                .FirstOrDefaultAsync(entity =>
                 entity.ChatUserConfigurations.Count == 2 &&
-                entity.ChatUserConfigurations.Any(user => user.Id == _user.Id) &&
-                entity.ChatUserConfigurations.Any(user => user.Id == receiverId));
+                entity.ChatUserConfigurations.Any(conf => conf.UserId == _user.Id) &&
+                entity.ChatUserConfigurations.Any(conf => conf.UserId == receiverId));
         }
         catch (Exception ex)
         {
@@ -49,10 +50,14 @@ public abstract class ChatBase
 
         if (chatEntity != null)
         {
-            return chatEntity;
+            chatEntity.LastUpdateTime = DateTime.Now;
+            return await _chatRepository.UpdateAsync(chatEntity);
         }
 
-        var chat = new Chat();
+        var chat = new Chat
+        {
+            LastUpdateTime = DateTime.UtcNow,
+        };
 
         var chatId = await _chatRepository.AddAsync(
             _mapper.Map<ChatEntity>(chat));
@@ -75,24 +80,5 @@ public abstract class ChatBase
 
         await _configurationRepository.AddAsync(
             _mapper.Map<ChatUserConfigurationEntity>(configuration));
-    }
-
-    public async Task AddConnections(ChatEntity chat, HubNotificationHandlerResponse result)
-    {
-        foreach(var config in chat.ChatUserConfigurations)
-        {
-            if (config.UserId == _user.Id)
-            {
-                continue;
-            }
-
-            var connections = await _connectionRepository.GetAll().Where(
-                entity => entity.UserId == config.UserId).ToListAsync();
-
-            foreach(var connection in connections)
-            {
-                result.ConnectionIds.Add(connection.ConnectionId);
-            }
-        }
     }
 }

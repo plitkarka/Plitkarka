@@ -3,28 +3,29 @@ using MediatR;
 using Microsoft.IdentityModel.Tokens;
 using Plitkarka.Commons.Exceptions;
 using Plitkarka.Commons.Helpers;
+using Plitkarka.Domain.Handlers.ChatHub.Abstract;
 using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.ChatHub;
 using Plitkarka.Domain.ResponseModels;
 using Plitkarka.Domain.Services.ContextUser;
-using Plitkarka.Domain.Services.ImageService;
 using Plitkarka.Infrastructure.Models;
 using Plitkarka.Infrastructure.Services;
 
 namespace Plitkarka.Domain.Handlers.ChatHub;
 
-public class SendMessageRequestHandler : ChatBase, IRequestHandler<SendMessageRequest, HubNotificationHandlerResponse>
+public class SendMessageHandler : 
+    ChatSendingBase,
+    IRequestHandler<SendMessageRequest, HubNotificationHandlerResponse>
 {
     private IRepository<ChatMessageEntity> _messageRepository { get; init; }
 
-    public SendMessageRequestHandler(
+    public SendMessageHandler(
         IContextUserService contextUserService,
         IMapper mapper,
         IRepository<ChatEntity> chatRepository,
         IRepository<ChatUserConfigurationEntity> configurationRepository,
         IRepository<ChatMessageEntity> messageRepository,
-        IRepository<HubConnectionEntity> connectionRepository, 
-        IImageService imageService)
+        IRepository<HubConnectionEntity> connectionRepository)
     : base(
         contextUserService,
         mapper,
@@ -56,7 +57,6 @@ public class SendMessageRequestHandler : ChatBase, IRequestHandler<SendMessageRe
 
         var result = new HubNotificationHandlerResponse
         {
-            ConnectionIds = new List<string>(),
             Notification = new HubNotification
             {
                 Type = nameof(MessageType.Message),
@@ -67,7 +67,7 @@ public class SendMessageRequestHandler : ChatBase, IRequestHandler<SendMessageRe
             }
         };
 
-        await AddConnections(chat, result);
+        await EnrichsReponseWithConnections(chat, result);
 
         return result;
     }

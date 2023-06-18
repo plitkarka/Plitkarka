@@ -5,5 +5,6 @@ namespace Plitkarka.Domain.Requests.ChatHub;
 
 public record SendPostMessageRequest(
     Guid ReceiverId,
-    Guid PostId)
+    Guid PostId,
+    string Message)
     : IRequest<HubNotificationHandlerResponse>;

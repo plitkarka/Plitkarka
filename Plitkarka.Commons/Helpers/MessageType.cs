@@ -4,5 +4,6 @@ public enum MessageType
 {
     Message,
     PostMessage,
-    ImageMessage
+    ImageMessage,
+    DeleteMessage
 }

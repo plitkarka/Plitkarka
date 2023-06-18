@@ -4,7 +4,5 @@ using Plitkarka.Domain.ResponseModels;
 namespace Plitkarka.Domain.Requests.ChatHub;
 
 public record DeleteMessageRequest(
-    Guid ReceiverId,
-    Guid MessageId,
-    bool ForAll)
+    Guid MessageId)
     : IRequest<HubNotificationHandlerResponse>;
