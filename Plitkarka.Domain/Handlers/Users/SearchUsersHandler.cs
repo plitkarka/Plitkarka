@@ -28,7 +28,11 @@ public class SearchUsersHandler : IRequestHandler<SearchUsersRequest, Pagination
     {
         var response = new PaginationResponse<UserPreviewResponse>();
 
-        Expression<Func<UserEntity, bool>> predicate = user => user.Login.Contains(request.Filter) || user.Name.Contains(request.Filter);
+        var filter = request.Filter.ToLower();
+
+        Expression<Func<UserEntity, bool>> predicate = user =>
+            user.Login.ToLower().Contains(filter) ||
+            user.Name.ToLower().Contains(filter);
 
         response.Items = await _paginationService
             .GetPaginatedItemsQuery(
