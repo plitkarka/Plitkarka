@@ -11,16 +11,25 @@ namespace Plitkarka.Application;
 
 public static partial class Program
 {
+    private static readonly MySqlServerVersion _version = new MySqlServerVersion(new Version(8, 0, 28));
+
     public static IServiceCollection AddMySql(this IServiceCollection services)
     {
         return services
             .AddDbContext<MySqlDbContext>((provider, options) =>
             {
                 var configuration = provider.GetRequiredService<IOptions<MySqlConfiguration>>().Value;
+
                 options
                     .UseMySql(
                         configuration.ConnectionString,
-                        new MySqlServerVersion(new Version(8, 0, 28)))
+                        _version, 
+                        dbOptions => {
+                            dbOptions.EnableRetryOnFailure(
+                                maxRetryCount: 5,
+                                maxRetryDelay: TimeSpan.FromSeconds(5),
+                                errorNumbersToAdd: null);
+                        })
                     .ConfigureWarnings(wc => wc.Ignore(RelationalEventId.BoolWithDefaultWarning));
             })
             .AddTransient<IRepository<UserEntity>, UserRepository>()
