@@ -42,7 +42,7 @@ public class SignInHandler
         try
         {
             var userEntity = await _repository.GetAll().FirstOrDefaultAsync(
-                user => user.IsActive == true && user.Email == request.Email);
+                user => user.Email == request.Email);
 
             user = _mapper.Map<User>(userEntity);
         }

@@ -38,8 +38,7 @@ public class GetPostCommentsHandler : IRequestHandler<GetPostCommentsRequest, Pa
             throw new ValidationException("Post not found");
         }
 
-        Expression<Func<CommentEntity, bool>> predicate = item =>
-            item.IsActive && item.PostId == request.PostId;
+        Expression<Func<CommentEntity, bool>> predicate = item => item.PostId == request.PostId;
 
         response.Items = await _paginationService
             .GetPaginatedItemsQuery(

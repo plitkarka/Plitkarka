@@ -53,12 +53,12 @@ public class PostLikeRepository : IRepository<PostLikeEntity>
         }
     }
 
-    public IQueryable<PostLikeEntity> GetAll()
+    public IQueryable<PostLikeEntity> GetAll(bool includeNonActive = false)
     {
         return _db.PostLikes;
     }
 
-    public async Task<PostLikeEntity?> GetByIdAsync(Guid id)
+    public async Task<PostLikeEntity?> GetByIdAsync(Guid id, bool includeNonActive = false)
     {
         try
         {

@@ -74,13 +74,59 @@ public class PostController : Controller
             Returns 204 if no posts left.
             Returns 400 if user not found
         ")]
-    [ProducesResponseType(StatusCodes.Status202Accepted)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<PaginationResponse<PostResponse>>> GetPosts(
         [FromQuery] PaginationGuidRequestModel query)
     {
         var response = await _mediator.Send(new GetPostsRequest(
+            query.Page,
+            query.Filter));
+
+        return Ok(response);
+    }
+
+    [HttpGet("feed")]
+    [Authorize]
+    [ModelStateValidation]
+    [SwaggerOperation(
+        Summary = "Returns feed of authorized user",
+        Description = $@"
+            Returns feed of authorized user, link for the next part of the list and total count of posts.
+            If 'Page' is not equal 0 total count of posts will be -1.
+            If result list has less number of items then normal the 'NextLink' will be 'String.Empty'.
+            Returns 204 if no posts left.
+        ")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<ActionResult<PaginationResponse<PostResponse>>> GetFeed(
+        [FromQuery] PaginationRequestModel query)
+    {
+        var response = await _mediator.Send(new GetFeedRequest(
+            query.Page));
+
+        return Ok(response);
+    }
+
+    [HttpGet("search")]
+    [Authorize]
+    [ModelStateValidation]
+    [SwaggerOperation(
+        Summary = "Returns list of posts with specific search filter",
+        Description = $@"
+            Returns list of posts filtered by specific text, link for the next part of the list and total count of posts.
+            If 'Page' is not equal 0 total count of posts will be -1.
+            If result list has less number of items then normal the 'NextLink' will be 'String.Empty'.
+            Returns 204 if no posts left.
+            Returns 400 if filter string is empty
+        ")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<ActionResult<PaginationResponse<PostResponse>>> SearchPosts(
+        [FromQuery] PaginationFilterRequestModel query)
+    {
+        var response = await _mediator.Send(new SearchPostsRequest(
             query.Page,
             query.Filter));
 

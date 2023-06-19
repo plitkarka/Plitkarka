@@ -59,4 +59,10 @@ public record UserEntity : ActivatedEntity
     public ICollection<SubscriptionEntity> Subscriptions { get; set; }
 
     public ICollection<SubscriptionEntity> Subscribers { get; set; }
+
+    public ICollection<ChatUserConfigurationEntity> ChatUserConfigurations { get; set; }
+
+    public ICollection<HubConnectionEntity> Connections { get; set; }
+
+    public ICollection<ChatMessageEntity> Messages { get; set; }
 }

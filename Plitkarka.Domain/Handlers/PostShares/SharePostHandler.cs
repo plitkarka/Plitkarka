@@ -57,16 +57,6 @@ public class SharePostHandler : IRequestHandler<SharePostRequest, Guid>
 
         if (existing != null)
         {
-            if (!existing.IsActive)
-            {
-                existing.IsActive = true;
-                existing.CreationTime = DateTime.UtcNow;
-
-                await _postShareRepository.UpdateAsync(existing);
-
-                return existing.Id;
-            }
-
             throw new ValidationException("User already shared this post");
         }
 

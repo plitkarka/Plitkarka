@@ -3,7 +3,7 @@ using Plitkarka.Infrastructure.Models.Abstractions;
 
 namespace Plitkarka.Infrastructure.Models;
 
-public record RefreshTokenEntity : ActivatedEntity
+public record RefreshTokenEntity : Entity
 {
     [Required]
     public string Token { get; set; }

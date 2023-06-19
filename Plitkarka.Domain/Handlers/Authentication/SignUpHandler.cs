@@ -71,7 +71,7 @@ public class SignUpHandler : IRequestHandler<SignUpRequest, string>
         try
         {
             userExist = await _repository.GetAll().FirstOrDefaultAsync(
-               user => user.IsActive == true && (user.Email == request.Email || user.Login == request.Login));
+               user => user.Email == request.Email || user.Login == request.Login);
 
             if (userExist != null)
             {

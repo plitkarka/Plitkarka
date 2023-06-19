@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Plitkarka.Commons.Exceptions;
 using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.Authentication;
@@ -45,7 +46,19 @@ public class RefreshTokenPairHandler : IRequestHandler<RefreshTokenPairRequest, 
 
         var userId = _authorizationService.Authorize(token, validateTime: false);
 
-        var userEntity = await _userRepository.GetByIdAsync(userId);
+        UserEntity? userEntity;
+
+        try
+        {
+            userEntity = await _userRepository
+                .GetAll()
+                .Include(u => u.RefreshToken)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+        }
+        catch(Exception ex)
+        {
+            throw new MySqlException(ex.Message);
+        }
 
         if (userEntity == null)
         {
@@ -56,14 +69,9 @@ public class RefreshTokenPairHandler : IRequestHandler<RefreshTokenPairRequest, 
 
         var refreshToken = request.RefreshToken;
 
-        if (user.RefreshToken.Token != refreshToken)
+        if (user.RefreshToken?.Token != refreshToken)
         {
             throw new AuthorizationErrorException("Refresh token is wrong");
-        }
-
-        if (user.RefreshToken.IsActive != true)
-        {
-            throw new AuthorizationErrorException("Refresh token is not active");
         }
 
         if (user.RefreshToken.Expires < DateTime.UtcNow)

@@ -35,16 +35,22 @@ public class PostImageRepository : IRepository<PostImageEntity>
         }
     }
 
-    public IQueryable<PostImageEntity> GetAll() 
+    public IQueryable<PostImageEntity> GetAll(bool includeNonActive = false) 
     {
-        return _db.PostImages;
+        return includeNonActive
+            ? _db.PostImages
+            : _db.PostImages.Where(u => u.IsActive);
     }
 
-    public async Task<PostImageEntity?> GetByIdAsync(Guid id)
+    public async Task<PostImageEntity?> GetByIdAsync(Guid id, bool includeNonActive = false)
     {
         try 
         {
-            var res = await _db.PostImages.FindAsync(id);
+            var res = includeNonActive
+                ? await _db.PostImages
+                    .FirstOrDefaultAsync(u => u.Id == id)
+                : await _db.PostImages
+                    .FirstOrDefaultAsync(u => u.Id == id && u.IsActive);
 
             return res;
         }

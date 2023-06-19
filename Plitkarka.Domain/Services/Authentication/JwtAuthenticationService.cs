@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Plitkarka.Commons.Configuration;
+using Plitkarka.Commons.Exceptions;
 using Plitkarka.Domain.Models;
 using Plitkarka.Domain.ResponseModels;
 using Plitkarka.Infrastructure.Models;
@@ -40,6 +42,25 @@ public class JwtAuthenticationService : IAuthenticationService
     /// <returns>Pair of tokens</returns>
     public async Task<TokenPairResponse> Authenticate(User toAuthenticate)
     {
+        UserEntity? userEntity;
+
+        try
+        {
+            userEntity = await _userRepository
+                .GetAll()
+                .Include(u => u.RefreshToken)
+                .FirstOrDefaultAsync(u => u.Id == toAuthenticate.Id);
+        }
+        catch (Exception ex)
+        {
+            throw new MySqlException(ex.Message);
+        }
+
+        if (userEntity == null)
+        {
+            throw new AuthorizationErrorException("Authorized used not found");
+        }
+
         var claims = new List<Claim>
         {
             new Claim(IdClaimName, toAuthenticate.Id.ToString()),
@@ -56,7 +77,7 @@ public class JwtAuthenticationService : IAuthenticationService
 
         var accessToken = new JwtSecurityTokenHandler().WriteToken(token);
 
-        var refreshToken = await GenerateRefreshTokenForUser(toAuthenticate);
+        var refreshToken = await GenerateRefreshTokenForUser(userEntity);
 
         var tokenPair =  new TokenPairResponse
         {
@@ -67,13 +88,13 @@ public class JwtAuthenticationService : IAuthenticationService
         return tokenPair;
     }
 
-    private async Task<string> GenerateRefreshTokenForUser(User user)
-    {
+    private async Task<string> GenerateRefreshTokenForUser(UserEntity userEntity)
+    { 
         var token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
 
-        if (user.RefreshToken != null)
+        if (userEntity.RefreshToken != null)
         {
-            var oldRefreshTokenEntity = await _refreshTokenRepository.GetByIdAsync(user.RefreshToken.Id);
+            var oldRefreshTokenEntity = await _refreshTokenRepository.GetByIdAsync(userEntity.RefreshToken.Id);
 
             if (oldRefreshTokenEntity != null)
             {
@@ -90,7 +111,6 @@ public class JwtAuthenticationService : IAuthenticationService
         var refreshTokenEntity = _mapper.Map<RefreshTokenEntity>(refreshToken);
         var newTokenId = await _refreshTokenRepository.AddAsync(refreshTokenEntity);
 
-        var userEntity = await _userRepository.GetByIdAsync(user.Id);
         userEntity.RefreshTokenId = newTokenId;
         await _userRepository.UpdateAsync(userEntity);
 
