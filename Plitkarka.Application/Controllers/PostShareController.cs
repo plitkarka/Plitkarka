@@ -75,10 +75,10 @@ public class PostShareController : Controller
             Returns 204 if no posts left.
             Returns 400 if user not found
         ")]
-    [ProducesResponseType(StatusCodes.Status202Accepted)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> GetSharedPosts(
+    public async Task<ActionResult<PaginationResponse<PostResponse>>> GetSharedPosts(
         [FromQuery] PaginationGuidRequestModel query)
     {
         var response = await _mediator.Send(new GetSharedPostsRequest(

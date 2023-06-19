@@ -1,6 +1,8 @@
-﻿using System.Linq.Expressions;
+﻿using System;
+using System.Linq.Expressions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Plitkarka.Commons.Exceptions;
 using Plitkarka.Commons.Helpers;
 using Plitkarka.Domain.Models;
@@ -14,39 +16,33 @@ using Plitkarka.Infrastructure.Services;
 
 namespace Plitkarka.Domain.Handlers.Posts;
 
-public class GetPostsHandler : IRequestHandler<GetPostsRequest, PaginationResponse<PostResponse>>
+public class SearchPostsHandler : IRequestHandler<SearchPostsRequest, PaginationResponse<PostResponse>>
 {
-    private User _user { get; init; }
-    private IRepository<UserEntity> _userRepository { get; init; }
     private IPaginationService<PostEntity> _paginationService { get; init; }
     private IImageService _imageService { get; init; }
 
-    public GetPostsHandler(
-        IContextUserService contextUserService,
-        IRepository<UserEntity> userRepository,
+    public SearchPostsHandler(
         IPaginationService<PostEntity> paginationService,
         IImageService imageService)
     {
-        _user = contextUserService.User;
-        _userRepository = userRepository;
         _paginationService = paginationService;
         _imageService = imageService;
     }
 
-    public async Task<PaginationResponse<PostResponse>> Handle(GetPostsRequest request, CancellationToken cancellationToken)
+    public async Task<PaginationResponse<PostResponse>> Handle(SearchPostsRequest request, CancellationToken cancellationToken)
     {
         var response = new PaginationResponse<PostResponse>();
 
-        var userId = request.UserId == Guid.Empty
-            ? _user.Id
-            : request.UserId;
-
-        if (await _userRepository.GetByIdAsync(userId) == null)
+        if(request.Filter.IsNullOrEmpty())
         {
-            throw new ValidationException("User not found");
+            throw new ValidationException("Filter is empty");
         }
 
-        Expression<Func<PostEntity, bool>> predicate = item => item.UserId == userId;
+        var filter = request.Filter.ToLower();
+
+        Expression<Func<PostEntity, bool>> predicate = item => 
+            item.TextContent.ToLower().Contains(filter) ||
+            item.User.Login.ToLower().Contains(filter);
 
         response.Items = await _paginationService
             .GetPaginatedItemsQuery(
@@ -103,9 +99,7 @@ public class GetPostsHandler : IRequestHandler<GetPostsRequest, PaginationRespon
             : -1;
 
         response.NextLink = response.Items.Count == PaginationConsts.ItemsPerPage
-            ? request.UserId == Guid.Empty
-                ? _paginationService.GetNextLink(request.Page)
-                : _paginationService.GetNextLink(request.Page, request.UserId.ToString())
+            ? _paginationService.GetNextLink(request.Page, request.Filter)
             : String.Empty;
 
         return response;

@@ -10,7 +10,6 @@ namespace Plitkarka.Domain.Services.Pagination;
 
 public class PaginationService<T> : IPaginationService<T> where T : Entity
 {
-
     private IRepository<T> _repository { get; init; }
 
     public PaginationService(
@@ -43,7 +42,7 @@ public class PaginationService<T> : IPaginationService<T> where T : Entity
         }
 
         if (where != null)
-    {
+        {
             query = query
                 .Where(where);
         }

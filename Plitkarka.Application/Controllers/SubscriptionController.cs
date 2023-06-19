@@ -73,7 +73,7 @@ public class SubscriptionController : Controller
             Returns 204 if no subscribers left.
             Returns 400 if user not found
         ")]
-    [ProducesResponseType(StatusCodes.Status202Accepted)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<PaginationResponse<UserPreviewResponse>>> GetSubscribers(
@@ -100,7 +100,7 @@ public class SubscriptionController : Controller
             Returns 204 if no subscriptions left.
             Returns 400 if user not found
         ")]
-    [ProducesResponseType(StatusCodes.Status202Accepted)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<PaginationResponse<UserPreviewResponse>>> GetSuscriptions(

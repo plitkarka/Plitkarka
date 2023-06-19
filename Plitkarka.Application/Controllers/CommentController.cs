@@ -74,10 +74,10 @@ public class CommentController : Controller
             Returns 204 if no comments left.
             Returns 400 if post not found
         ")]
-    [ProducesResponseType(StatusCodes.Status202Accepted)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult> GetPosts(
+    public async Task<ActionResult<PaginationResponse<CommentResponse>>> GetPosts(
         [FromQuery] PaginationGuidRequiredRequestModel query)
     {
         var response = await _mediator.Send(new GetPostCommentsRequest(
