@@ -19,7 +19,7 @@ jobs:
         id: metadata
         uses: docker/metadata-action@v4
         with:
-          images: plitkark/back
+          images: pupka/back
           tags: |
             # Latest tag for master branch in DockerHub
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
