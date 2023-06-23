@@ -96,8 +96,8 @@ jobs:
 
           script: |
             echo "Docker container started at $(TZ='Europe/Kiev' date "+%A %d-%b-%Y %H:%M:%S %Z")" >> deploy.txt
-            docker pull ${{ secrets.DOCKER_USER }}/${{ secrets.DOCKER_IMAGE }}:latest 
+            docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}:latest
           #  docker stop ${{ secrets.DOCKER_CONTAINER }}
           #  docker rm ${{ secrets.DOCKER_CONTAINER }}
-          #  docker rmi ${{ secrets.DOCKER_USER }}/${{ secrets.DOCKER_IMAGE }}
-          #  docker run --name ${{ secrets.DOCKER_CONTAINER }} -d -p 80:80 ${{ secrets.DOCKER_USER }}/${{ secrets.DOCKER_IMAGE }}
+          #  docker rmi ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
+          #  docker run --name ${{ secrets.DOCKER_CONTAINER }} -d -p 80:80 ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
