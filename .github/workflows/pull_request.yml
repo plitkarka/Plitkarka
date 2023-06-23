@@ -103,7 +103,7 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}S
           key: ${{ secrets.EC2_KEY }}
           port: ${{ secrets.EC2_PORT }}
-          envs: |
+          envs:
             Logging__LogLevel__Default, Logging__LogLevel__Microsoft.AspNetCore,
             Logging__LogLevel__Microsoft.EntityFrameworkCore.Database.Command,
             AllowedHosts, MySql__ConnectionString, Authorization__SecretKey,
