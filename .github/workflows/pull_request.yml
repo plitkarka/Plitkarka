@@ -91,7 +91,7 @@ jobs:
 #            docker rm ${{ secrets.DOCKER_CONTAINER }}
 #            docker rmi ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
 #            docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}:latest
-            docker run --name ${{ secrets.DOCKER_CONTAINER }} -d \
+            docker run -d \
                     -e Logging__LogLevel__Default='${{ vars.LOGGING__LOGLEVEL__DEFAULT }}' \
                     -e Logging__LogLevel__Microsoft.AspNetCore='${{ vars.LOGGING__LOGLEVEL__MICROSOFT_ASPNETCORE }}' \
                     -e Logging__LogLevel__Microsoft.EntityFrameworkCore.Database.Command='${{ vars.LOGGING__LOGLEVEL__MICROSOFT_ENTITYFRAMEWORKCORE_DATABASE_COMMAND }}' \
