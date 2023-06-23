@@ -79,11 +79,38 @@ jobs:
     steps:
       - name: Executing remote SSH commands
         uses: appleboy/ssh-action@v0.1.10
+        env:
+          Logging__LogLevel__Default: ${{ vars.LOGGING__LOGLEVEL__DEFAULT }}
+          Logging__LogLevel__Microsoft.AspNetCore: ${{ vars.LOGGING__LOGLEVEL__MICROSOFT_ASPNETCORE }}
+          Logging__LogLevel__Microsoft.EntityFrameworkCore.Database.Command: ${{ vars.LOGGING__LOGLEVEL__MICROSOFT_ENTITYFRAMEWORKCORE_DATABASE_COMMAND }}
+          AllowedHosts: ${{ vars.ALLOWEDHOSTS }}
+          MySql__ConnectionString: ${{ secrets.MYSQL__CONNECTIONSTRING }}
+          Authorization__SecretKey: ${{ secrets.AUTHORIZATION__SECRETKEY }}
+          Authorization__AccessTokenMinutesLifetime: ${{ secrets.AUTHORIZATION__ACCESSTOKENMINUTESLIFETIME }}
+          Authorization__RefreshTokenDaysLifetime: ${{ secrets.AUTHORIZATION__REFRESHTOKENDAYSLIFETIME }}
+          S3Service__AccessKey: ${{ secrets.S3SERVICE__ACCESSKEY }}
+          S3Service__SecretKey: ${{ secrets.S3SERVICE__SECRETKEY }}
+          S3Service__BucketName: ${{ secrets.S3SERVICE__BUCKETNAME }}
+          EmailService__ShouldSendEmails: ${{ vars.EMAILSERVICE__SHOULDSENDEMAIL }}
+          EmailService__DisplayName: ${{ vars.EMAILSERVICE__DISPLAYNAME }}
+          EmailService__From: ${{ secrets.EMAILSERVICE__FROM }}
+          EmailService__Host: ${{ secrets.EMAILSERVICE__HOST }}
+          EmailService__Password: ${{ secrets.EMAILSERVICE__PASSWORD }}
+          EmailService__UserName: ${{ secrets.EMAILSERVICE__USERNAME }}
+          EmailService__Port: ${{ secrets.EMAILSERVICE__PORT }}
         with:
           host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
+          username: ${{ secrets.EC2_USERNAME }}S
           key: ${{ secrets.EC2_KEY }}
           port: ${{ secrets.EC2_PORT }}
+          envs: |
+            Logging__LogLevel__Default, Logging__LogLevel__Microsoft.AspNetCore,
+            Logging__LogLevel__Microsoft.EntityFrameworkCore.Database.Command,
+            AllowedHosts, MySql__ConnectionString, Authorization__SecretKey,
+            Authorization__AccessTokenMinutesLifetime, Authorization__RefreshTokenDaysLifetime,
+            S3Service__AccessKey, S3Service__SecretKey, S3Service__BucketName,
+            EmailService__ShouldSendEmails, EmailService__DisplayName, EmailService__From,
+            EmailService__Host, EmailService__Password, EmailService__UserName, EmailService__Port
           script: |
             echo "Docker container started at $(TZ='Europe/Kiev' date "+%A %d-%b-%Y %H:%M:%S %Z")" >> deploy.txt
             docker stop ${{ secrets.DOCKER_CONTAINER }}
@@ -91,23 +118,23 @@ jobs:
             docker rmi ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
             docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}:latest
             docker run --name '${{ secrets.DOCKER_CONTAINER }}' -d \
-            -e Logging__LogLevel__Default='${{ vars.LOGGING__LOGLEVEL__DEFAULT }}' \
-            -e Logging__LogLevel__Microsoft.AspNetCore='${{ vars.LOGGING__LOGLEVEL__MICROSOFT_ASPNETCORE }}' \
-            -e Logging__LogLevel__Microsoft.EntityFrameworkCore.Database.Command='${{ vars.LOGGING__LOGLEVEL__MICROSOFT_ENTITYFRAMEWORKCORE_DATABASE_COMMAND }}' \
-            -e AllowedHosts='${{ vars.ALLOWEDHOSTS }}' \
-            -e MySql__ConnectionString=Server='${{ secrets.MYSQL__CONNECTIONSTRING }}' \
-            -e Authorization__SecretKey=Server='${{ secrets.AUTHORIZATION__SECRETKEY }}' \
-            -e Authorization__AccessTokenMinutesLifetime='${{ secrets.AUTHORIZATION__ACCESSTOKENMINUTESLIFETIME }}' \
-            -e Authorization__RefreshTokenDaysLifetime='${{ secrets.AUTHORIZATION__REFRESHTOKENDAYSLIFETIME }}' \
-            -e S3Service__AccessKey='${{ secrets.S3SERVICE__ACCESSKEY }}' \
-            -e S3Service__SecretKey=Server='${{ secrets.S3SERVICE__SECRETKEY }}' \
-            -e S3Service__BucketName='${{ secrets.S3SERVICE__BUCKETNAME }}' \
-            -e EmailService__ShouldSendEmails='${{ vars.EMAILSERVICE__SHOULDSENDEMAIL }}' \
-            -e EmailService__DisplayName='${{ vars.EMAILSERVICE__DISPLAYNAME }}' \
-            -e EmailService__From='${{ secrets.EMAILSERVICE__FROM }}' \
-            -e EmailService__Host='${{ secrets.EMAILSERVICE__HOST }}' \
-            -e EmailService__Password='${{ secrets.EMAILSERVICE__PASSWORD }}' \
-            -e EmailService__UserName='${{ secrets.EMAILSERVICE__USERNAME }}' \
-            -e EmailService__Port='${{ secrets.EMAILSERVICE__PORT }}' \
+            -e Logging__LogLevel__Default \
+            -e Logging__LogLevel__Microsoft.AspNetCore \
+            -e Logging__LogLevel__Microsoft.EntityFrameworkCore.Database.Command \
+            -e AllowedHosts \
+            -e MySql__ConnectionString \
+            -e Authorization__SecretKey \
+            -e Authorization__AccessTokenMinutesLifetime \
+            -e Authorization__RefreshTokenDaysLifetime \
+            -e S3Service__AccessKey \
+            -e S3Service__SecretKey \
+            -e S3Service__BucketName \
+            -e EmailService__ShouldSendEmails \
+            -e EmailService__DisplayName \
+            -e EmailService__From \
+            -e EmailService__Host \
+            -e EmailService__Password \
+            -e EmailService__UserName \
+            -e EmailService__Port \
             -p 80:80 \
             ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
