@@ -84,6 +84,7 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_KEY }}
           port: ${{ secrets.EC2_PORT }}
+
           script: |
 #            echo "Docker container started at $(TZ='Europe/Kiev' date "+%A %d-%b-%Y %H:%M:%S %Z")" >> deploy.txt
 #            docker stop ${{ secrets.DOCKER_CONTAINER }}
