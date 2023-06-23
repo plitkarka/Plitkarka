@@ -110,4 +110,4 @@ jobs:
             -e EmailService__UserName='${{ secrets.EMAILSERVICE__USERNAME }}' \
             -e EmailService__Port='${{ secrets.EMAILSERVICE__PORT }}' \
             -p 80:80 \
-            '${{ secrets.DOCKER_USERNAME }}'/'${{ secrets.DOCKER_IMAGE }}'
+            ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
