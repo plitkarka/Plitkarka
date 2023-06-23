@@ -78,7 +78,7 @@ jobs:
     #needs: [ build, push ]
     steps:
       - name: Executing remote SSH commands
-        uses: appleboy/ssh-action@v0.1.7
+        uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
