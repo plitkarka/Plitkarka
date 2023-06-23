@@ -37,7 +37,7 @@ jobs:
 #
 #      - name: Run Docker container
 #        run: |
-#          docker run -d \
+#          docker run --name ${{ secrets.DOCKER_CONTAINER }} -d \
 #          -e Logging__LogLevel__Default='${{ vars.LOGGING__LOGLEVEL__DEFAULT }}' \
 #          -e Logging__LogLevel__Microsoft.AspNetCore='${{ vars.LOGGING__LOGLEVEL__MICROSOFT_ASPNETCORE }}' \
 #          -e Logging__LogLevel__Microsoft.EntityFrameworkCore.Database.Command='${{ vars.LOGGING__LOGLEVEL__MICROSOFT_ENTITYFRAMEWORKCORE_DATABASE_COMMAND }}' \
@@ -93,11 +93,30 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_KEY }}
           port: ${{ secrets.EC2_PORT }}
-
           script: |
             echo "Docker container started at $(TZ='Europe/Kiev' date "+%A %d-%b-%Y %H:%M:%S %Z")" >> deploy.txt
             docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}:latest
-          #  docker stop ${{ secrets.DOCKER_CONTAINER }}
-          #  docker rm ${{ secrets.DOCKER_CONTAINER }}
-          #  docker rmi ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
-          #  docker run --name ${{ secrets.DOCKER_CONTAINER }} -d -p 80:80 ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
+            docker stop ${{ secrets.DOCKER_CONTAINER }}
+            docker rm ${{ secrets.DOCKER_CONTAINER }}
+            docker rmi ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
+            docker run --name ${{ secrets.DOCKER_CONTAINER }} -d \
+            -e Logging__LogLevel__Default='${{ vars.LOGGING__LOGLEVEL__DEFAULT }}' \
+            -e Logging__LogLevel__Microsoft.AspNetCore='${{ vars.LOGGING__LOGLEVEL__MICROSOFT_ASPNETCORE }}' \
+            -e Logging__LogLevel__Microsoft.EntityFrameworkCore.Database.Command='${{ vars.LOGGING__LOGLEVEL__MICROSOFT_ENTITYFRAMEWORKCORE_DATABASE_COMMAND }}' \
+            -e AllowedHosts='${{ vars.ALLOWEDHOSTS }}' \
+            -e MySql__ConnectionString=Server='${{ secrets.MYSQL__CONNECTIONSTRING }}' \
+            -e Authorization__SecretKey=Server='${{ secrets.AUTHORIZATION__SECRETKEY }}' \
+            -e Authorization__AccessTokenMinutesLifetime='${{ secrets.AUTHORIZATION__ACCESSTOKENMINUTESLIFETIME }}' \
+            -e Authorization__RefreshTokenDaysLifetime='${{ secrets.AUTHORIZATION__REFRESHTOKENDAYSLIFETIME }}' \
+            -e S3Service__AccessKey='${{ secrets.S3SERVICE__ACCESSKEY }}' \
+            -e S3Service__SecretKey=Server='${{ secrets.S3SERVICE__SECRETKEY }}' \
+            -e S3Service__BucketName='${{ secrets.S3SERVICE__BUCKETNAME }}' \
+            -e EmailService__ShouldSendEmails='${{ vars.EMAILSERVICE__SHOULDSENDEMAIL }}' \
+            -e EmailService__DisplayName='${{ vars.EMAILSERVICE__DISPLAYNAME }}' \
+            -e EmailService__From='${{ secrets.EMAILSERVICE__FROM }}' \
+            -e EmailService__Host='${{ secrets.EMAILSERVICE__HOST }}' \
+            -e EmailService__Password='${{ secrets.EMAILSERVICE__PASSWORD }}' \
+            -e EmailService__UserName='${{ secrets.EMAILSERVICE__USERNAME }}' \
+            -e EmailService__Port='${{ secrets.EMAILSERVICE__PORT }}' \
+            -p 80:80 \ 
+            ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
