@@ -109,9 +109,10 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_KEY }}
           port: ${{ secrets.EC2_PORT }}
-          envs: MySql__ConnectionString,Authorization__SecretKey,DDD,
+          envs:
+            MySql__ConnectionString, Authorization__SecretKey,
             Authorization__AccessTokenMinutesLifetime, Authorization__RefreshTokenDaysLifetime,
-            S3Service__AccessKey, S3Service__SecretKey, S3Service__BucketName,
+            S3Service__AccessKey, S3Service__SecretKey, S3Service__BucketName, DDD,
             EmailService__ShouldSendEmails, EmailService__DisplayName, EmailService__From,
             EmailService__Host, EmailService__Password, EmailService__UserName, EmailService__Port
           script: |
