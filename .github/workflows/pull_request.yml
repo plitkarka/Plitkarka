@@ -96,7 +96,7 @@ jobs:
           S3Service__AccessKey: ${{ secrets.S3SERVICE__ACCESSKEY }}
           S3Service__SecretKey: ${{ secrets.S3SERVICE__SECRETKEY }}
           S3Service__BucketName: ${{ secrets.S3SERVICE__BUCKETNAME }}
-          EmailService__ShouldSendEmails: ${{ vars.EMAILSERVICE__SHOULDSENDEMAIL }}
+          E: ${{ vars.EMAILSERVICE__SHOULDSENDEMAIL }}
           EmailService__DisplayName: ${{ vars.EMAILSERVICE__DISPLAYNAME }}
           EmailService__From: ${{ secrets.EMAILSERVICE__FROM }}
           EmailService__Host: ${{ secrets.EMAILSERVICE__HOST }}
@@ -113,12 +113,12 @@ jobs:
             MySql__ConnectionString, Authorization__SecretKey,
             Authorization__AccessTokenMinutesLifetime, Authorization__RefreshTokenDaysLifetime,
             S3Service__AccessKey, S3Service__SecretKey, S3Service__BucketName, DD__d,
-            EmailService__ShouldSendEmails, EmailService__DisplayName, EmailService__From,
+            E, EmailService__DisplayName, EmailService__From,
             EmailService__Host, EmailService__Password, EmailService__UserName, EmailService__Port
           script: |
             echo "Docker container started at $(TZ='Europe/Kiev' date "+%A %d-%b-%Y %H:%M:%S %Z")" >> deploy.txt
             echo "i am $DD__d" >> test.txt
-            echo $EmailService__ShouldSendEmails >> test.txt
+            echo $E >> test.txt
             docker stop ${{ secrets.DOCKER_CONTAINER }}
             docker rm ${{ secrets.DOCKER_CONTAINER }}
             docker rmi ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
