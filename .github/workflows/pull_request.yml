@@ -104,7 +104,7 @@ jobs:
             EmailService__Host, EmailService__Password, EmailService__UserName, EmailService__Port
           script: |
             echo "Docker container started at $(TZ='Europe/Kiev' date "+%A %d-%b-%Y %H:%M:%S %Z")" >> deploy.txt
-            docker run --name plitkarka_dev -d \
+            docker run --name plitkarkaDev -d \
             -e MySql__ConnectionString \
             -e Authorization__SecretKey \
             -e Authorization__AccessTokenMinutesLifetime \
@@ -119,5 +119,5 @@ jobs:
             -e EmailService__Password \
             -e EmailService__UserName \
             -e EmailService__Port \
-            -p 80:8080 \
+            -p 8080:80 \
             ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
