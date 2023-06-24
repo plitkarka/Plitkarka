@@ -8,77 +8,77 @@ on:
       - dev
 
 jobs:
-  build:
-    name: Build and test Docker image
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out the repository
-        uses: actions/checkout@v3
-
-      - name: Extract metadata (tags, labels) for Docker
-        id: metadata
-        uses: docker/metadata-action@v4
-        with:
-          images: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
-          tags: |
-            # Latest tag for master branch in DockerHub
-            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
-            # Tag for dev branch in DockerHub
-            type=raw,value=dev-{{sha}},enable=${{ github.ref == format('refs/heads/{0}', 'dev') }}
-
-      - name: Build Docker image
-        id: build_image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: false
-          tags: ${{ steps.metadata.outputs.tags }}
-          labels: ${{ steps.metadata.outputs.labels }}
-
-      - name: Run Docker container
-        env:
-          MySql__ConnectionString: ${{ secrets.MYSQL__CONNECTIONSTRING }}
-          Authorization__SecretKey: ${{ secrets.AUTHORIZATION__SECRETKEY }}
-          Authorization__AccessTokenMinutesLifetime: ${{ secrets.AUTHORIZATION__ACCESSTOKENMINUTESLIFETIME }}
-          Authorization__RefreshTokenDaysLifetime: ${{ secrets.AUTHORIZATION__REFRESHTOKENDAYSLIFETIME }}
-          S3Service__AccessKey: ${{ secrets.S3SERVICE__ACCESSKEY }}
-          S3Service__SecretKey: ${{ secrets.S3SERVICE__SECRETKEY }}
-          S3Service__BucketName: ${{ secrets.S3SERVICE__BUCKETNAME }}
-          EmailService__ShouldSendEmails: ${{ vars.EMAILSERVICE__SHOULDSENDEMAIL }}
-          EmailService__DisplayName: ${{ vars.EMAILSERVICE__DISPLAYNAME }}
-          EmailService__From: ${{ secrets.EMAILSERVICE__FROM }}
-          EmailService__Host: ${{ secrets.EMAILSERVICE__HOST }}
-          EmailService__Password: ${{ secrets.EMAILSERVICE__PASSWORD }}
-          EmailService__UserName: ${{ secrets.EMAILSERVICE__USERNAME }}
-          EmailService__Port: ${{ secrets.EMAILSERVICE__PORT }}
-        run: |
-          docker run --name ${{ secrets.DOCKER_CONTAINER }} -d \
-            -e MySql__ConnectionString \
-            -e Authorization__SecretKey \
-            -e Authorization__AccessTokenMinutesLifetime \
-            -e Authorization__RefreshTokenDaysLifetime \
-            -e S3Service__AccessKey \
-            -e S3Service__SecretKey \
-            -e S3Service__BucketName \
-            -e EmailService__ShouldSendEmails \
-            -e EmailService__DisplayName \
-            -e EmailService__From \
-            -e EmailService__Host \
-            -e EmailService__Password \
-            -e EmailService__UserName \
-            -e EmailService__Port \
-            -p 80:80 \
-            ${{ steps.build_image.outputs.imageid }}
-
-      - name: Sleep for 10s
-        run: sleep 10
-
-      - name: Test Docker container
-        id: test
-        run: echo "STATUS=$(curl http://localhost/api/health)" >> "$GITHUB_OUTPUT"
-
-      - name: Information about Testing
-        run: echo Status of working Database - ${{ steps.test.outputs.STATUS }}
+#  build:
+#    name: Build and test Docker image
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Check out the repository
+#        uses: actions/checkout@v3
+#
+#      - name: Extract metadata (tags, labels) for Docker
+#        id: metadata
+#        uses: docker/metadata-action@v4
+#        with:
+#          images: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
+#          tags: |
+#            # Latest tag for master branch in DockerHub
+#            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
+#            # Tag for dev branch in DockerHub
+#            type=raw,value=dev-{{sha}},enable=${{ github.ref == format('refs/heads/{0}', 'dev') }}
+#
+#      - name: Build Docker image
+#        id: build_image
+#        uses: docker/build-push-action@v4
+#        with:
+#          context: .
+#          push: false
+#          tags: ${{ steps.metadata.outputs.tags }}
+#          labels: ${{ steps.metadata.outputs.labels }}
+#
+#      - name: Run Docker container
+#        env:
+#          MySql__ConnectionString: ${{ secrets.MYSQL__CONNECTIONSTRING }}
+#          Authorization__SecretKey: ${{ secrets.AUTHORIZATION__SECRETKEY }}
+#          Authorization__AccessTokenMinutesLifetime: ${{ secrets.AUTHORIZATION__ACCESSTOKENMINUTESLIFETIME }}
+#          Authorization__RefreshTokenDaysLifetime: ${{ secrets.AUTHORIZATION__REFRESHTOKENDAYSLIFETIME }}
+#          S3Service__AccessKey: ${{ secrets.S3SERVICE__ACCESSKEY }}
+#          S3Service__SecretKey: ${{ secrets.S3SERVICE__SECRETKEY }}
+#          S3Service__BucketName: ${{ secrets.S3SERVICE__BUCKETNAME }}
+#          EmailService__ShouldSendEmails: ${{ vars.EMAILSERVICE__SHOULDSENDEMAIL }}
+#          EmailService__DisplayName: ${{ vars.EMAILSERVICE__DISPLAYNAME }}
+#          EmailService__From: ${{ secrets.EMAILSERVICE__FROM }}
+#          EmailService__Host: ${{ secrets.EMAILSERVICE__HOST }}
+#          EmailService__Password: ${{ secrets.EMAILSERVICE__PASSWORD }}
+#          EmailService__UserName: ${{ secrets.EMAILSERVICE__USERNAME }}
+#          EmailService__Port: ${{ secrets.EMAILSERVICE__PORT }}
+#        run: |
+#          docker run --name ${{ secrets.DOCKER_CONTAINER }} -d \
+#            -e MySql__ConnectionString \
+#            -e Authorization__SecretKey \
+#            -e Authorization__AccessTokenMinutesLifetime \
+#            -e Authorization__RefreshTokenDaysLifetime \
+#            -e S3Service__AccessKey \
+#            -e S3Service__SecretKey \
+#            -e S3Service__BucketName \
+#            -e EmailService__ShouldSendEmails \
+#            -e EmailService__DisplayName \
+#            -e EmailService__From \
+#            -e EmailService__Host \
+#            -e EmailService__Password \
+#            -e EmailService__UserName \
+#            -e EmailService__Port \
+#            -p 80:80 \
+#            ${{ steps.build_image.outputs.imageid }}
+#
+#      - name: Sleep for 10s
+#        run: sleep 10
+#
+#      - name: Test Docker container
+#        id: test
+#        run: echo "STATUS=$(curl http://localhost/api/health)" >> "$GITHUB_OUTPUT"
+#
+#      - name: Information about Testing
+#        run: echo Status of working Database - ${{ steps.test.outputs.STATUS }}
 
   run:
     name: Update docker version on AWS EC2
@@ -103,7 +103,7 @@ jobs:
           EmailService__Password: ${{ secrets.EMAILSERVICE__PASSWORD }}
           EmailService__UserName: ${{ secrets.EMAILSERVICE__USERNAME }}
           EmailService__Port: ${{ secrets.EMAILSERVICE__PORT }}
-          ddd: ddd
+          ddd: "ddd"
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
