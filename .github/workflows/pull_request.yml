@@ -124,19 +124,19 @@ jobs:
             docker rmi ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
             docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}:latest
             docker run --name ${{ secrets.DOCKER_CONTAINER }} -d \
-              -e MySql__ConnectionString=$MYSQL__CONNECTIONSTRING \
-              -e Authorization__SecretKey=$AUTHORIZATION__SECRETKEY \
-              -e Authorization__AccessTokenMinutesLifetime=$AUTHORIZATION__ACCESSTOKENMINUTESLIFETIME \
-              -e Authorization__RefreshTokenDaysLifetime=$AUTHORIZATION__REFRESHTOKENDAYSLIFETIME \
-              -e S3Service__AccessKey=$S3SERVICE__ACCESSKEY \
-              -e S3Service__SecretKey=$S3SERVICE__SECRETKEY \
-              -e S3Service__BucketName=$S3SERVICE__BUCKETNAME \
-              -e EmailService__ShouldSendEmails=$EMAILSERVICE__SHOULDSENDEMAILS \
-              -e EmailService__DisplayName=$EMAILSERVICE__DISPLAYNAME \
-              -e EmailService__From=$EMAILSERVICE__FROM \
-              -e EmailService__Host=$EMAILSERVICE__HOST \
-              -e EmailService__Password=$EMAILSERVICE__PASSWORD \
-              -e EmailService__UserName=$EMAILSERVICE__USERNAME \
-              -e EmailService__Port=$EMAILSERVICE__PORT \
+              -e MySql__ConnectionString="$MYSQL__CONNECTIONSTRING" \
+              -e Authorization__SecretKey="$AUTHORIZATION__SECRETKEY" \
+              -e Authorization__AccessTokenMinutesLifetime="$AUTHORIZATION__ACCESSTOKENMINUTESLIFETIME" \
+              -e Authorization__RefreshTokenDaysLifetime="$AUTHORIZATION__REFRESHTOKENDAYSLIFETIME" \
+              -e S3Service__AccessKey="$S3SERVICE__ACCESSKEY" \
+              -e S3Service__SecretKey="$S3SERVICE__SECRETKEY" \
+              -e S3Service__BucketName="$S3SERVICE__BUCKETNAME" \
+              -e EmailService__ShouldSendEmails="$EMAILSERVICE__SHOULDSENDEMAILS" \
+              -e EmailService__DisplayName="$EMAILSERVICE__DISPLAYNAME" \
+              -e EmailService__From="$EMAILSERVICE__FROM" \
+              -e EmailService__Host="$EMAILSERVICE__HOST" \
+              -e EmailService__Password="$EMAILSERVICE__PASSWORD" \
+              -e EmailService__UserName="$EMAILSERVICE__USERNAME" \
+              -e EmailService__Port="$EMAILSERVICE__PORT" \
               -p 80:80 \
               ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}:latest
