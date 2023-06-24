@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    name: Create, build and test Docker image
+    name: Build and test Docker image
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repository
