@@ -103,7 +103,7 @@ jobs:
           EmailService__Password: ${{ secrets.EMAILSERVICE__PASSWORD }}
           EmailService__UserName: ${{ secrets.EMAILSERVICE__USERNAME }}
           EmailService__Port: ${{ secrets.EMAILSERVICE__PORT }}
-          ddd: "DDD"
+          DDD: "DDD"
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
