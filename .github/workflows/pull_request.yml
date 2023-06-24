@@ -103,20 +103,20 @@ jobs:
           EmailService__Password: ${{ secrets.EMAILSERVICE__PASSWORD }}
           EmailService__UserName: ${{ secrets.EMAILSERVICE__USERNAME }}
           EmailService__Port: ${{ secrets.EMAILSERVICE__PORT }}
-          ddd: "ddd"
+          DDD: "DDD"
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_KEY }}
           port: ${{ secrets.EC2_PORT }}
-          envs: MySql__ConnectionString,Authorization__SecretKey,ddd,
+          envs: MySql__ConnectionString,Authorization__SecretKey,DDD,
             Authorization__AccessTokenMinutesLifetime, Authorization__RefreshTokenDaysLifetime,
             S3Service__AccessKey, S3Service__SecretKey, S3Service__BucketName,
             EmailService__ShouldSendEmails, EmailService__DisplayName, EmailService__From,
             EmailService__Host, EmailService__Password, EmailService__UserName, EmailService__Port
           script: |
             echo "Docker container started at $(TZ='Europe/Kiev' date "+%A %d-%b-%Y %H:%M:%S %Z")" >> deploy.txt
-            echo "i am $ddd" >> test.txt
+            echo "i am DDD" >> test.txt
             echo $EmailService__ShouldSendEmails >> test.txt
             docker stop ${{ secrets.DOCKER_CONTAINER }}
             docker rm ${{ secrets.DOCKER_CONTAINER }}
