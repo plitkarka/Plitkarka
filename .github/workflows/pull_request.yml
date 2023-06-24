@@ -80,10 +80,6 @@ jobs:
       - name: Executing remote SSH commands
         uses: appleboy/ssh-action@v0.1.10
         env:
-          Logging__LogLevel__Default: ${{ vars.LOGGING__LOGLEVEL__DEFAULT }}
-          Logging__LogLevel__Microsoft.AspNetCore: ${{ vars.LOGGING__LOGLEVEL__MICROSOFT_ASPNETCORE }}
-          Logging__LogLevel__Microsoft.EntityFrameworkCore.Database.Command: ${{ vars.LOGGING__LOGLEVEL__MICROSOFT_ENTITYFRAMEWORKCORE_DATABASE_COMMAND }}
-          AllowedHosts: ${{ vars.ALLOWEDHOSTS }}
           MySql__ConnectionString: ${{ secrets.MYSQL__CONNECTIONSTRING }}
           Authorization__SecretKey: ${{ secrets.AUTHORIZATION__SECRETKEY }}
           Authorization__AccessTokenMinutesLifetime: ${{ secrets.AUTHORIZATION__ACCESSTOKENMINUTESLIFETIME }}
@@ -104,9 +100,7 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           port: ${{ secrets.EC2_PORT }}
           envs:
-            Logging__LogLevel__Default, Logging__LogLevel__Microsoft.AspNetCore,
-            Logging__LogLevel__Microsoft.EntityFrameworkCore.Database.Command,
-            AllowedHosts, MySql__ConnectionString, Authorization__SecretKey,
+            MySql__ConnectionString, Authorization__SecretKey,
             Authorization__AccessTokenMinutesLifetime, Authorization__RefreshTokenDaysLifetime,
             S3Service__AccessKey, S3Service__SecretKey, S3Service__BucketName,
             EmailService__ShouldSendEmails, EmailService__DisplayName, EmailService__From,
