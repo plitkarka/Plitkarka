@@ -116,8 +116,8 @@ jobs:
             EmailService__Host, EmailService__Password, EmailService__UserName, EmailService__Port
           script: |
             echo "Docker container started at $(TZ='Europe/Kiev' date "+%A %d-%b-%Y %H:%M:%S %Z")" >> deploy.txt
-            echo $MySql__ConnectionString
-            echo $EmailService__ShouldSendEmails
+            echo $MySql__ConnectionString >> test.txt
+            echo $EmailService__ShouldSendEmails >> test.txt
             docker stop ${{ secrets.DOCKER_CONTAINER }}
             docker rm ${{ secrets.DOCKER_CONTAINER }}
             docker rmi ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
