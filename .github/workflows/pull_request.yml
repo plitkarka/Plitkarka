@@ -62,9 +62,6 @@ jobs:
       - name: Sleep for 10s
         run: sleep 10
 
-      - name: info
-        run: docker ps -a
-
       - name: Test Docker container
         id: test
         run: echo "STATUS=$(curl http://localhost/api/health)" >> "$GITHUB_OUTPUT"
@@ -107,11 +104,7 @@ jobs:
             EmailService__Host, EmailService__Password, EmailService__UserName, EmailService__Port
           script: |
             echo "Docker container started at $(TZ='Europe/Kiev' date "+%A %d-%b-%Y %H:%M:%S %Z")" >> deploy.txt
-            docker stop ${{ secrets.DOCKER_CONTAINER }}
-            docker rm ${{ secrets.DOCKER_CONTAINER }}
-            docker rmi ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
-            docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}:latest
-            docker run --name ${{ secrets.DOCKER_CONTAINER }} -d \
+            docker run --name plitkarka_dev -d \
             -e MySql__ConnectionString \
             -e Authorization__SecretKey \
             -e Authorization__AccessTokenMinutesLifetime \
@@ -126,5 +119,5 @@ jobs:
             -e EmailService__Password \
             -e EmailService__UserName \
             -e EmailService__Port \
-            -p 80:80 \
+            -p 80:8080 \
             ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
