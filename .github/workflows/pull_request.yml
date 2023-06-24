@@ -110,7 +110,7 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           port: ${{ secrets.EC2_PORT }}
           envs:
-            MySql__ConnectionString, Authorization__SecretKey, ddd
+            MySql__ConnectionString,Authorization__SecretKey,ddd
             Authorization__AccessTokenMinutesLifetime, Authorization__RefreshTokenDaysLifetime,
             S3Service__AccessKey, S3Service__SecretKey, S3Service__BucketName,
             EmailService__ShouldSendEmails, EmailService__DisplayName, EmailService__From,
