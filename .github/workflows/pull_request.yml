@@ -118,10 +118,6 @@ jobs:
             docker rmi ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
             docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}:latest
             docker run --name '${{ secrets.DOCKER_CONTAINER }}' -d \
-            -e Logging__LogLevel__Default \
-            -e Logging__LogLevel__Microsoft.AspNetCore \
-            -e Logging__LogLevel__Microsoft.EntityFrameworkCore.Database.Command \
-            -e AllowedHosts \
             -e MySql__ConnectionString \
             -e Authorization__SecretKey \
             -e Authorization__AccessTokenMinutesLifetime \
@@ -138,3 +134,8 @@ jobs:
             -e EmailService__Port \
             -p 80:80 \
             ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
+
+#            -e Logging__LogLevel__Default \
+#            -e Logging__LogLevel__Microsoft.AspNetCore \
+#            -e Logging__LogLevel__Microsoft.EntityFrameworkCore.Database.Command \
+#            -e AllowedHosts \
