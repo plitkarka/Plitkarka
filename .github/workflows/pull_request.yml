@@ -138,3 +138,4 @@ jobs:
             -e EmailService__Port \
             -p 80:80 \
             ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
+
