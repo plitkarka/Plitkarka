@@ -136,6 +136,6 @@ jobs:
             -e EmailService__Password \
             -e EmailService__UserName \
             -e EmailService__Port \
-            -e ggg="ffff"
+            -e ggg="ffff" \
             -p 80:80 \
             ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
