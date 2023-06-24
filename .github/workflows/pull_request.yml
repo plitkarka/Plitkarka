@@ -117,7 +117,7 @@ jobs:
             docker rm ${{ secrets.DOCKER_CONTAINER }}
             docker rmi ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
             docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}:latest
-            docker run --name '${{ secrets.DOCKER_CONTAINER }}' -d \
+            docker run --name ${{ secrets.DOCKER_CONTAINER }} -d \
             -e Logging__LogLevel__Default \
             -e Logging__LogLevel__Microsoft.AspNetCore \
             -e Logging__LogLevel__Microsoft.EntityFrameworkCore.Database.Command \
@@ -136,6 +136,5 @@ jobs:
             -e EmailService__Password \
             -e EmailService__UserName \
             -e EmailService__Port \
-            -e ggg="ffff" \
             -p 80:80 \
             ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
