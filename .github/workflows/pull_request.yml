@@ -89,54 +89,54 @@ jobs:
       - name: Executing remote SSH commands
         uses: appleboy/ssh-action@v0.1.10
         env:
-          MySql__ConnectionString: ${{ secrets.MYSQL__CONNECTIONSTRING }}
-          Authorization__SecretKey: ${{ secrets.AUTHORIZATION__SECRETKEY }}
-          Authorization__AccessTokenMinutesLifetime: ${{ secrets.AUTHORIZATION__ACCESSTOKENMINUTESLIFETIME }}
-          Authorization__RefreshTokenDaysLifetime: ${{ secrets.AUTHORIZATION__REFRESHTOKENDAYSLIFETIME }}
-          S3Service__AccessKey: ${{ secrets.S3SERVICE__ACCESSKEY }}
-          S3Service__SecretKey: ${{ secrets.S3SERVICE__SECRETKEY }}
-          S3Service__BucketName: ${{ secrets.S3SERVICE__BUCKETNAME }}
-          E: ${{ vars.EMAILSERVICE__SHOULDSENDEMAIL }}
-          EmailService__DisplayName: ${{ vars.EMAILSERVICE__DISPLAYNAME }}
-          EmailService__From: ${{ secrets.EMAILSERVICE__FROM }}
-          EmailService__Host: ${{ secrets.EMAILSERVICE__HOST }}
-          EmailService__Password: ${{ secrets.EMAILSERVICE__PASSWORD }}
-          EmailService__UserName: ${{ secrets.EMAILSERVICE__USERNAME }}
-          EmailService__Port: ${{ secrets.EMAILSERVICE__PORT }}
-          DD__d: "ddd"
+          MYSQL__CONNECTIONSTRING: ${{ secrets.MYSQL__CONNECTIONSTRING }}
+          AUTHORIZATION__SECRETKEY: ${{ secrets.AUTHORIZATION__SECRETKEY }}
+          AUTHORIZATION__ACCESSTOKENMINUTESLIFETIME: ${{ secrets.AUTHORIZATION__ACCESSTOKENMINUTESLIFETIME }}
+          AUTHORIZATION__REFRESHTOKENDAYSLIFETIME: ${{ secrets.AUTHORIZATION__REFRESHTOKENDAYSLIFETIME }}
+          S3SERVICE__ACCESSKEY: ${{ secrets.S3SERVICE__ACCESSKEY }}
+          S3SERVICE__SECRETKEY: ${{ secrets.S3SERVICE__SECRETKEY }}
+          S3SERVICE__BUCKETNAME: ${{ secrets.S3SERVICE__BUCKETNAME }}
+          EMAILSERVICE__SHOULDSENDEMAILS: ${{ vars.EMAILSERVICE__SHOULDSENDEMAIL }}
+          EMAILSERVICE__DISPLAYNAME: ${{ vars.EMAILSERVICE__DISPLAYNAME }}
+          EMAILSERVICE__FROM: ${{ secrets.EMAILSERVICE__FROM }}
+          EMAILSERVICE__HOST: ${{ secrets.EMAILSERVICE__HOST }}
+          EMAILSERVICE__PASSWORD: ${{ secrets.EMAILSERVICE__PASSWORD }}
+          EMAILSERVICE__USERNAME: ${{ secrets.EMAILSERVICE__USERNAME }}
+          EMAILSERVICE__PORT: ${{ secrets.EMAILSERVICE__PORT }}
+          DD__D: "ddd"
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_KEY }}
           port: ${{ secrets.EC2_PORT }}
           envs:
-            MySql__ConnectionString, Authorization__SecretKey,
-            Authorization__AccessTokenMinutesLifetime, Authorization__RefreshTokenDaysLifetime,
-            S3Service__AccessKey, S3Service__SecretKey, S3Service__BucketName, DD__d,
-            E, EmailService__DisplayName, EmailService__From,
-            EmailService__Host, EmailService__Password, EmailService__UserName, EmailService__Port
+            MYSQL__CONNECTIONSTRING, AUTHORIZATION__SECRETKEY,
+            AUTHORIZATION__ACCESSTOKENMINUTESLIFETIME, AUTHORIZATION__REFRESHTOKENDAYSLIFETIME,
+            S3SERVICE__ACCESSKEY, S3SERVICE__SECRETKEY, S3SERVICE__BUCKETNAME, DD__D,
+            EMAILSERVICE__SHOULDSENDEMAILS, EMAILSERVICE__DISPLAYNAME, EMAILSERVICE__FROM,
+            EMAILSERVICE__HOST, EMAILSERVICE__PASSWORD, EMAILSERVICE__USERNAME, EMAILSERVICE__PORT
           script: |
             echo "Docker container started at $(TZ='Europe/Kiev' date "+%A %d-%b-%Y %H:%M:%S %Z")" >> deploy.txt
-            echo "i am $DD__d" >> test.txt
-            echo $E >> test.txt
+            echo "i am $DD__D" >> test.txt
+            echo $EMAILSERVICE__SHOULDSENDEMAILS >> test.txt
             docker stop ${{ secrets.DOCKER_CONTAINER }}
             docker rm ${{ secrets.DOCKER_CONTAINER }}
             docker rmi ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
             docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}:latest
             docker run --name ${{ secrets.DOCKER_CONTAINER }} -d \
-              -e MySql__ConnectionString \
-              -e Authorization__SecretKey \
-              -e Authorization__AccessTokenMinutesLifetime \
-              -e Authorization__RefreshTokenDaysLifetime \
-              -e S3Service__AccessKey \
-              -e S3Service__SecretKey \
-              -e S3Service__BucketName \
-              -e EmailService__ShouldSendEmails \
-              -e EmailService__DisplayName \
-              -e EmailService__From \
-              -e EmailService__Host \
-              -e EmailService__Password \
-              -e EmailService__UserName \
-              -e EmailService__Port \
+              -e MySql__ConnectionString=$MYSQL__CONNECTIONSTRING \
+              -e Authorization__SecretKey=$AUTHORIZATION__SECRETKEY \
+              -e Authorization__AccessTokenMinutesLifetime=$AUTHORIZATION__ACCESSTOKENMINUTESLIFETIME \
+              -e Authorization__RefreshTokenDaysLifetime=$AUTHORIZATION__REFRESHTOKENDAYSLIFETIME \
+              -e S3Service__AccessKey=$S3SERVICE__ACCESSKEY \
+              -e S3Service__SecretKey=$S3SERVICE__SECRETKEY \
+              -e S3Service__BucketName=$S3SERVICE__BUCKETNAME \
+              -e EmailService__ShouldSendEmails=$EMAILSERVICE__SHOULDSENDEMAILS \
+              -e EmailService__DisplayName=$EMAILSERVICE__DISPLAYNAME \
+              -e EmailService__From=$EMAILSERVICE__FROM \
+              -e EmailService__Host=$EMAILSERVICE__HOST \
+              -e EmailService__Password=$EMAILSERVICE__PASSWORD \
+              -e EmailService__UserName=$EMAILSERVICE__USERNAME \
+              -e EmailService__Port=$EMAILSERVICE__PORT \
               -p 80:80 \
               ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
