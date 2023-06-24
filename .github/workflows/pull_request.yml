@@ -79,3 +79,63 @@ jobs:
 
       - name: Information about Testing
         run: echo Status of working Database - ${{ steps.test.outputs.STATUS }}
+
+  run:
+    name: Update docker version on AWS EC2
+    runs-on: ubuntu-latest
+    #needs: [ build, push ]
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - name: Executing remote SSH commands
+        uses: appleboy/ssh-action@v0.1.10
+        env:
+          MySql__ConnectionString: ${{ secrets.MYSQL__CONNECTIONSTRING }}
+          Authorization__SecretKey: ${{ secrets.AUTHORIZATION__SECRETKEY }}
+          Authorization__AccessTokenMinutesLifetime: ${{ secrets.AUTHORIZATION__ACCESSTOKENMINUTESLIFETIME }}
+          Authorization__RefreshTokenDaysLifetime: ${{ secrets.AUTHORIZATION__REFRESHTOKENDAYSLIFETIME }}
+          S3Service__AccessKey: ${{ secrets.S3SERVICE__ACCESSKEY }}
+          S3Service__SecretKey: ${{ secrets.S3SERVICE__SECRETKEY }}
+          S3Service__BucketName: ${{ secrets.S3SERVICE__BUCKETNAME }}
+          EmailService__ShouldSendEmails: ${{ vars.EMAILSERVICE__SHOULDSENDEMAIL }}
+          EmailService__DisplayName: ${{ vars.EMAILSERVICE__DISPLAYNAME }}
+          EmailService__From: ${{ secrets.EMAILSERVICE__FROM }}
+          EmailService__Host: ${{ secrets.EMAILSERVICE__HOST }}
+          EmailService__Password: ${{ secrets.EMAILSERVICE__PASSWORD }}
+          EmailService__UserName: ${{ secrets.EMAILSERVICE__USERNAME }}
+          EmailService__Port: ${{ secrets.EMAILSERVICE__PORT }}
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_KEY }}
+          port: ${{ secrets.EC2_PORT }}
+          envs:
+            MySql__ConnectionString, Authorization__SecretKey,
+            Authorization__AccessTokenMinutesLifetime, Authorization__RefreshTokenDaysLifetime,
+            S3Service__AccessKey, S3Service__SecretKey, S3Service__BucketName,
+            EmailService__ShouldSendEmails, EmailService__DisplayName, EmailService__From,
+            EmailService__Host, EmailService__Password, EmailService__UserName, EmailService__Port
+          script: |
+            echo "Docker container started at $(TZ='Europe/Kiev' date "+%A %d-%b-%Y %H:%M:%S %Z")" >> deploy.txt
+            echo $MySql__ConnectionString
+            echo $EmailService__ShouldSendEmails
+            docker stop ${{ secrets.DOCKER_CONTAINER }}
+            docker rm ${{ secrets.DOCKER_CONTAINER }}
+            docker rmi ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
+            docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}:latest
+            docker run --name ${{ secrets.DOCKER_CONTAINER }} -d \
+              -e MySql__ConnectionString \
+              -e Authorization__SecretKey \
+              -e Authorization__AccessTokenMinutesLifetime \
+              -e Authorization__RefreshTokenDaysLifetime \
+              -e S3Service__AccessKey \
+              -e S3Service__SecretKey \
+              -e S3Service__BucketName \
+              -e EmailService__ShouldSendEmails \
+              -e EmailService__DisplayName \
+              -e EmailService__From \
+              -e EmailService__Host \
+              -e EmailService__Password \
+              -e EmailService__UserName \
+              -e EmailService__Port \
+              -p 80:80 \
+              ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
