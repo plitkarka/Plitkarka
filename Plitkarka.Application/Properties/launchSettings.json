@@ -12,10 +12,10 @@
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "https://localhost:7011;http://localhost:5011",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
+      "applicationUrl": "https://localhost:7011;http://localhost:5011",
       "dotnetRunMessages": true
     },
     "IIS Express": {

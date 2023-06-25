@@ -5,5 +5,5 @@ namespace Plitkarka.Domain.Services.Authentication;
 
 public interface IAuthenticationService
 {
-    Task<TokenPairResponse> Authenticate(User toAuthenticate);
+    Task<TokenPairResponse> Authenticate(User toAuthenticate, string uniqueIdentifier);
 }
