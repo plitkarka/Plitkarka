@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Org.BouncyCastle.Asn1.Ocsp;
 using Plitkarka.Domain.Models;
 using Plitkarka.Domain.ResponseModels;
 using Plitkarka.Domain.Services.Authentication;
@@ -58,7 +57,7 @@ public class TestController : Controller
         newUser.Id = await _userRepository.AddAsync(
             _mapper.Map<UserEntity>(newUser));
 
-        var pair = await _authenticationService.Authenticate(newUser);
+        var pair = await _authenticationService.Authenticate(newUser, "adminIdentifier");
 
         return Ok(pair);
     }
@@ -113,7 +112,7 @@ public class TestController : Controller
 
         var user = _mapper.Map<User>(userEntity);
 
-        var pair = await _authenticationService.Authenticate(user); 
+        var pair = await _authenticationService.Authenticate(user, "adminIdentifier"); 
 
         return Ok(pair);
     }

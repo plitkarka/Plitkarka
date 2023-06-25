@@ -10,6 +10,10 @@ public record UserDataResponse
 
     public string Email { get; set; }
 
+    public string? Description { get; set; }
+
+    public string? Link { get; set; }
+
     public DateTime BirthDate { get; set; }
 
     public DateTime LastLoginDate { get; set; }

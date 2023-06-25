@@ -72,7 +72,7 @@ public class ResetPasswordHandler : IRequestHandler<ResetPasswordRequest, TokenP
 
         var user = _mapper.Map<User>(userEntity);
 
-        var pair = await _authenticationService.Authenticate(user);
+        var pair = await _authenticationService.Authenticate(user, request.UniqueIdentifier);
 
         return pair;
     }

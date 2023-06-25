@@ -61,7 +61,8 @@ public class AuthController : Controller
     {
         var pair = await _mediator.Send(new VerifyEmailRequest(
             body.Email,
-            body.EmailCode));
+            body.EmailCode,
+            body.UniqueIdentifier));
 
         return Ok(pair);
     }
@@ -100,7 +101,8 @@ public class AuthController : Controller
     {
         var pair = await _mediator.Send(new SignInRequest(
             body.Email,
-            body.Password));
+            body.Password,
+            body.UniqueIdentifier));
 
         return Ok(pair);
     }
@@ -110,15 +112,17 @@ public class AuthController : Controller
     [SwaggerOperation(
         Summary = "Refresh Token Pair", 
         Description = $@"
-            Receive refresh token to return new token pair.
-            Throws 403 if access token user not found, refresh token is invalid, not active or expired
+            Receive refresh token to return new token pair and unique identifier of device.
+            Throws 403 if user have never been authorized with this identifier, access token user not found, refresh token is invalid, not active or expired
         ")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<TokenPairResponse>> RefreshTokenPair(
-        [FromQuery] string refreshToken)
+        [FromQuery] RefreshTokenPairRequestModel body)
     {
-        var pair = await _mediator.Send(new RefreshTokenPairRequest(refreshToken));
+        var pair = await _mediator.Send(new RefreshTokenPairRequest(
+            body.RefreshToken,
+            body.UniqueIdentifier));
 
         return Ok(pair);
     }
