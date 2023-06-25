@@ -78,7 +78,7 @@ public class GetLikedPostsHandler : IRequestHandler<GetLikedPostsRequest, Pagina
                 SharesCount = item.Post.Shares.Count(),
                 UserPreview = new UserPreviewResponse
                 {
-                    UserId = item.Post.User.Id,
+                    Id = item.Post.User.Id,
                     Login = item.Post.User.Login,
                     Name = item.Post.User.Name,
                     Email = item.Post.User.Email,

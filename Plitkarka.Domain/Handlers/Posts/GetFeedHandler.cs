@@ -75,7 +75,7 @@ public class GetFeedHandler : IRequestHandler<GetFeedRequest, PaginationResponse
                 SharesCount = item.Shares.Count(),
                 UserPreview = new UserPreviewResponse
                 {
-                    UserId = item.UserId,
+                    Id = item.UserId,
                     Login = item.User.Login,
                     Name = item.User.Name,
                     Email = item.User.Email,

@@ -55,7 +55,7 @@ public class GetPostCommentsHandler : IRequestHandler<GetPostCommentsRequest, Pa
                 LikesCount = item.CommentLikes.Count(),
                 UserPreview = new UserPreviewResponse
                 {
-                    UserId = item.UserId,
+                    Id = item.UserId,
                     Login = item.User.Login,
                     Name = item.User.Name,
                     Email = item.User.Email,
