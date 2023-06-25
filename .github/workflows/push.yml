@@ -139,13 +139,14 @@ jobs:
           EMAILSERVICE__PASSWORD: ${{ secrets.EMAILSERVICE__PASSWORD }}
           EMAILSERVICE__USERNAME: ${{ secrets.EMAILSERVICE__USERNAME }}
           EMAILSERVICE__PORT: ${{ secrets.EMAILSERVICE__PORT }}
+          ASPNETCORE_ENVIRONMENT: ${{ secrets.ASPNETCORE_ENVIRONMENT }}
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_KEY }}
           port: ${{ secrets.EC2_PORT }}
           envs:
-            MYSQL__CONNECTIONSTRING, AUTHORIZATION__SECRETKEY,
+            MYSQL__CONNECTIONSTRING, AUTHORIZATION__SECRETKEY, ASPNETCORE_ENVIRONMENT,
             AUTHORIZATION__ACCESSTOKENMINUTESLIFETIME, AUTHORIZATION__REFRESHTOKENDAYSLIFETIME,
             S3SERVICE__ACCESSKEY, S3SERVICE__SECRETKEY, S3SERVICE__BUCKETNAME,
             EMAILSERVICE__SHOULDSENDEMAILS, EMAILSERVICE__DISPLAYNAME, EMAILSERVICE__FROM,
@@ -171,5 +172,6 @@ jobs:
               -e EmailService__Password="$EMAILSERVICE__PASSWORD" \
               -e EmailService__UserName="$EMAILSERVICE__USERNAME" \
               -e EmailService__Port="$EMAILSERVICE__PORT" \
+              -e ASPNETCORE_ENVIRONMENT \
               -p 80:80 \
               ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
