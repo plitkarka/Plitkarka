@@ -80,3 +80,13 @@ jobs:
       - name: Information about Testing
         run: echo Status of working Database - ${{ steps.test.outputs.STATUS }}
 
+      - name: Check status of testing
+        if: ${{ steps.test.outputs.STATUS == 'Healthy' }}
+        uses: Sibz/github-status-action@v1
+        with:
+          authToken: ${{secrets.GITHUB_TOKEN}}
+          context: 'Test run'
+          description: 'Passed'
+          state: 'success'
+          sha: ${{github.event.pull_request.head.sha || github.sha}}
+
