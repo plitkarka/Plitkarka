@@ -24,11 +24,18 @@ public record S3Image: IImageService
         _s3Configuration = s3Configuration.Value;
     }
 
+    /// <summary>
+    /// Uploads image to S3 bucket and returns image key
+    /// </summary>
+    /// <param name="fileStream">Image</param>
+    /// <returns>Image Key</returns>
+    /// <exception cref="S3ServiceException">Something gone wrong working with S3 bucket</exception>
+    /// <exception cref="ValidationException">File extension is invalid</exception>
     public async Task<string> UploadImageAsync(IFormFile fileStream)
     {
         if (fileStream.Length<=0)
         {
-            throw new S3ServiceException("No file to load");
+            throw new ValidationException("No file to load");
         }
 
         var extension = Path.GetExtension(fileStream.FileName);
@@ -52,7 +59,6 @@ public record S3Image: IImageService
                 {
                     ["x-amz-meta-originalname"] = fileStream.FileName,
                     ["x-amz-meta-extension"] = extension,
-
                 }
             };
 
@@ -66,11 +72,18 @@ public record S3Image: IImageService
         return key;
     }
 
+    /// <summary>
+    /// Returns url of img from S3 bucket
+    /// </summary>
+    /// <param name="keyName">Image Key</param>
+    /// <returns>Url</returns>
+    /// <exception cref="ArgumentNullException">Parameter keyName is null or empty</exception>
+    /// <exception cref="S3ServiceException">Something gone wrong working with S3 bucket</exception>
     public string GetImageUrl(string keyName)
     {
         if (string.IsNullOrEmpty(keyName))
         {
-            throw new Exception(nameof(keyName));
+            throw new ArgumentNullException(nameof(keyName));
         }
 
         try
@@ -93,11 +106,17 @@ public record S3Image: IImageService
         }
     }
 
+    /// <summary>
+    /// Deletes image from S3 bucket
+    /// </summary>
+    /// <param name="keyName">Image Key</param>
+    /// <exception cref="ArgumentNullException">Parameter keyName is null or empty</exception>
+    /// <exception cref="S3ServiceException">Something gone wrong working with S3 bucket</exception>
     public async Task DeleteImageAsync(string keyName)
     {
         if (string.IsNullOrEmpty(keyName))
         {
-            throw new Exception(nameof(keyName));
+            throw new ArgumentNullException(nameof(keyName));
         }
 
         try

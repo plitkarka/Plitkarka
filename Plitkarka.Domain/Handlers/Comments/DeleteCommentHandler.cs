@@ -27,7 +27,7 @@ public class DeleteCommentHandler : IRequestHandler<DeleteCommentRequest>
     {
         var comment = await _commentRepository.GetByIdAsync(request.CommentId);
 
-        if (comment == null || !comment.IsActive)
+        if (comment == null)
         {
             throw new ValidationException("No comment found");
         }

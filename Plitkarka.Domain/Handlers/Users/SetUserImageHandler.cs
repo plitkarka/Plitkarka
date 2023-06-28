@@ -65,6 +65,10 @@ public class SetUserImageHandler : IRequestHandler<SetUserImageRequest, Guid>
 
         var imageId = await _userImageRepository.AddAsync(imageEntity);
 
+        user.UserImageId = imageId;
+
+        await _userRepository.UpdateAsync(user);
+
         return imageId;
     }
 }

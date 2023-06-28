@@ -5,7 +5,7 @@ namespace Plitkarka.Infrastructure;
 
 internal static class ModelBuilderExtensions
 {
-    private const string DateFunction = "(CURRENT_TIMESTAMP)";
+    public const string DateFunction = "(CURRENT_TIMESTAMP)";
     private const bool DefaultState = true;
 
     public static ModelBuilder SetupEntity<T>(this ModelBuilder modelBuilder) where T : Entity

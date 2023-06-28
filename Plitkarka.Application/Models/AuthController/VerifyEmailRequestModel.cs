@@ -12,4 +12,8 @@ public record VerifyEmailRequestModel
     [StringLength(6, MinimumLength = 6, ErrorMessage = "Email code should be exactly 6 digits")]
     [Required(ErrorMessage = "Email is required")]
     public string EmailCode { get; set; }
+
+    [MaxLength(32, ErrorMessage = "Unique identifier be less or equal 32 symbols")]
+    [Required(ErrorMessage = "Unique identifier is required")]
+    public string UniqueIdentifier { get; set; }
 }

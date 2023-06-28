@@ -53,12 +53,12 @@ public class CommentLikeRepository : IRepository<CommentLikeEntity>
         }
     }
 
-    public IQueryable<CommentLikeEntity> GetAll()
+    public IQueryable<CommentLikeEntity> GetAll(bool includeNonActive = false)
     {
         return _db.CommentLikes;
     }
 
-    public async Task<CommentLikeEntity?> GetByIdAsync(Guid id)
+    public async Task<CommentLikeEntity?> GetByIdAsync(Guid id, bool includeNonActive = false)
     {
         try
         {

@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using Microsoft.OpenApi.Models;
 using Plitkarka.Domain.Filters;
 using Plitkarka.Domain.Services.ContextAccessToken;
@@ -8,7 +7,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 namespace Plitkarka.Application.Swagger;
 
 public class AuthorizationHeaderSwaggerAttribute : IOperationFilter
-{ 
+{
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
         var attrs = context.MethodInfo

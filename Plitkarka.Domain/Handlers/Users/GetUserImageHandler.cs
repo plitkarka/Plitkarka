@@ -31,7 +31,7 @@ public class GetUserImageHandler : IRequestHandler<GetUserImageRequest, string>
 
     public async Task<string> Handle(GetUserImageRequest request, CancellationToken cancellationToken)
     {
-        UserEntity? user = request.UserId == Guid.Empty
+        var user = request.UserId == Guid.Empty
             ? await GetUser(_user.Id)
             : await GetUser(request.UserId);
 

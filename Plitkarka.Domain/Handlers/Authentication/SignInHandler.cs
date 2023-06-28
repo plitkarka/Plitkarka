@@ -13,7 +13,7 @@ using Plitkarka.Infrastructure.Services;
 namespace Plitkarka.Domain.Handlers.Authentication;
 
 public class SignInHandler
-    : IRequestHandler<SignInRequest, TokenPair>
+    : IRequestHandler<SignInRequest, TokenPairResponse>
 {
     private static readonly string ValidationExceptionText = "Wrong email or password";
     private IRepository<UserEntity> _repository { get; init; }
@@ -33,7 +33,7 @@ public class SignInHandler
         _authenticationService = authenticationService; 
     }
 
-    public async Task<TokenPair> Handle(
+    public async Task<TokenPairResponse> Handle(
         SignInRequest request, 
         CancellationToken cancellationToken)
     {
@@ -42,7 +42,7 @@ public class SignInHandler
         try
         {
             var userEntity = await _repository.GetAll().FirstOrDefaultAsync(
-                user => user.IsActive == true && user.Email == request.Email);
+                user => user.Email == request.Email);
 
             user = _mapper.Map<User>(userEntity);
         }
@@ -64,7 +64,7 @@ public class SignInHandler
             throw new ValidationException(ValidationExceptionText);
         }
 
-        var pair = await _authenticationService.Authenticate(user);
+        var pair = await _authenticationService.Authenticate(user, request.UniqueIdentifier);
 
         return pair;
     }

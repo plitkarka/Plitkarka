@@ -25,7 +25,7 @@ public class DeletePostHandler : IRequestHandler<DeletePostRequest>
     {
         var post = await _postRepository.GetByIdAsync(request.PostId);
 
-        if (post == null || !post.IsActive)
+        if (post == null)
         {
             throw new ValidationException("No post found");
         }

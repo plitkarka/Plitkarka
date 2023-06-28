@@ -55,16 +55,22 @@ public class PostRepository : IRepository<PostEntity>
         }
     }
 
-    public IQueryable<PostEntity> GetAll()
+    public IQueryable<PostEntity> GetAll(bool includeNonActive = false)
     {
-        return _db.Posts;
+        return includeNonActive
+            ? _db.Posts
+            : _db.Posts.Where(u => u.IsActive);
     }
 
-    public async Task<PostEntity?> GetByIdAsync(Guid id)
+    public async Task<PostEntity?> GetByIdAsync(Guid id, bool includeNonActive = false)
     {
         try
         {
-            var result = await _db.Posts.FindAsync(id);
+            var result = includeNonActive
+                ? await _db.Posts
+                    .FirstOrDefaultAsync(u => u.Id == id)
+                : await _db.Posts
+                    .FirstOrDefaultAsync(u => u.Id == id && u.IsActive);
 
             return result;
         }

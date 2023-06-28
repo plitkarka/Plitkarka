@@ -12,6 +12,10 @@ public record User : ActivatedLogicModel
 
     public string Email { get; set; }
 
+    public string? Description { get; set; }
+
+    public string? Link { get; set; }
+
     public string EmailCode { get; set; }
 
     public string Password { get; set; }
@@ -28,8 +32,6 @@ public record User : ActivatedLogicModel
 
 
     // ----- Relation properties -----
-
-    public RefreshToken? RefreshToken { get; set; } = null;
 
     public Guid UserImageId { get; set; }
 }

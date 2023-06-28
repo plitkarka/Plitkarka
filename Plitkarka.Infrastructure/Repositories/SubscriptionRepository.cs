@@ -55,16 +55,22 @@ public class SubscriptionRepository : IRepository<SubscriptionEntity>
         }
     }
 
-    public IQueryable<SubscriptionEntity> GetAll()
+    public IQueryable<SubscriptionEntity> GetAll(bool includeNonActive = false)
     {
-        return _db.Subscriptions;
+        return includeNonActive
+            ? _db.Subscriptions
+            : _db.Subscriptions.Where(u => u.IsActive);
     }
 
-    public async Task<SubscriptionEntity?> GetByIdAsync(Guid id)
+    public async Task<SubscriptionEntity?> GetByIdAsync(Guid id, bool includeNonActive = false)
     {
         try
         {
-            var result = await _db.Subscriptions.FindAsync(id);
+            var result = includeNonActive
+                ? await _db.Subscriptions
+                    .FirstOrDefaultAsync(u => u.Id == id)
+                : await _db.Subscriptions
+                    .FirstOrDefaultAsync(u => u.Id == id && u.IsActive);
 
             return result;
         }

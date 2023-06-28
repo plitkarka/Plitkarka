@@ -35,6 +35,11 @@ public class SubscribeHandler : IRequestHandler<SubscribeRequest, Guid>
 
     public async Task<Guid> Handle(SubscribeRequest request, CancellationToken cancellationToken)
     {
+        if (_user.Id == request.SusbcribeToId)
+        {
+            throw new ValidationException("User can't subscribe to himself");
+        }
+
         var user = await _userRepository.GetByIdAsync(request.SusbcribeToId);
 
         if (user == null)
@@ -46,8 +51,9 @@ public class SubscribeHandler : IRequestHandler<SubscribeRequest, Guid>
 
         try
         {
-            existing = await _subscriptionRepository.GetAll().FirstOrDefaultAsync(
-                s => s.SubscribedToId == request.SusbcribeToId && s.UserId == _user.Id);
+            existing = await _subscriptionRepository
+                .GetAll(includeNonActive: true)
+                .FirstOrDefaultAsync(s => s.SubscribedToId == request.SusbcribeToId && s.UserId == _user.Id);
         }
         catch (Exception ex)
         {

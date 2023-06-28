@@ -45,9 +45,7 @@ public class RefreshTokenRepository : IRepository<RefreshTokenEntity>
 
         try 
         { 
-            item.IsActive = false;
-
-            _db.Update(item);
+            _db.RefreshTokens.Remove(item);
             await _db.SaveChangesAsync();
         }
         catch (Exception ex)
@@ -56,12 +54,12 @@ public class RefreshTokenRepository : IRepository<RefreshTokenEntity>
         }
     }
 
-    public IQueryable<RefreshTokenEntity> GetAll()
+    public IQueryable<RefreshTokenEntity> GetAll(bool includeNonActive = false)
     {
         return _db.RefreshTokens;
     }
 
-    public async Task<RefreshTokenEntity?> GetByIdAsync(Guid id)
+    public async Task<RefreshTokenEntity?> GetByIdAsync(Guid id, bool includeNonActive = false)
     {
         try 
         { 
