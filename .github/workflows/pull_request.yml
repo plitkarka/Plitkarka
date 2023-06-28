@@ -80,12 +80,13 @@ jobs:
       - name: Information about Testing
         run: echo Status of working Database - ${{ steps.test.outputs.STATUS }}
 
-      - name: Set commit status as pending
+      - name: Check status of testing
+        if: ${{ steps.test.outputs.STATUS == 'fHealthy' }}
         uses: myrotvorets/set-commit-status-action@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           status: error
-          context: Publish NPM package
+          context: Problems with Database
 
 
 
