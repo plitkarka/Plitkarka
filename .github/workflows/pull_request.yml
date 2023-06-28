@@ -87,6 +87,7 @@ jobs:
           status: pending
           context: Publish NPM package
 
+
 #      - name: Check status of testing
 #        if: ${{ steps.test.outputs.STATUS == 'Healthy' }}
 #        uses: Sibz/github-status-action@v1
