@@ -81,22 +81,9 @@ jobs:
         run: echo Status of working Database - ${{ steps.test.outputs.STATUS }}
 
       - name: Check status of testing
-        if: ${{ steps.test.outputs.STATUS == 'Healthy' }}
+        if: ${{ steps.test.outputs.STATUS == 'Unhealthy' }}
         uses: myrotvorets/set-commit-status-action@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           status: error
-          context: Problems with Database
-
-
-
-#      - name: Check status of testing
-#        if: ${{ steps.test.outputs.STATUS == 'Healthy' }}
-#        uses: Sibz/github-status-action@v1
-#        with:
-#          authToken: ${{secrets.GITHUB_TOKEN}}
-#          context: 'Test run'
-#          description: 'Passed'
-#          state: 'success'
-#          sha: ${{github.sha}}
-
+          context: Problems with database or code
