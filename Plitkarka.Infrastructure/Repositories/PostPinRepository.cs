@@ -53,12 +53,12 @@ public class PostPinRepository : IRepository<PostPinEntity>
         }
     }
 
-    public IQueryable<PostPinEntity> GetAll()
+    public IQueryable<PostPinEntity> GetAll(bool includeNonActive = false)
     {
         return _db.PostPins;
     }
 
-    public async Task<PostPinEntity?> GetByIdAsync(Guid id)
+    public async Task<PostPinEntity?> GetByIdAsync(Guid id, bool includeNonActive = false)
     {
         try
         {

@@ -21,4 +21,10 @@ public record PostEntity : ActivatedEntity
     public ICollection<PostLikeEntity> PostLikes { get; set; }
 
     public ICollection<CommentEntity> Comments { get; set; }
+
+    public ICollection<PostPinEntity> Pins { get; set; }
+
+    public ICollection<PostShareEntity> Shares { get; set; }
+
+    public ICollection<ChatMessageEntity> ChatMessages { get; set; }
 }

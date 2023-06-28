@@ -5,5 +5,6 @@ namespace Plitkarka.Domain.Requests.Authentication;
 
 public record VerifyEmailRequest (
     string Email,
-    string EmailCode)
-    : IRequest<TokenPair>;
+    string EmailCode,
+    string UniqueIdentifier)
+    : IRequest<TokenPairResponse>;

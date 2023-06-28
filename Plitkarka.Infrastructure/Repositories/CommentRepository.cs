@@ -55,16 +55,22 @@ public class CommentRepository : IRepository<CommentEntity>
         }
     }
 
-    public IQueryable<CommentEntity> GetAll()
+    public IQueryable<CommentEntity> GetAll(bool includeNonActive = false)
     {
-        return _db.Comments;
+        return includeNonActive
+            ? _db.Comments
+            : _db.Comments.Where(u => u.IsActive);
     }
 
-    public async Task<CommentEntity?> GetByIdAsync(Guid id)
+    public async Task<CommentEntity?> GetByIdAsync(Guid id, bool includeNonActive = false)
     {
         try
         {
-            var result = await _db.Comments.FindAsync(id);
+            var result = includeNonActive
+                ? await _db.Comments
+                    .FirstOrDefaultAsync(u => u.Id == id)
+                : await _db.Comments
+                    .FirstOrDefaultAsync(u => u.Id == id && u.IsActive);
 
             return result;
         }

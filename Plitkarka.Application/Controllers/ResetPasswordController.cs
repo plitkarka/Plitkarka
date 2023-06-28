@@ -24,7 +24,11 @@ public class ResetPasswordController : Controller
     [ModelStateValidation]
     [SwaggerOperation(
         Summary = "Send an email with code to reset password", 
-        Description = "Check if user with sepcific email exist and send code to reset passwrod on this email. Returns email. Throw 400 if there is no user with such email")]
+        Description = $@"
+            Check if user with sepcific email exist and send code to reset passwrod on this email.
+            Returns email.
+            Returns 400 if there is no user with such email
+        ")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<StringResponse>> SendEmail(
@@ -39,7 +43,10 @@ public class ResetPasswordController : Controller
     [ModelStateValidation]
     [SwaggerOperation(
         Summary = "Verify code for reseting email",
-        Description = "Check if the code is valid. Throw 400 if there is no user with such email, password reset wasn't requested or code is wrong")]
+        Description = $@"
+            Check if the code is valid.
+            Retuns 400 if there is no user with such email, password reset wasn't requested or code is wrong
+        ")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<VerifyCodeResponse>> VerifyCode(
@@ -56,16 +63,20 @@ public class ResetPasswordController : Controller
     [ModelStateValidation]
     [SwaggerOperation(
         Summary = "Resets password",
-        Description = "Sets new password for user. Throw 400 if there is no user with such email, password reset wasn't requested or code is wrong")]
+        Description = @$"
+            Sets new password for user.
+            Throw 400 if there is no user with such email, password reset wasn't requested or code is wrong
+        ")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<TokenPair>> ResetPassword(
+    public async Task<ActionResult<TokenPairResponse>> ResetPassword(
        [FromBody] ResetPasswordRequestModel body)
     {
         var pair = await _mediator.Send(new ResetPasswordRequest(
             body.Email,
             body.PasswordCode,
-            body.Password));
+            body.Password,
+            body.UniqueIdentifier));
 
         return Ok(pair);
     }

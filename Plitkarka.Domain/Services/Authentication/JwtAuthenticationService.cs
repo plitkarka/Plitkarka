@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Plitkarka.Commons.Configuration;
+using Plitkarka.Commons.Exceptions;
 using Plitkarka.Domain.Models;
 using Plitkarka.Domain.ResponseModels;
 using Plitkarka.Infrastructure.Models;
@@ -38,8 +40,27 @@ public class JwtAuthenticationService : IAuthenticationService
     /// </summary>
     /// <param name="toAuthenticate">User that needs to be authenticated</param>
     /// <returns>Pair of tokens</returns>
-    public async Task<TokenPair> Authenticate(User toAuthenticate)
+    public async Task<TokenPairResponse> Authenticate(User toAuthenticate, string uniqueIdentifier)
     {
+        UserEntity? userEntity;
+
+        try
+        {
+            userEntity = await _userRepository
+                .GetAll()
+                .Include(u => u.RefreshTokens)
+                .FirstOrDefaultAsync(u => u.Id == toAuthenticate.Id);
+        }
+        catch (Exception ex)
+        {
+            throw new MySqlException(ex.Message);
+        }
+
+        if (userEntity == null)
+        {
+            throw new AuthorizationErrorException("Authorized used not found");
+        }
+
         var claims = new List<Claim>
         {
             new Claim(IdClaimName, toAuthenticate.Id.ToString()),
@@ -56,9 +77,9 @@ public class JwtAuthenticationService : IAuthenticationService
 
         var accessToken = new JwtSecurityTokenHandler().WriteToken(token);
 
-        var refreshToken = await GenerateRefreshTokenForUser(toAuthenticate);
+        var refreshToken = await GenerateRefreshTokenForUser(userEntity, uniqueIdentifier);
 
-        var tokenPair =  new TokenPair
+        var tokenPair =  new TokenPairResponse
         {
             AccessToken = accessToken,
             RefreshToken = refreshToken,
@@ -67,36 +88,50 @@ public class JwtAuthenticationService : IAuthenticationService
         return tokenPair;
     }
 
-    private async Task<string> GenerateRefreshTokenForUser(User user)
-    {
+    private async Task<string> GenerateRefreshTokenForUser(UserEntity userEntity, string uniqueIdentifier)
+    { 
         var token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
 
-        if (user.RefreshToken != null)
-        {
-            var oldRefreshTokenEntity = await _refreshTokenRepository.GetByIdAsync(user.RefreshToken.Id);
+        RefreshTokenEntity? refreshTokenEntity;
 
-            if (oldRefreshTokenEntity != null)
-            {
-                await _refreshTokenRepository.DeleteAsync(oldRefreshTokenEntity);
-            }
+        try
+        {
+            refreshTokenEntity = await _refreshTokenRepository
+                .GetAll()
+                .FirstOrDefaultAsync(token => token.UserId == userEntity.Id && token.UniqueIdentifier == uniqueIdentifier);
+        }
+        catch (Exception ex)
+        {
+            throw new MySqlException(ex.Message);
+        }
+
+        if (refreshTokenEntity != null)
+        {
+            refreshTokenEntity.Token = token;
+            refreshTokenEntity.Expires = GenerateExpirationDate();
+
+            await _refreshTokenRepository.UpdateAsync(refreshTokenEntity);
+
+            return token;
         }
 
         var refreshToken = new RefreshToken()
         {
             Token = token,
-            Expires = DateTime.Now.AddMinutes(_authorizationConfiguration.RefreshTokenDaysLifetime),
+            UniqueIdentifier = uniqueIdentifier,
+            UserId = userEntity.Id,
+            Expires = GenerateExpirationDate(),
         };
 
-        var refreshTokenEntity = _mapper.Map<RefreshTokenEntity>(refreshToken);
-        var newTokenId = await _refreshTokenRepository.AddAsync(refreshTokenEntity);
-
-        var userEntity = await _userRepository.GetByIdAsync(user.Id);
-        userEntity.RefreshTokenId = newTokenId;
-        await _userRepository.UpdateAsync(userEntity);
+        var newTokenId = await _refreshTokenRepository.AddAsync(
+            _mapper.Map<RefreshTokenEntity>(refreshToken));
 
         return token;
     }
 
     private SymmetricSecurityKey GetKey() => new SymmetricSecurityKey(
         System.Text.Encoding.UTF8.GetBytes(_authorizationConfiguration.SecretKey));
+
+    private DateTime GenerateExpirationDate() =>
+        DateTime.Now.AddMinutes(_authorizationConfiguration.RefreshTokenDaysLifetime);
 }

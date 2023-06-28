@@ -35,13 +35,15 @@ public class UserRepository : IRepository<UserEntity>
         }        
     }
 
-    public async Task<UserEntity?> GetByIdAsync(Guid id)
+    public async Task<UserEntity?> GetByIdAsync(Guid id, bool includeNonActive = false)
     {
         try 
-        { 
-            var result = await _db.Users
-                .Include(u => u.RefreshToken)
-                .FirstOrDefaultAsync(u => u.Id == id);
+        {
+            var result = includeNonActive 
+                ? await _db.Users
+                    .FirstOrDefaultAsync(u => u.Id == id)
+                : await _db.Users
+                    .FirstOrDefaultAsync(u => u.Id == id && u.IsActive);
 
             return result;
         }
@@ -51,9 +53,11 @@ public class UserRepository : IRepository<UserEntity>
         }      
     }
 
-    public IQueryable<UserEntity> GetAll()
+    public IQueryable<UserEntity> GetAll(bool includeNonActive = false)
     {
-        return _db.Users;
+        return includeNonActive
+            ? _db.Users
+            : _db.Users.Where(u => u.IsActive);
     }
 
     public async Task<UserEntity> UpdateAsync(UserEntity user)

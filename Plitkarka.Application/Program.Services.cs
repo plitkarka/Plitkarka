@@ -8,6 +8,8 @@ using Plitkarka.Domain.Services.ImageService;
 using Plitkarka.Domain.Services.EmailService;
 using Microsoft.AspNetCore.Mvc;
 using Plitkarka.Domain.Handlers.Authentication;
+using Plitkarka.Domain.Services.Pagination;
+using Plitkarka.Domain.Services.QueryablePagination;
 
 namespace Plitkarka.Application;
 
@@ -29,7 +31,7 @@ public static partial class Program
         // HttpContext
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddSingleton<IContextUserService, ContextUserService>();
-        services.AddSingleton<IContextAccessTokenService, ContextAccessTokenService>(); 
+        services.AddSingleton<IContextAccessTokenService, ContextAccessTokenService>();
 
         // Authentication and Authorization
         services.AddTransient<IAuthenticationService, JwtAuthenticationService>();
@@ -37,6 +39,8 @@ public static partial class Program
 
         // Features
         services.AddSingleton<IEncryptionService, Sha256EncryptionService>();
+        services.AddSingleton<IQueryablePaginationService, QueryablePaginationService>();
+        services.AddTransient(typeof(IPaginationService<>), typeof(PaginationService<>));
 
         return services;
     }
