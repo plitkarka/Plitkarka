@@ -84,7 +84,7 @@ jobs:
         uses: myrotvorets/set-commit-status-action@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          status: pending
+          status: error
           context: Publish NPM package
 
 
