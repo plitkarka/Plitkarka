@@ -81,7 +81,7 @@ jobs:
         run: echo Status of working Database - ${{ steps.test.outputs.STATUS }}
 
       - name: Check status of testing
-        if: ${{ steps.test.outputs.STATUS == 'fHealthy' }}
+        if: ${{ steps.test.outputs.STATUS == 'Healthy' }}
         uses: myrotvorets/set-commit-status-action@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
