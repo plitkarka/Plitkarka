@@ -14,7 +14,7 @@ public record SignInBodyRequestModel
     [Required(ErrorMessage = "Password is required")]
     public string Password { get; set; }
 
-    [MaxLength(32, ErrorMessage = "Unique identifier be less or equal 32 symbols")]
+    [MaxLength(128, ErrorMessage = "Unique identifier be less or equal 128 symbols")]
     [Required(ErrorMessage = "Unique identifier is required")]
     public string UniqueIdentifier { get; set; }
 }
