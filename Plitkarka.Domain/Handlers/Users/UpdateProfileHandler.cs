@@ -4,13 +4,14 @@ using Microsoft.IdentityModel.Tokens;
 using Plitkarka.Commons.Exceptions;
 using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.Users;
+using Plitkarka.Domain.ResponseModels;
 using Plitkarka.Domain.Services.ContextUser;
 using Plitkarka.Infrastructure.Models;
 using Plitkarka.Infrastructure.Services;
 
 namespace Plitkarka.Domain.Handlers.Users;
 
-public class UpdateProfileHandler : IRequestHandler<UpdateProfileRequest>
+public class UpdateProfileHandler : IRequestHandler<UpdateProfileRequest, UserDataResponse>
 {
     private User _user { get; init; }
     private IRepository<UserEntity> _userRepository { get; init; }
@@ -23,7 +24,7 @@ public class UpdateProfileHandler : IRequestHandler<UpdateProfileRequest>
         _userRepository = userRepository;
     }
 
-    public async Task<Unit> Handle(UpdateProfileRequest request, CancellationToken cancellationToken)
+    public async Task<UserDataResponse> Handle(UpdateProfileRequest request, CancellationToken cancellationToken)
     { 
         if (request.Login.IsNullOrEmpty() &&
             request.Name.IsNullOrEmpty() &&
@@ -33,7 +34,21 @@ public class UpdateProfileHandler : IRequestHandler<UpdateProfileRequest>
             throw new ValidationException("Nothing to update");
         }
 
-        var user = await _userRepository.GetByIdAsync(_user.Id) ?? throw new UserContextException();
+        UserEntity user;
+
+        try
+        {
+            user = await _userRepository
+                .GetAll()
+                .Include(user => user.Subscribers)
+                .Include(user => user.Subscriptions)
+                .Where(user => user.Id == _user.Id)
+                .FirstOrDefaultAsync() ?? throw new UserContextException();
+        }
+        catch (Exception ex) when (ex is not UserContextException)
+        {
+            throw new MySqlException(ex.Message);
+        }
 
         if (!request.Login.IsNullOrEmpty())
         {
@@ -73,6 +88,18 @@ public class UpdateProfileHandler : IRequestHandler<UpdateProfileRequest>
 
         await _userRepository.UpdateAsync(user);
 
-        return Unit.Value;
+        return new UserDataResponse
+        {
+            Id = user.Id,
+            Login = user.Login,
+            Name = user.Name,
+            Email = user.Email,
+            Description = user.Description,
+            Link = user.Link,
+            BirthDate = user.BirthDate,
+            LastLoginDate = user.LastLoginDate,
+            SubscribersCount = user.Subscribers.Count(),
+            SubscriptionsCount = user.Subscriptions.Count()
+        };
     }
 }
