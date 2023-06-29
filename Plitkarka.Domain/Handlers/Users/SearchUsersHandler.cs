@@ -42,7 +42,7 @@ public class SearchUsersHandler : IRequestHandler<SearchUsersRequest, Pagination
             .Include(e => e.UserImage)
             .Select(item => new UserPreviewResponse
             {
-                UserId = item.Id,
+                Id = item.Id,
                 Login = item.Login,
                 Name = item.Name,
                 Email = item.Email,

@@ -64,7 +64,7 @@ public class SignInHandler
             throw new ValidationException(ValidationExceptionText);
         }
 
-        var pair = await _authenticationService.Authenticate(user);
+        var pair = await _authenticationService.Authenticate(user, request.UniqueIdentifier);
 
         return pair;
     }

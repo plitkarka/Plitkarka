@@ -31,6 +31,12 @@ public record UserEntity : ActivatedEntity
     [Column(TypeName = "char(64)")]
     public string Salt { get; set; }
 
+    [MaxLength(255)]
+    public string? Description { get; set; }
+
+    [MaxLength(255)]
+    public string? Link { get; set; }
+
     public DateTime BirthDate { get; set; }
 
     public DateTime LastLoginDate { get; set; }
@@ -40,9 +46,7 @@ public record UserEntity : ActivatedEntity
 
     // ----- Relation properties -----
 
-    public Guid? RefreshTokenId { get; set; }
-
-    public RefreshTokenEntity? RefreshToken { get; set; }
+    public ICollection<RefreshTokenEntity> RefreshTokens { get; set; }
 
     public Guid? UserImageId { get; set; }
 

@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Plitkarka.Application.Models.PaginationModels;
 using Plitkarka.Application.Models.UserController;
 using Plitkarka.Domain.Filters;
-using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.Users;
 using Plitkarka.Domain.ResponseModels;
 using Swashbuckle.AspNetCore.Annotations;
@@ -102,6 +101,30 @@ public class UserController : Controller
         var response = await _mediator.Send(new SearchUsersRequest(
             query.Page, 
             query.Filter));
+
+        return Ok(response);
+    }
+
+    [HttpPut]
+    [Authorize]
+    [ModelStateValidation]
+    [SwaggerOperation(
+        Summary = "Updates profile of authorized user",
+        Description = @$"
+            Allows user to change login, name, profile description and outer link
+            Throws 400 if no fields was provided or user login is already taken 
+            If login is taken has response header 'FailedParam' with the value 'Login'
+        ")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<UserDataResponse>> UpdateProfile(
+        [FromBody] UpdateProfileRequestModel body)
+    {
+        var response = await _mediator.Send(new UpdateProfileRequest(
+            body.Login,
+            body.Name,
+            body.Description,
+            body.Link));
 
         return Ok(response);
     }

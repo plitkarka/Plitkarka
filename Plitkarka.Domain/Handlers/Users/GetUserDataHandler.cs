@@ -44,6 +44,8 @@ public class GetUserDataHandler : IRequestHandler<GetUserDataRequest, UserDataRe
                     Login = user.Login,
                     Name = user.Name,
                     Email = user.Email,
+                    Description = user.Description,
+                    Link = user.Link,
                     BirthDate = user.BirthDate,
                     LastLoginDate = user.LastLoginDate,
                     SubscribersCount = user.Subscribers.Count(),

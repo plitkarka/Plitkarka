@@ -65,6 +65,10 @@ public class ExceptionMiddleware
         {
             HandleNoContentException(httpContext, ex);
         }
+        catch (UserContextException ex)
+        {
+            await HandleUserContextException(httpContext);
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex.Message);
@@ -73,23 +77,33 @@ public class ExceptionMiddleware
     }
 
     #region System exceptions 
+
     private async Task HandleMySqlException(HttpContext httpContext)
     {
         httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
         httpContext.Response.ContentType = textPlain;
         await httpContext.Response.WriteAsync("Error working with database");
     }
+
     private async Task HandleS3ServiceException(HttpContext httpContext)
     {
         httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
         httpContext.Response.ContentType = textPlain;
         await httpContext.Response.WriteAsync("Error working with images");
     }
+
     private async Task HandleEmailServiceException(HttpContext httpContext)
     {
         httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
         httpContext.Response.ContentType = textPlain;
         await httpContext.Response.WriteAsync("Error sending emails");
+    }
+
+    private async Task HandleUserContextException(HttpContext httpContext)
+    {
+        httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+        httpContext.Response.ContentType = textPlain;
+        await httpContext.Response.WriteAsync("Error working with database and authorized user");
     }
 
     #endregion

@@ -5,5 +5,6 @@ namespace Plitkarka.Domain.Requests.Authentication;
 
 public record SignInRequest(
     string Email,
-    string Password)
+    string Password,
+    string UniqueIdentifier)
     : IRequest<TokenPairResponse>;

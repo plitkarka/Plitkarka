@@ -9,9 +9,15 @@ public record RefreshTokenEntity : Entity
     public string Token { get; set; }
 
     [Required]
+    [MaxLength(128)]
+    public string UniqueIdentifier { get; set; }
+
+    [Required]
     public DateTime Expires { get; set; }
 
     // ----- Relation properties -----
+
+    public Guid? UserId { get; set; }
 
     public UserEntity? User { get; set; }
 }
