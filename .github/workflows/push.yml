@@ -181,5 +181,5 @@ jobs:
               -e EmailService__UserName="$EMAILSERVICE__USERNAME" \
               -e EmailService__Port="$EMAILSERVICE__PORT" \
               -e ASPNETCORE_ENVIRONMENT \
-              -p 80:80 \
+              -p 127.0.0.1:82:80 \
               ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE }}
