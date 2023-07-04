@@ -115,17 +115,17 @@ public class UserController : Controller
             Throws 400 if no fields was provided or user login is already taken 
             If login is taken has response header 'FailedParam' with the value 'Login'
         ")]
-    [ProducesResponseType(StatusCodes.Status202Accepted)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> UpdateProfile(
+    public async Task<ActionResult<UserDataResponse>> UpdateProfile(
         [FromBody] UpdateProfileRequestModel body)
     {
-        await _mediator.Send(new UpdateProfileRequest(
+        var response = await _mediator.Send(new UpdateProfileRequest(
             body.Login,
             body.Name,
             body.Description,
             body.Link));
 
-        return Accepted();
+        return Ok(response);
     }
 }

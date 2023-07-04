@@ -9,7 +9,7 @@ public record RefreshTokenEntity : Entity
     public string Token { get; set; }
 
     [Required]
-    [MaxLength(32)]
+    [MaxLength(128)]
     public string UniqueIdentifier { get; set; }
 
     [Required]
