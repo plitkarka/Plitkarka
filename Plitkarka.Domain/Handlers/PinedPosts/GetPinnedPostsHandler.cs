@@ -77,6 +77,7 @@ public class GetPinnedPostsHandler : IRequestHandler<GetPinnedPostsRequest, Pagi
                 CommentsCount = item.Post.Comments.Count(),
                 PinsCount = item.Post.Pins.Count(),
                 SharesCount = item.Post.Shares.Count(),
+                CreatedDate = item.Post.CreationTime,
                 UserPreview = new UserPreviewResponse
                 {
                     Id = item.Post.UserId,

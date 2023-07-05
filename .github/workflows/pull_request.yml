@@ -51,6 +51,7 @@ jobs:
           EmailService__Password: ${{ secrets.EMAILSERVICE__PASSWORD }}
           EmailService__UserName: ${{ secrets.EMAILSERVICE__USERNAME }}
           EmailService__Port: ${{ secrets.EMAILSERVICE__PORT }}
+          ASPNETCORE_ENVIRONMENT: ${{ secrets.ASPNETCORE_ENVIRONMENT }}
         run: |
           docker run --name ${{ secrets.DOCKER_CONTAINER }} -d \
             -e MySql__ConnectionString \
@@ -67,6 +68,7 @@ jobs:
             -e EmailService__Password \
             -e EmailService__UserName \
             -e EmailService__Port \
+            -e ASPNETCORE_ENVIRONMENT \
             -p 80:80 \
             ${{ steps.build_image.outputs.imageid }}
 
@@ -80,3 +82,10 @@ jobs:
       - name: Information about Testing
         run: echo Status of working Database - ${{ steps.test.outputs.STATUS }}
 
+      - name: ERROR !!!
+        if: ${{ steps.test.outputs.STATUS != 'Healthy' }}
+        uses: myrotvorets/set-commit-status-action@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          status: error
+          context: Problems with database or code

@@ -69,6 +69,7 @@ public class GetPostsHandler : IRequestHandler<GetPostsRequest, PaginationRespon
                 CommentsCount = item.Comments.Count(),
                 PinsCount = item.Pins.Count(),
                 SharesCount = item.Shares.Count(),
+                CreatedDate = item.CreationTime,
                 UserPreview = new UserPreviewResponse
                 {
                     Id = item.UserId,
