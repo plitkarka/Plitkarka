@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Linq.Expressions;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Plitkarka.Commons.Exceptions;
 using Plitkarka.Commons.Helpers;
@@ -8,55 +9,50 @@ using Plitkarka.Domain.ResponseModels;
 using Plitkarka.Domain.Services.ContextUser;
 using Plitkarka.Domain.Services.ImageService;
 using Plitkarka.Domain.Services.Pagination;
-using Plitkarka.Domain.Services.QueryablePagination;
 using Plitkarka.Infrastructure.Models;
 using Plitkarka.Infrastructure.Services;
 
 namespace Plitkarka.Domain.Handlers.Posts;
 
-public class GetFeedHandler : IRequestHandler<GetFeedRequest, PaginationResponse<PostResponse>>
+public class GetMediaPostsHandler : IRequestHandler<GetMediaPostsRequest, PaginationResponse<PostResponse>>
 {
     private User _user { get; init; }
-    private IQueryablePaginationService _paginationService { get; init; }
-    private IRepository<SubscriptionEntity> _subscriptionRepository { get; init; }
-    private IRepository<PostEntity> _postRepository { get; init; }
+    private IRepository<UserEntity> _userRepository { get; init; }
+    private IPaginationService<PostEntity> _paginationService { get; init; }
     private IImageService _imageService { get; init; }
 
-    public GetFeedHandler(
+    public GetMediaPostsHandler(
         IContextUserService contextUserService,
-        IQueryablePaginationService paginationService,
-        IRepository<SubscriptionEntity> subscriptionRepository,
-        IRepository<PostEntity> postRepository,
+        IRepository<UserEntity> userRepository,
+        IPaginationService<PostEntity> paginationService,
         IImageService imageService)
     {
         _user = contextUserService.User;
-        _subscriptionRepository = subscriptionRepository;
+        _userRepository = userRepository;
         _paginationService = paginationService;
-        _postRepository = postRepository;
         _imageService = imageService;
     }
 
-    public async Task<PaginationResponse<PostResponse>> Handle(GetFeedRequest request, CancellationToken cancellationToken)
+    public async Task<PaginationResponse<PostResponse>> Handle(GetMediaPostsRequest request, CancellationToken cancellationToken)
     {
         var response = new PaginationResponse<PostResponse>();
 
-        var query = _postRepository
-            .GetAll()
-            .Join(
-                _subscriptionRepository.GetAll(),
-                post => post.UserId,
-                subscription => subscription.SubscribedToId,
-                (post, subscription) => new
-                {
-                    Post = post,
-                    Subscription = subscription
-                })
-            .Where(e => e.Subscription.UserId == _user.Id)
-            .Select(e => e.Post)
-            .OrderByDescending(e => e.CreationTime);
+        var userId = request.UserId == Guid.Empty
+            ? _user.Id
+            : request.UserId;
+
+        if (await _userRepository.GetByIdAsync(userId) == null)
+        {
+            throw new ValidationException("User not found");
+        }
+
+        Expression<Func<PostEntity, bool>> predicate = item => item.UserId == userId && item.PostImage != null;
 
         response.Items = await _paginationService
-            .GetPaginatedItemsQuery(query, request.Page)
+            .GetPaginatedItemsQuery(
+                request.Page,
+                where: predicate,
+                orderBy: e => e.CreationTime)
             .Include(e => e.User)
                 .ThenInclude(e => e.UserImage)
             .Include(e => e.PostImage)
@@ -104,11 +100,13 @@ public class GetFeedHandler : IRequestHandler<GetFeedRequest, PaginationResponse
         }
 
         response.TotalCount = request.Page == PaginationConsts.DefaultPage
-            ? await _paginationService.GetCountAsync(query)
+            ? await _paginationService.GetCountAsync(predicate)
             : -1;
 
         response.NextLink = response.Items.Count == PaginationConsts.ItemsPerPage
-            ? _paginationService.GetNextLink(request.Page)
+            ? request.UserId == Guid.Empty
+                ? _paginationService.GetNextLink(request.Page)
+                : _paginationService.GetNextLink(request.Page, request.UserId.ToString())
             : String.Empty;
 
         return response;

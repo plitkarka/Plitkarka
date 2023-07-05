@@ -24,8 +24,7 @@ public class SignUpHandler : IRequestHandler<SignUpRequest, string>
         IRepository<UserEntity> repository,
         IMapper mapper,
         IEmailService emailService,
-        IEncryptionService encryptionService,
-        IAuthenticationService authenticationService)
+        IEncryptionService encryptionService)
     {
         _repository = repository;
         _mapper = mapper;
@@ -53,13 +52,13 @@ public class SignUpHandler : IRequestHandler<SignUpRequest, string>
             LastLoginDate = DateTime.UtcNow
         };
 
-        newUser.Id = await _repository.AddAsync(
-            _mapper.Map<UserEntity>(newUser));
-
         await _emailService.SendEmailAsync(
             newUser.Email,
             EmailTextTemplates.VerificationCodeText(newUser.Name, newUser.EmailCode),
             EmailTextTemplates.VerificationCode);
+
+        newUser.Id = await _repository.AddAsync(
+            _mapper.Map<UserEntity>(newUser));
 
         return newUser.Email;
     }
