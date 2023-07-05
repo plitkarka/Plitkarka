@@ -24,8 +24,7 @@ public class SignUpHandler : IRequestHandler<SignUpRequest, string>
         IRepository<UserEntity> repository,
         IMapper mapper,
         IEmailService emailService,
-        IEncryptionService encryptionService,
-        IAuthenticationService authenticationService)
+        IEncryptionService encryptionService)
     {
         _repository = repository;
         _mapper = mapper;

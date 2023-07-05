@@ -87,6 +87,33 @@ public class PostController : Controller
         return Ok(response);
     }
 
+    [HttpGet("all/media")]
+    [Authorize]
+    [ModelStateValidation]
+    [SwaggerOperation(
+        Summary = "Returns list of media posts of specific user",
+        Description = $@"
+            Returns list of media posts of specific user, link for the next part of the list and total count of posts.
+            If 'Page' is not equal 0 total count of posts will be -1.
+            If result list has less number of items then normal the 'NextLink' will be 'String.Empty'.
+            'Filter' is Id of the user.
+            If filter is not specified returns data related to authorized user.
+            Returns 204 if no posts left.
+            Returns 400 if user not found
+        ")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<PaginationResponse<PostResponse>>> GetMediaPosts(
+        [FromQuery] PaginationGuidRequestModel query)
+    {
+        var response = await _mediator.Send(new GetMediaPostsRequest(
+            query.Page,
+            query.Filter));
+
+        return Ok(response);
+    }
+
     [HttpGet("feed")]
     [Authorize]
     [ModelStateValidation]
