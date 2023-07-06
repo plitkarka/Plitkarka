@@ -5,8 +5,7 @@ namespace Plitkarka.Infrastructure;
 
 public class MySqlDbContext : DbContext
 {
-    private static bool ShouldDelete = false;
-    private static bool Deleted = false;
+    private const string Collation = "utf8mb4_bin";
 
     public DbSet<UserEntity> Users { get; set; }
     public DbSet<RefreshTokenEntity> RefreshTokens { get; set; }
@@ -25,19 +24,9 @@ public class MySqlDbContext : DbContext
     public DbSet<ChatUserConfigurationEntity> ChatUserConfigurations { get; set; }
     public DbSet<ChatMessageEntity> ChatMessages { get; set; }
 
-    private const string Collation = "latin1_bin";
-
     public MySqlDbContext(DbContextOptions<MySqlDbContext> options)
             : base(options)
     {
-        if (ShouldDelete)
-        {
-            if (!Deleted)
-            {
-                Database.EnsureDeleted();
-                Deleted = true;
-            }
-        }
         Database.EnsureCreated();
     }
 
@@ -45,7 +34,7 @@ public class MySqlDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // used to setup fields to be case-sensitive
+        // used to setup fields to be case-sensitive and allows different languages
         modelBuilder
             .UseCollation(Collation);
 
