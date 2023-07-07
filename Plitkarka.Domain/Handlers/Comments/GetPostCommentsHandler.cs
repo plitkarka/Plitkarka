@@ -6,6 +6,7 @@ using Plitkarka.Commons.Helpers;
 using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.Comments;
 using Plitkarka.Domain.ResponseModels;
+using Plitkarka.Domain.Services.ContextUser;
 using Plitkarka.Domain.Services.ImageService;
 using Plitkarka.Domain.Services.Pagination;
 using Plitkarka.Infrastructure.Models;
@@ -18,15 +19,18 @@ public class GetPostCommentsHandler : IRequestHandler<GetPostCommentsRequest, Pa
     private IRepository<PostEntity> _postRepository { get; init; }
     private IPaginationService<CommentEntity> _paginationService { get; init; }
     private IImageService _imageService { get; init; }
+    private User _user { get; init; }
 
     public GetPostCommentsHandler(
         IRepository<PostEntity> postRepository,
         IPaginationService<CommentEntity> paginationService,
-        IImageService imageService)
+        IImageService imageService,
+        IContextUserService contextUserService)
     {
         _postRepository = postRepository;   
         _paginationService = paginationService;
         _imageService = imageService;
+        _user = contextUserService.User;
     }
 
     public async Task<PaginationResponse<CommentResponse>> Handle(GetPostCommentsRequest request, CancellationToken cancellationToken)
@@ -53,6 +57,7 @@ public class GetPostCommentsHandler : IRequestHandler<GetPostCommentsRequest, Pa
                 CommentId = item.Id,
                 TextContent = item.TextContent,
                 LikesCount = item.CommentLikes.Count(),
+                IsLiked = item.CommentLikes.Any(like => like.UserId == _user.Id),
                 UserPreview = new UserPreviewResponse
                 {
                     Id = item.UserId,
