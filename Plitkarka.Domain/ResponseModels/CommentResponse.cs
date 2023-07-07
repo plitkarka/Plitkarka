@@ -8,5 +8,9 @@ public record CommentResponse
 
     public int LikesCount { get; set; }
 
+    public bool IsLiked { get; set; }
+
+    public DateTime CreatedDate { get; set; }
+
     public UserPreviewResponse UserPreview { get; set; }
 }
