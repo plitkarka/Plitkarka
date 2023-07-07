@@ -76,6 +76,9 @@ public class GetSharedPostsHandler : IRequestHandler<GetSharedPostsRequest, Pagi
                 PinsCount = item.Post.Pins.Count(),
                 SharesCount = item.Post.Shares.Count(),
                 CreatedDate = item.Post.CreationTime,
+                IsLiked = item.Post.PostLikes.Any(like => like.UserId == _user.Id),
+                IsShared = item.Post.Shares.Any(share => share.UserId == _user.Id),
+                IsPinned = item.Post.Pins.Any(pin => pin.UserId == _user.Id),
                 UserPreview = new UserPreviewResponse
                 {
                     Id = item.Post.UserId,
