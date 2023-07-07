@@ -20,13 +20,16 @@ public class SearchPostsHandler : IRequestHandler<SearchPostsRequest, Pagination
 {
     private IPaginationService<PostEntity> _paginationService { get; init; }
     private IImageService _imageService { get; init; }
+    private User _user { get; init; }
 
     public SearchPostsHandler(
+        IContextUserService contextUserService,
         IPaginationService<PostEntity> paginationService,
         IImageService imageService)
     {
         _paginationService = paginationService;
         _imageService = imageService;
+        _user = contextUserService.User;
     }
 
     public async Task<PaginationResponse<PostResponse>> Handle(SearchPostsRequest request, CancellationToken cancellationToken)
@@ -66,6 +69,9 @@ public class SearchPostsHandler : IRequestHandler<SearchPostsRequest, Pagination
                 PinsCount = item.Pins.Count(),
                 SharesCount = item.Shares.Count(),
                 CreatedDate = item.CreationTime,
+                IsLiked = item.PostLikes.Any(like => like.UserId == _user.Id),
+                IsShared = item.Shares.Any(share => share.UserId == _user.Id),
+                IsPinned = item.Pins.Any(pin => pin.UserId == _user.Id),
                 UserPreview = new UserPreviewResponse
                 {
                     Id = item.UserId,
