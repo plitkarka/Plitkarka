@@ -10,5 +10,7 @@ public record CommentResponse
 
     public bool IsLiked { get; set; }
 
+    public DateTime CreatedDate { get; set; }
+
     public UserPreviewResponse UserPreview { get; set; }
 }
