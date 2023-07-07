@@ -2,7 +2,7 @@
 
 public static class PaginationConsts
 {
-    public const int ItemsPerPage = 30;
+    public const int ItemsPerPage = 100;
 
     public const int DefaultPage = 0;
 }

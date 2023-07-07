@@ -133,5 +133,5 @@ public class JwtAuthenticationService : IAuthenticationService
         System.Text.Encoding.UTF8.GetBytes(_authorizationConfiguration.SecretKey));
 
     private DateTime GenerateExpirationDate() =>
-        DateTime.Now.AddMinutes(_authorizationConfiguration.RefreshTokenDaysLifetime);
+        DateTime.Now.AddDays(_authorizationConfiguration.RefreshTokenDaysLifetime);
 }
