@@ -70,6 +70,9 @@ public class GetMediaPostsHandler : IRequestHandler<GetMediaPostsRequest, Pagina
                 PinsCount = item.Pins.Count(),
                 SharesCount = item.Shares.Count(),
                 CreatedDate = item.CreationTime,
+                IsLiked = item.PostLikes.Any(like => like.UserId == _user.Id),
+                IsShared = item.Shares.Any(share => share.UserId == _user.Id),
+                IsPinned = item.Pins.Any(pin => pin.UserId == _user.Id),
                 UserPreview = new UserPreviewResponse
                 {
                     Id = item.UserId,

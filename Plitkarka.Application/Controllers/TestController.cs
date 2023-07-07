@@ -104,11 +104,11 @@ public class TestController : Controller
             Login with user name.
             Default user name is 'admin', but can be set down with request
         ")]
-    public async Task<ActionResult<TokenPairResponse>> LoginUser(string name = "admin")
+    public async Task<ActionResult<TokenPairResponse>> LoginUser(string login = "admin")
     {
         var userEntity = await _userRepository
             .GetAll()
-            .FirstOrDefaultAsync(user => user.Name == name);
+            .FirstOrDefaultAsync(user => user.Login == login);
 
         var user = _mapper.Map<User>(userEntity);
 
