@@ -6,6 +6,7 @@ using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.Users;
 using Plitkarka.Domain.ResponseModels;
 using Plitkarka.Domain.Services.ContextUser;
+using Plitkarka.Domain.Services.ImageService;
 using Plitkarka.Infrastructure.Models;
 using Plitkarka.Infrastructure.Services;
 
@@ -15,13 +16,16 @@ public class UpdateProfileHandler : IRequestHandler<UpdateProfileRequest, UserDa
 {
     private User _user { get; init; }
     private IRepository<UserEntity> _userRepository { get; init; }
+    private IImageService _imageService { get; init; }
 
     public UpdateProfileHandler(
         IContextUserService contextUserService,
-        IRepository<UserEntity> userRepository)
+        IRepository<UserEntity> userRepository,
+        IImageService imageService)
     {
         _user = contextUserService.User;
         _userRepository = userRepository;
+        _imageService = imageService;
     }
 
     public async Task<UserDataResponse> Handle(UpdateProfileRequest request, CancellationToken cancellationToken)
@@ -42,6 +46,7 @@ public class UpdateProfileHandler : IRequestHandler<UpdateProfileRequest, UserDa
                 .GetAll()
                 .Include(user => user.Subscribers)
                 .Include(user => user.Subscriptions)
+                .Include(u => u.UserImage)
                 .Where(user => user.Id == _user.Id)
                 .FirstOrDefaultAsync() ?? throw new UserContextException();
         }
@@ -88,7 +93,7 @@ public class UpdateProfileHandler : IRequestHandler<UpdateProfileRequest, UserDa
 
         await _userRepository.UpdateAsync(user);
 
-        return new UserDataResponse
+        var result = new UserDataResponse
         {
             Id = user.Id,
             Login = user.Login,
@@ -99,7 +104,15 @@ public class UpdateProfileHandler : IRequestHandler<UpdateProfileRequest, UserDa
             BirthDate = user.BirthDate,
             LastLoginDate = user.LastLoginDate,
             SubscribersCount = user.Subscribers.Count(),
-            SubscriptionsCount = user.Subscriptions.Count()
+            SubscriptionsCount = user.Subscriptions.Count(),
+            ImageUrl = null
         };
+
+        if (user.UserImage != null)
+        {
+            result.ImageUrl = _imageService.GetImageUrl(user.UserImage.ImageKey);
+        }
+
+        return result;
     }
 }
