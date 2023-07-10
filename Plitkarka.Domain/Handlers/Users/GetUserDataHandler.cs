@@ -56,6 +56,8 @@ public class GetUserDataHandler : IRequestHandler<GetUserDataRequest, UserDataRe
                     SubscribersCount = user.Subscribers.Count(),
                     SubscriptionsCount = user.Subscriptions.Count(),
                     ImageUrl = user.UserImage.ImageKey,
+                    IsAuthorized = request.UserId == Guid.Empty || request.UserId == _user.Id,
+                    IsSubscribed = user.Subscribers.Any(sub => sub.UserId == _user.Id),
                 })
                 .FirstOrDefaultAsync();
         }

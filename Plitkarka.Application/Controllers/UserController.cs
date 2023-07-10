@@ -95,7 +95,7 @@ public class UserController : Controller
         ")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<ActionResult<PaginationResponse<UserPreviewResponse>>> SearchUsers(
+    public async Task<ActionResult<PaginationResponse<UserPreviewSubscriptionResponse>>> SearchUsers(
         [FromQuery] PaginationFilterRequestModel query)
 {
         var response = await _mediator.Send(new SearchUsersRequest(
