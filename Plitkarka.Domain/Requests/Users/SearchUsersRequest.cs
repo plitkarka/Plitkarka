@@ -6,4 +6,4 @@ namespace Plitkarka.Domain.Requests.Users;
 public record SearchUsersRequest(
     int Page,
     string Filter)
-    : IRequest<PaginationResponse<UserPreviewResponse>>;
+    : IRequest<PaginationResponse<UserPreviewSubscriptionResponse>>;
