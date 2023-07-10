@@ -3,36 +3,42 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Plitkarka.Commons.Exceptions;
 using Plitkarka.Commons.Helpers;
+using Plitkarka.Domain.Models;
 using Plitkarka.Domain.Requests.Users;
 using Plitkarka.Domain.ResponseModels;
+using Plitkarka.Domain.Services.ContextUser;
 using Plitkarka.Domain.Services.ImageService;
 using Plitkarka.Domain.Services.Pagination;
 using Plitkarka.Infrastructure.Models;
 
 namespace Plitkarka.Domain.Handlers.Users;
 
-public class SearchUsersHandler : IRequestHandler<SearchUsersRequest, PaginationResponse<UserPreviewResponse>>
+public class SearchUsersHandler : IRequestHandler<SearchUsersRequest, PaginationResponse<UserPreviewSubscriptionResponse>>
 {
+    private User _user { get; init; }
     private IPaginationService<UserEntity> _paginationService { get; init; }
     private IImageService _imageService { get; init; }
 
     public SearchUsersHandler(
+        IContextUserService contextUserService,
         IPaginationService<UserEntity> paginationService,
         IImageService imageService)
     {
         _paginationService = paginationService;
         _imageService = imageService;
+        _user = contextUserService.User;
     }
 
-    public async Task<PaginationResponse<UserPreviewResponse>> Handle(SearchUsersRequest request, CancellationToken cancellationToken)
+    public async Task<PaginationResponse<UserPreviewSubscriptionResponse>> Handle(SearchUsersRequest request, CancellationToken cancellationToken)
     {
-        var response = new PaginationResponse<UserPreviewResponse>();
+        var response = new PaginationResponse<UserPreviewSubscriptionResponse>();
 
         var filter = request.Filter.ToLower();
 
         Expression<Func<UserEntity, bool>> predicate = user =>
             user.Login.ToLower().Contains(filter) ||
-            user.Name.ToLower().Contains(filter);
+            user.Name.ToLower().Contains(filter) &&
+            user.Id != _user.Id;
 
         response.Items = await _paginationService
             .GetPaginatedItemsQuery(
@@ -40,13 +46,15 @@ public class SearchUsersHandler : IRequestHandler<SearchUsersRequest, Pagination
                 where: predicate,
                 orderBy: e => e.Login)
             .Include(e => e.UserImage)
-            .Select(item => new UserPreviewResponse
+            .Include(e => e.Subscribers)
+            .Select(item => new UserPreviewSubscriptionResponse
             {
                 Id = item.Id,
                 Login = item.Login,
                 Name = item.Name,
                 Email = item.Email,
-                ImageKey = item.UserImage.ImageKey
+                ImageKey = item.UserImage.ImageKey,
+                IsSubscribed = item.Subscribers.Any(sub => sub.UserId == _user.Id),
             })
             .ToListAsync();
 

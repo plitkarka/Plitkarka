@@ -105,7 +105,9 @@ public class UpdateProfileHandler : IRequestHandler<UpdateProfileRequest, UserDa
             LastLoginDate = user.LastLoginDate,
             SubscribersCount = user.Subscribers.Count(),
             SubscriptionsCount = user.Subscriptions.Count(),
-            ImageUrl = null
+            ImageUrl = null,
+            IsAuthorized = true,
+            IsSubscribed = false
         };
 
         if (user.UserImage != null)
